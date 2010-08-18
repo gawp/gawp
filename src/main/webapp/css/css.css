@@ -1,0 +1,201 @@
+/* CSS Resets */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-weight: inherit;
+    font-style: inherit;
+    font-size: 100%;
+    font-family: inherit;
+    vertical-align: baseline;
+}
+/* remember to define focus styles! */
+:focus {
+    outline: 0;
+}
+body {
+    line-height: 1;
+    color: black;
+    background: white;
+}
+ol, ul {
+    list-style: none;
+}
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+caption, th, td {
+    text-align: left;
+    font-weight: normal;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: "";
+}
+blockquote, q {
+    quotes: "" "";
+}
+
+/* CSS */
+
+input.addButton {
+    background: white url('/static/images/subscribe.png') no-repeat top;
+    height: 30px;
+    width: 30px;
+    color: transparent;
+    border: 0px;
+    cursor: pointer;
+}
+
+input.removeButton {
+    background: white url('/static/images/unsubscribe.png') no-repeat top;
+    height: 30px;
+    width: 30px;
+    color: transparent;
+    border: 0px;
+    cursor: pointer;
+}
+
+.brandListItem {
+    -webkit-border-radius:  2px;
+    -moz-border-radius:     2px;
+    border-radius:          2px;
+    margin:                 7px;
+    position:               relative;
+    height:                 100px;
+    border:                 border: 2px solid white;
+    list-style-type:        none;
+    -webkit-box-shadow:     rgba(0, 0, 0, 0.496094) 2px 4px 12px;
+    background:             #E9EAEE;
+    margin-top:             10px;
+ }
+.brandsList {
+    width:                  500px;
+    margin:                 0px;
+    margin-left:            180px;
+    padding:                0px;
+    border:                 0px;
+}
+.brandThumbnail {
+    width:                  120px;
+    height:                 90px;
+    position:               relative;
+    float:                  left;
+    padding:                5px;
+}
+.brandInformation {
+    width:                  350px;
+    position:               relative;
+    float:                  left;
+    margin-top:             3px;
+}
+.brandThumbnailImage {
+    height:                 100%;
+    width:                  100%;
+}
+.brandTitle {
+    font-weight:            bolder;
+}
+.brandInfo {
+    position:               absolute;
+    left:                   0px;
+    top:                    80px;
+    width:                  100%;
+}
+.brandPlay {
+    display:                block;
+    position:               absolute;
+    right:                  0;
+}
+.brandDesc {
+    font-size:              0.8em;
+    margin-top:             5px;
+    height:                 50px;
+    overflow:               hidden;
+}
+#buzz {
+    background-color:       white;
+    color:                  black;
+    font-family:            font-family: 'Neuton', serif;
+}
+#maintitle {
+    font-size:              3em;
+    font-family:            'Lobster', serif;
+    margin-left:            200px;
+    font-style:             normal;
+    font-weight:            400;
+    text-shadow:            none;
+    text-decoration:        none;
+    text-transform:         none;
+    letter-spacing:         0em;
+    word-spacing:           0em;
+    line-height:            1em;
+}
+.error {
+	background-color:       lightgrey;
+	border:                 1px solid red;
+	text-align:             center;
+	width:                  300px;
+	margin-left:            290px;
+	margin-top:             10px;
+}
+.success {
+    background-color:       lightgrey;
+    border:                 1px solid green;
+    width:                  100px;
+    text-align:             center;
+    margin-left:            380px;
+    margin-top:             10px;
+}
+#channelList {
+	display: inline;
+}
+.channel {
+    display: inline;
+}
+.channels{
+    width: 1000px;
+    margin-left: 230px;
+    margin-top:10px;
+    background-color: #333; }
+
+.channels ul{
+	margin: 0; padding: 0;
+	float: left;}
+
+.channels ul li{
+	display: inline;}
+
+.channels ul li a{
+	float: left; text-decoration: none;
+	color: white;
+	padding: 10.5px 11px;
+	background-color: #333; }
+
+.channels ul li a:visited{
+	color: white;}
+
+.channels ul li a:hover, .channels ul li .current{
+	color: #fff;
+	background-color:#0b75b2;}
+
+.link {
+	padding: 10px;
+	clear:                  both;
+	disply:                 block;
+	margin-left:            345px;
+	margin-top:             20px;
+	font-size:              1em;
+    font-family:            'Lobster', serif;
+}
