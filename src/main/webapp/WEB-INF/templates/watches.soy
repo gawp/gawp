@@ -2,6 +2,8 @@
 
 /**
  * @param items
+ * @param channels
+ * @param brands
 **/
 {template .list}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -18,30 +20,48 @@
     <body id="buzz">
     <div class="container">
         <h1 id="maintitle">You have been watching</h1>
-        <ul class="brandsList">
+        
+        <h2>Recently</h2>
+        <ul class="consumptions">
             {foreach $item in $items}
-                <li class="brandListItem">
-                    <div curie="{$item.curie}" class="brand" >
-                        <div class="brandThumbnail">
-                        {if $item.thumbnail}
-                            <img src="{$item.thumbnail}" class="brandThumbnailImage"/>
+                <li class="consumption">
+                    <div curie="{$item.content.curie}" class="item" >
+                        <div class="thumbnail">
+                        {if $item.content.thumbnail}
+                            <a href="{$item.content.uri}"><img src="{$item.content.thumbnail}" class="thumbnailImage"/></a>
                         {/if}
                         </div>
-                        <div class="brandInformation">
-                            <p class="brandTitle">
-                                {$item.primaryTitle}
+                        <div class="info">
+                            <p class="title">
+                                <a href="{$item.content.uri}">{$item.content.primaryTitle}{if $item.content.secondaryTitle} - {$item.content.secondaryTitle}{/if}</a>
                             </p>
-                            <p class="brandDesc">
-                                {if $item.description}{$item.description}{/if}
+                            <p class="desc">
+                                {if $item.content.description}{$item.content.description}{/if}
                             </p>
-                            <p class="brandInfo">
-                                <span class="brandPlay"><a href="{$item.uri}" target="_blank">PLAY</a></span>
+                            <p class="actions">
+                                <span class="ago">{$item.ago}</span>
+                                {if $item.channel}
+                                
+                                {/if}
                             </p>
+                            <div class="channelPromo"><a href="{$item.channel.uri}"><img src="{$item.channel.logo}" /></a></div>
                         </div>
                     </div>
+                    <div class="clearfix"></div>
                 </li>
             {/foreach}
         </ul>
+        
+        <h2>This week</h2>
+        <h3>Brands</h3>
+        {call .graphTable}
+            {param counts: $brands/}
+        {/call}
+        
+        <h3>Channels</h3>
+        {call .graphTable}
+            {param counts: $channels/}
+        {/call}
         <br />
         <div class="link">
         <h2><a href="/watch">Go watch something</a></h2>
@@ -54,35 +74,18 @@
 /**
  * @param counts
 **/
-{template .graph}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>You Have Been Watching</title>
-        
-        <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
-        <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
-        <link rel="stylesheet" type="text/css" href="/css/css.css" />
-        
-        {include('/includes/javascript') |noAutoescape}
-    </head>
-    <body id="buzz">
-    <div class="container">
-        <h1 id="maintitle">You have been watching</h1>
-        <ul class="brandsList">
-            {foreach $count in $counts}
-                <li class="brandListItem">
-                    <p>{$count.target} {$count.count} times</p>
-                </li>
-            {/foreach}
-        </ul>
-        <br />
-        <div class="link">
-        <h2><a href="/watch">Go watch something</a></h2>
-        </div>
-    </div>
-    </body>
-</html>
+{template .graphTable}
+<table class="counts">
+    <tbody>
+    {foreach $count in $counts}
+        <tr class="count">
+            <td class="iconCell"><a href="{$count.target.uri}"><img src="{$count.target.logo}" class="thumbnailImage" /></a></td>
+            <!-- <td class="titleCell"><a href="{$count.target.uri}">{$count.target.title}</a></td> -->
+            <td class="countCell"><div style="width: {$count.width}%;" class="chartbar"><span class="actualCount">{$count.count}</span></div></td>
+        </tr>
+    {/foreach}
+    </tbody>
+</table>
 {/template}
 
 /**
@@ -101,28 +104,6 @@
         <link rel="stylesheet" type="text/css" href="/css/css.css" />
         
         {include('/includes/javascript') |noAutoescape}
-        
-        {literal}
-        <script type="text/javascript">
-        $(document).ready(function() {
-        $(".channelLink").click(function() {
-            var channel = $(this).attr('uri');
-            $(".success").remove();
-            $(".error").remove();
-                
-            $.post("/watch.json", { channel: channel }, function(data) {
-                
-                if (data.success) {
-                    $(".container").append($('<p class="success">'+data.success+'</p>'));
-                } else if (data.error) {
-                    $(".container").append($('<p class="error">'+data.error+'</p>'));
-                }
-            });
-            return false;
-        });
-        });
-        </script>
-        {/literal}
     </head>
     <body>
         <div class="container">
@@ -137,14 +118,14 @@
         <ul>
         {foreach $channel in $channels}
             <li class="channel">
-                <a href="#" class="channelLink" uri="{$channel.uri}">{$channel.name}</a>
+                <a href="#" class="channelLink" uri="{$channel.uri}"><img src="{$channel.logo}" /></a>
             </li>
         {/foreach}
         </ul>
         </div>
         <br />
         <div class="link">
-        <h2><a href="/watches?from=now.minus.24H">You have been watching</a></h2>
+        <h2><a href="/watches">You have been watching</a></h2>
         </div>
     </div>
     </body>

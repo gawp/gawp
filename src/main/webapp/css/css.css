@@ -26,6 +26,9 @@ body {
     line-height: 1;
     color: black;
     background: white;
+    font-family: 'Lucida Grande', Arial, Helvetica, Verdana, sans-serif;
+    font-size: 12px;
+    width: 1024px;
 }
 ol, ul {
     list-style: none;
@@ -67,72 +70,83 @@ input.removeButton {
     cursor: pointer;
 }
 
-.brandListItem {
-    -webkit-border-radius:  2px;
-    -moz-border-radius:     2px;
-    border-radius:          2px;
-    margin:                 7px;
+.container {
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;	
+    padding: 20px;
+}
+
+.consumption {
     position:               relative;
-    height:                 100px;
-    border:                 border: 2px solid white;
     list-style-type:        none;
-    -webkit-box-shadow:     rgba(0, 0, 0, 0.496094) 2px 4px 12px;
-    background:             #E9EAEE;
-    margin-top:             10px;
+    border-bottom:          1px solid lightgrey;
  }
-.brandsList {
+.consumptions {
     width:                  500px;
     margin:                 0px;
-    margin-left:            180px;
     padding:                0px;
     border:                 0px;
 }
-.brandThumbnail {
-    width:                  120px;
-    height:                 90px;
+.thumbnail {
     position:               relative;
     float:                  left;
-    padding:                5px;
+    padding:                4px;
 }
-.brandInformation {
+.info {
     width:                  350px;
     position:               relative;
     float:                  left;
     margin-top:             3px;
 }
-.brandThumbnailImage {
-    height:                 100%;
-    width:                  100%;
+.thumbnailImage {
+    height:                 42px;
+    width:                  75px;
 }
-.brandTitle {
+.title {
     font-weight:            bolder;
 }
-.brandInfo {
-    position:               absolute;
-    left:                   0px;
-    top:                    80px;
-    width:                  100%;
+.title a {
+    text-decoration: none;
+    color: black;
 }
-.brandPlay {
+.title a:hover {
+	color: #0187C5;
+}
+.actions {
+    position:               absolute;
+    top:                    0px;
+    color:                  darkgrey;
+    font-size:              0.8em;
+    margin-left:            216px;
+    width:                  200px;
+    text-align:             right;
+}
+.channelPromo img{
+	height: 21px;
+	width: 37px;
+	position:               absolute;
+    top:                    25px;
+    margin-left:            380px;
+}
+.play {
     display:                block;
     position:               absolute;
     right:                  0;
 }
-.brandDesc {
+.desc {
     font-size:              0.8em;
     margin-top:             5px;
-    height:                 50px;
-    overflow:               hidden;
+    height:                 20px;
+    overflow: hidden;
 }
-#buzz {
-    background-color:       white;
-    color:                  black;
-    font-family:            font-family: 'Neuton', serif;
+.clearfix {
+	display:                block;
+	clear:                  both;
 }
 #maintitle {
     font-size:              3em;
     font-family:            'Lobster', serif;
-    margin-left:            200px;
     font-style:             normal;
     font-weight:            400;
     text-shadow:            none;
@@ -141,13 +155,16 @@ input.removeButton {
     letter-spacing:         0em;
     word-spacing:           0em;
     line-height:            1em;
+    margin-bottom:          10px;
+    text-align:             center;
 }
 .error {
 	background-color:       lightgrey;
 	border:                 1px solid red;
 	text-align:             center;
 	width:                  300px;
-	margin-left:            290px;
+	margin-left:            auto;
+    margin-right:           auto;
 	margin-top:             10px;
 }
 .success {
@@ -155,7 +172,8 @@ input.removeButton {
     border:                 1px solid green;
     width:                  100px;
     text-align:             center;
-    margin-left:            380px;
+    margin-left:            auto;
+    margin-right:           auto;
     margin-top:             10px;
 }
 #channelList {
@@ -166,8 +184,8 @@ input.removeButton {
 }
 .channels{
     width: 1000px;
-    margin-left: 230px;
-    margin-top:10px;
+    margin-left: 75px;
+    margin-top:20px;
     background-color: #333; }
 
 .channels ul{
@@ -180,7 +198,7 @@ input.removeButton {
 .channels ul li a{
 	float: left; text-decoration: none;
 	color: white;
-	padding: 10.5px 11px;
+	padding: 5.5px 6px;
 	background-color: #333; }
 
 .channels ul li a:visited{
@@ -190,12 +208,55 @@ input.removeButton {
 	color: #fff;
 	background-color:#0b75b2;}
 
-.link {
-	padding: 10px;
+h2{
 	clear:                  both;
 	disply:                 block;
-	margin-left:            345px;
-	margin-top:             20px;
-	font-size:              1em;
+	font-size:              1.5em;
     font-family:            'Lobster', serif;
+    text-align: center;
+    margin: 10px;
+    color: #D51007;
+}
+
+h3{
+    clear:                  both;
+    disply:                 block;
+    font-size:              1.5em;
+    font-family:            'Lobster', serif;
+    margin: 10px;
+    margin-left:5px;
+}
+
+.counts {
+    margin:                 0px;
+    padding:                0px;
+    border:                 0px;
+}
+.count:nth-child(even) {
+  background: #EBEBEB;
+}
+.count:nth-child(odd) {
+  background: white;
+}
+.iconCell {
+	width:                  70px;
+}
+.titleCell {
+    width:                  100px;
+    vertical-align:         middle;
+}
+.countCell {
+    width:                  500px;
+    vertical-align:         middle;
+}
+.chartbar {
+	background:             #71B7E6;
+	border-top-right-radius: 8px;
+	border-bottom-right-radius:  8px;
+	height: 42px;
+}
+.actualCount {
+	color: white;
+	padding: 15px 0.5em 0px;
+	display: block;
 }

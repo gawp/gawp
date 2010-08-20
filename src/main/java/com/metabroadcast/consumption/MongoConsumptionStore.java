@@ -82,6 +82,7 @@ public class MongoConsumptionStore implements ConsumptionStore {
         }
 
         List<Count<String>> results = Lists.newArrayList(counts.values());
+        Collections.sort(results);
         Collections.reverse(results);
         return results;
     }

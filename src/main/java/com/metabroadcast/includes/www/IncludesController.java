@@ -16,7 +16,8 @@ public class IncludesController {
         if (Platform.isDev() || Platform.isTest()) {
             return "<script type=\"text/javascript\" src=\"/js/base.js\"></script>" +
                     "<script type=\"text/javascript\" src=\"/js/soyutils.js\"></script>" +
-                    "<script type=\"text/javascript\" src=\"/js/jquery.js\"></script>";
+                    "<script type=\"text/javascript\" src=\"/js/jquery.js\"></script>" +
+                    "<script type=\"text/javascript\" src=\"/js/js.js\"></script>";
         }
         
         return "<script type=\"text/javascript\" src=\"/js/closure/generated/global.js\"></script>";

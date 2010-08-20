@@ -7,7 +7,7 @@ import com.google.common.base.Preconditions;
 import com.metabroadcast.purple.core.model.TargetRef;
 import com.metabroadcast.purple.core.model.UserRef;
 
-public class Consumption {
+public class Consumption implements Comparable<Consumption> {
 
     private final TargetRef targetRef;
     private final UserRef userRef;
@@ -98,4 +98,12 @@ public class Consumption {
         }
         
     };
+
+    @Override
+    public int compareTo(Consumption o) {
+        if (o == null) {
+            return 1;
+        }
+        return timestamp.compareTo(o.timestamp);
+    }
 }

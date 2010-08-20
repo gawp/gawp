@@ -57,9 +57,7 @@ public class AtlasContentStore implements ContentStore {
     }
     
     private List<Item> performItemQuery(ContentQueryBuilder query) {
-        List<Item> items = Lists.newArrayList(client.items(query.build()));
-        Collections.sort(items, new SeriesOrder());
-        return items;
+        return client.items(query.build());
     }
     
     private List<Playlist> performBrandQuery(ContentQueryBuilder query) {
