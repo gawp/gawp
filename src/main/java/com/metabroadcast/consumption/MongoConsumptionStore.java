@@ -9,9 +9,9 @@ import org.apache.commons.logging.LogFactory;
 import org.atlasapi.media.entity.Publisher;
 import org.joda.time.DateTime;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.persistence.mongo.DatabasedMongo;
 import com.metabroadcast.common.persistence.mongo.MongoQueryBuilder;
 import com.metabroadcast.common.stats.Count;
@@ -41,74 +41,42 @@ public class MongoConsumptionStore implements ConsumptionStore {
         return translator.fromDBObjects(table.find(query.build()).sort(new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)));
     }
 
-    @SuppressWarnings("unchecked")
     public List<Count<TargetRef>> findTargetCounts(UserRef userRef, DateTime from) {
-        List<Consumption> consumptions = find(userRef, from);
-        Map<TargetRef, Count<TargetRef>> counts = Maps.newHashMap();
-
-        for (Consumption consumption : consumptions) {
-            if (counts.containsKey(consumption.targetRef())) {
-                counts.put(consumption.targetRef(), new Count(consumption.targetRef(), 1L));
-            } else {
-                counts.get(consumption.targetRef()).plus(1L);
-            }
+        List<Count<TargetRef>> targetCounts = Lists.newArrayList();
+        for (Count<String> count: findCounts(userRef, from, TARGET_KEY)) {
+            targetCounts.add(Count.of(TargetRef.fromKey(count.getTarget()), count.getCount()));
         }
-
-        return Lists.newArrayList(counts.values());
+        return targetCounts;
     }
 
-    @SuppressWarnings("unchecked")
     public List<Count<Publisher>> findPublisherCounts(UserRef userRef, DateTime from) {
-        List<Consumption> consumptions = find(userRef, from);
-        Map<Publisher, Count<Publisher>> counts = Maps.newHashMap();
-
-        for (Consumption consumption : consumptions) {
-            Maybe<Publisher> publisher = Publisher.fromKey(consumption.getPublisher());
-            if (publisher.hasValue()) {
-                if (!counts.containsKey(consumption.getPublisher())) {
-                    counts.put(publisher.requireValue(), new Count(publisher.requireValue(), 1L));
-                } else {
-                    counts.get(publisher.requireValue()).plus(1L);
-                }
-            }
+        List<Count<Publisher>> publisherCounts = Lists.newArrayList();
+        for (Count<String> count: findCounts(userRef, from, PUBLISHER_KEY)) {
+            publisherCounts.add(Count.of(Publisher.fromKey(count.getTarget()).requireValue(), count.getCount()));
         }
-
-        List<Count<Publisher>> results = Lists.newArrayList(counts.values());
-        Collections.reverse(results);
-        return results;
+        return publisherCounts;
     }
 
-    @SuppressWarnings("unchecked")
     public List<Count<String>> findChannelCounts(UserRef userRef, DateTime from) {
-        List<Consumption> consumptions = find(userRef, from);
-        Map<String, Count<String>> counts = Maps.newHashMap();
-
-        for (Consumption consumption : consumptions) {
-            if (consumption.getChannel() != null) {
-                if (!counts.containsKey(consumption.getChannel())) {
-                    counts.put(consumption.getChannel(), new Count(consumption.getChannel(), 1L));
-                } else {
-                    counts.put(consumption.getChannel(), counts.get(consumption.getChannel()).plus(1L));
-                }
-            }
-        }
-
-        List<Count<String>> results = Lists.newArrayList(counts.values());
-        Collections.reverse(results);
-        return results;
+        return findCounts(userRef, from, CHANNEL_KEY);
     }
 
-    @SuppressWarnings("unchecked")
     public List<Count<String>> findBrandCounts(UserRef userRef, DateTime from) {
+        return findCounts(userRef, from, BRAND_KEY);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<Count<String>> findCounts(UserRef userRef, DateTime from, Function<Consumption, String> keyFunction) {
         List<Consumption> consumptions = find(userRef, from);
         Map<String, Count<String>> counts = Maps.newHashMap();
 
         for (Consumption consumption : consumptions) {
-            if (consumption.getBrandUri() != null) {
-                if (!counts.containsKey(consumption.getBrandUri())) {
-                    counts.put(consumption.getBrandUri(), new Count(consumption.getBrandUri(), 1L));
+            String key = keyFunction.apply(consumption);
+            if (key != null) {
+                if (!counts.containsKey(key)) {
+                    counts.put(key, new Count(key, 1L));
                 } else {
-                    counts.put(consumption.getBrandUri(), counts.get(consumption.getBrandUri()).plus(1L));
+                    counts.put(key, counts.get(key).plus(1L));
                 }
             }
         }
@@ -117,6 +85,34 @@ public class MongoConsumptionStore implements ConsumptionStore {
         Collections.reverse(results);
         return results;
     }
+    
+    public static Function<Consumption, String> BRAND_KEY  = new Function<Consumption, String>() {
+        @Override
+        public String apply(Consumption consumption) {
+            return consumption.getBrandUri();
+        }
+    };
+    
+    public static Function<Consumption, String> PUBLISHER_KEY  = new Function<Consumption, String>() {
+        @Override
+        public String apply(Consumption consumption) {
+            return consumption.getPublisher();
+        }
+    };
+    
+    public static Function<Consumption, String> CHANNEL_KEY  = new Function<Consumption, String>() {
+        @Override
+        public String apply(Consumption consumption) {
+            return consumption.getChannel();
+        }
+    };
+    
+    public static Function<Consumption, String> TARGET_KEY  = new Function<Consumption, String>() {
+        @Override
+        public String apply(Consumption consumption) {
+            return consumption.targetRef().domain()+":"+consumption.targetRef().ref();
+        }
+    };
 
     public void store(Consumption consumption) {
         table.save(translator.toDBObject(consumption));
