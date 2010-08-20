@@ -126,8 +126,9 @@ input.removeButton {
 	height: 21px;
 	width: 37px;
 	position:               absolute;
-    top:                    25px;
+    top:                    23px;
     margin-left:            380px;
+    opacity: 0.7;
 }
 .play {
     display:                block;
