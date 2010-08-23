@@ -22,6 +22,7 @@ import com.metabroadcast.common.model.DelegatingModelListBuilder;
 import com.metabroadcast.common.model.ModelListBuilder;
 import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.UserRef;
+import com.metabroadcast.common.social.user.UserProvider;
 import com.metabroadcast.common.stats.Count;
 import com.metabroadcast.common.time.DateTimeZones;
 import com.metabroadcast.consumption.ConsumedContent;
@@ -33,7 +34,6 @@ import com.metabroadcast.content.ContentRefs;
 import com.metabroadcast.content.ContentStore;
 import com.metabroadcast.content.SimpleItemAttributesModelBuilder;
 import com.metabroadcast.content.SimplePlaylistAttributesModelBuilder;
-import com.metabroadcast.user.UserProvider;
 
 @Controller
 public class ConsumptionController {

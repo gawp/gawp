@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
@@ -18,20 +20,46 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.metabroadcast.common.media.MimeType;
 import com.metabroadcast.common.social.auth.AuthenticationInterceptor;
+import com.metabroadcast.common.social.auth.CookieTranslator;
 import com.metabroadcast.common.social.auth.RequestScopedAuthenticationProvider;
+import com.metabroadcast.common.social.auth.credentials.CredentialsStore;
+import com.metabroadcast.common.social.auth.twitter.TwitterJsCookieReadingAuthenticationProvider;
+import com.metabroadcast.common.social.user.AccessTokenProcessor;
+import com.metabroadcast.common.social.user.ApplicationIdAwareUserRefBuilder;
+import com.metabroadcast.common.social.user.TwitterAccessTokenChecker;
+import com.metabroadcast.common.social.user.UserRefHelper;
 import com.metabroadcast.common.webapp.json.JsonView;
 import com.metabroadcast.common.webapp.soy.SoyTemplateRenderer;
 import com.metabroadcast.common.webapp.soy.SoyTemplateViewResolver;
 import com.metabroadcast.includes.www.IncludesController;
+import com.metabroadcast.user.www.TwitterAuthController;
 
 @Configuration
 public class WebModule {
     
-    private @Autowired RequestScopedAuthenticationProvider authProvider;
 	private @Value("${login.view}") String loginView;
+	private @Value("${host}") String host;
+    private @Value("${twitter.clientId}") String twitterClientId;
+    
+    private @Autowired RequestScopedAuthenticationProvider authProvider;
+	private @Autowired CookieTranslator cookieTranslator;
+	private @Autowired CredentialsStore credentialsStore;
+	
+	@Scope(value="request", proxyMode=ScopedProxyMode.TARGET_CLASS)
+    public @Bean ApplicationIdAwareUserRefBuilder userRefHelper() {
+        return new UserRefHelper();
+    }
 		
     public @Bean IncludesController getIncludesController() {
         return new IncludesController();
+    }
+    
+    public @Bean TwitterAuthController twitterAuthController() {
+        return new TwitterAuthController(cookieTranslator, twitterAccessTokenChecker(), twitterClientId, host);
+    }
+    
+    public @Bean AccessTokenProcessor twitterAccessTokenChecker() {
+        return new AccessTokenProcessor(new TwitterAccessTokenChecker(userRefHelper()), credentialsStore);
     }
 
     public @Bean DefaultAnnotationHandlerMapping controllerMappings() {

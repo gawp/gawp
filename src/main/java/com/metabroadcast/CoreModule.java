@@ -16,14 +16,16 @@ import com.metabroadcast.common.social.anonymous.AnonymousUserProvider;
 import com.metabroadcast.common.social.anonymous.CookieBasedAnonymousUserProvider;
 import com.metabroadcast.common.social.auth.CookieTranslator;
 import com.metabroadcast.common.social.auth.RequestScopedAuthenticationProvider;
+import com.metabroadcast.common.social.auth.credentials.CredentialsStore;
+import com.metabroadcast.common.social.auth.credentials.MongoDBCredentialsStore;
 import com.metabroadcast.common.social.user.ApplicationIdAwareUserRefBuilder;
 import com.metabroadcast.common.social.user.FixedAppIdUserRefBuilder;
+import com.metabroadcast.common.social.user.LoggedInOrAnonymousUserProvider;
+import com.metabroadcast.common.social.user.UserProvider;
 import com.metabroadcast.common.webapp.properties.ContextConfigurer;
 import com.metabroadcast.consumption.ConsumptionModule;
 import com.metabroadcast.content.AtlasContentStore;
 import com.metabroadcast.content.ContentStore;
-import com.metabroadcast.user.LoggedInOrAnonymousUserProvider;
-import com.metabroadcast.user.UserProvider;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
@@ -44,12 +46,20 @@ public class CoreModule {
         return new CookieTranslator("beige", "devsalt");
     }
 	
+	public @Bean CredentialsStore credentialsStore() throws UnknownHostException, MongoException {
+	    return new MongoDBCredentialsStore(mongo(), "credentials");
+	}
+	
 	public @Bean ApplicationIdAwareUserRefBuilder userRefBuilder() {
 		return new FixedAppIdUserRefBuilder("beige");
 	}
 	
 	public @Bean DatabasedMongo db() throws UnknownHostException, MongoException {
-		return new DatabasedMongo(new Mongo(), "beige");
+		return new DatabasedMongo(mongo(), "beige");
+	}
+	
+	@Bean Mongo mongo() throws UnknownHostException, MongoException {
+	    return new Mongo();
 	}
 	
 	@Scope(value="request", proxyMode=ScopedProxyMode.TARGET_CLASS)
