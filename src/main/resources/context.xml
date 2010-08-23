@@ -10,7 +10,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-    <bean id="cookieAuthenticator" class="com.metabroadcast.purple.core.auth.CookieAuthenticator" scope="request" autowire-candidate="true" autowire="byType">
+    <bean id="cookieAuthenticator" class="com.metabroadcast.common.social.auth.CookieAuthenticator" scope="request" autowire-candidate="true" autowire="byType">
         <aop:scoped-proxy />
     </bean>
 </beans>

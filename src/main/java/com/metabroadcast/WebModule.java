@@ -17,12 +17,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.metabroadcast.common.media.MimeType;
+import com.metabroadcast.common.social.auth.AuthenticationInterceptor;
+import com.metabroadcast.common.social.auth.RequestScopedAuthenticationProvider;
 import com.metabroadcast.common.webapp.json.JsonView;
 import com.metabroadcast.common.webapp.soy.SoyTemplateRenderer;
 import com.metabroadcast.common.webapp.soy.SoyTemplateViewResolver;
 import com.metabroadcast.includes.www.IncludesController;
-import com.metabroadcast.purple.common.social.auth.AuthenticationInterceptor;
-import com.metabroadcast.purple.common.social.auth.RequestScopedAuthenticationProvider;
 
 @Configuration
 public class WebModule {

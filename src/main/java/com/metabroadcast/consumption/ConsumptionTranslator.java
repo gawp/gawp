@@ -6,10 +6,10 @@ import org.joda.time.DateTime;
 
 import com.google.common.collect.Lists;
 import com.metabroadcast.common.persistence.translator.TranslatorUtils;
-import com.metabroadcast.purple.common.social.model.TargetRef;
-import com.metabroadcast.purple.common.social.model.UserRef;
-import com.metabroadcast.purple.common.social.model.translator.TargetRefTranslator;
-import com.metabroadcast.purple.common.social.model.translator.UserRefTranslator;
+import com.metabroadcast.common.social.model.TargetRef;
+import com.metabroadcast.common.social.model.UserRef;
+import com.metabroadcast.common.social.model.translator.TargetRefTranslator;
+import com.metabroadcast.common.social.model.translator.UserRefTranslator;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 

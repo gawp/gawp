@@ -6,9 +6,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.metabroadcast.purple.common.social.anonymous.AnonymousUserProvider;
-import com.metabroadcast.purple.common.social.auth.RequestScopedAuthenticationProvider;
-import com.metabroadcast.purple.common.social.model.UserRef;
+import com.metabroadcast.common.social.anonymous.AnonymousUserProvider;
+import com.metabroadcast.common.social.auth.RequestScopedAuthenticationProvider;
+import com.metabroadcast.common.social.model.UserRef;
 
 public class LoggedInOrAnonymousUserProvider extends HandlerInterceptorAdapter implements UserProvider {
 

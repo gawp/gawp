@@ -10,9 +10,9 @@ import org.joda.time.DateTime;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.metabroadcast.common.base.Maybe;
+import com.metabroadcast.common.social.model.UserRef;
 import com.metabroadcast.common.stats.Count;
 import com.metabroadcast.content.ContentStore;
-import com.metabroadcast.purple.common.social.model.UserRef;
 
 public class ConsumedContentProvider {
 

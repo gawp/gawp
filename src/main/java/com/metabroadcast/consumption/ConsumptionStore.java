@@ -5,8 +5,8 @@ import java.util.List;
 import org.atlasapi.media.entity.Publisher;
 import org.joda.time.DateTime;
 
+import com.metabroadcast.common.social.model.UserRef;
 import com.metabroadcast.common.stats.Count;
-import com.metabroadcast.purple.common.social.model.UserRef;
 
 public interface ConsumptionStore {
 

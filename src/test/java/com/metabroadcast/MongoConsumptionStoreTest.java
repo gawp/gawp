@@ -12,13 +12,13 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 import com.metabroadcast.common.persistence.MongoTestHelper;
 import com.metabroadcast.common.persistence.mongo.DatabasedMongo;
+import com.metabroadcast.common.social.model.TargetRef;
+import com.metabroadcast.common.social.model.UserRef;
+import com.metabroadcast.common.social.model.UserRef.UserNamespace;
 import com.metabroadcast.common.time.DateTimeZones;
 import com.metabroadcast.consumption.Consumption;
 import com.metabroadcast.consumption.ConsumptionStore;
 import com.metabroadcast.consumption.MongoConsumptionStore;
-import com.metabroadcast.purple.common.social.model.TargetRef;
-import com.metabroadcast.purple.common.social.model.UserRef;
-import com.metabroadcast.purple.common.social.model.UserRef.UserNamespace;
 
 
 public class MongoConsumptionStoreTest {
