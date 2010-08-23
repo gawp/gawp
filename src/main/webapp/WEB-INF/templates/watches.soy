@@ -40,11 +40,10 @@
                             </p>
                             <p class="actions">
                                 <span class="ago">{$item.ago}</span>
-                                {if $item.channel}
-                                
-                                {/if}
                             </p>
-                            <div class="channelPromo"><a href="{$item.channel.uri}"><img src="{$item.channel.logo}" /></a></div>
+                            {if $item.channel}
+                                <div class="channelPromo"><a href="{$item.channel.uri}"><img src="{$item.channel.logo}" /></a></div>
+                            {/if}
                         </div>
                     </div>
                     <div class="clearfix"></div>

@@ -42,7 +42,10 @@ public class ConsumedContentModelBuilder implements ModelBuilder<ConsumedContent
                 model.put("publisher", publisher.requireValue().name());
             }
         }
-        model.put("channel", Channel.fromUri(target.getConsumption().getChannel()).toModel());
+        Channel channel = Channel.fromUri(target.getConsumption().getChannel());
+        if (channel != null) {
+            model.put("channel", channel.toModel());
+        }
         model.put("ago", ago(target.getConsumption().timestamp()));
 
         return model;

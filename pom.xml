@@ -143,13 +143,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.metabroadcast.purple.core</groupId>
-            <artifactId>purple-core</artifactId>
-            <version>${purple.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.metabroadcast.common.webapp</groupId>
-            <artifactId>common-webapp</artifactId>
+            <groupId>com.metabroadcast.common.social</groupId>
+            <artifactId>common-social</artifactId>
             <version>${common.version}</version>
         </dependency>
         <dependency>
@@ -171,11 +166,6 @@
                     <groupId>com.sun.jmx</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-        	<groupId>org.twitter4j</groupId>
-        	<artifactId>twitter4j-core</artifactId>
-        	<version>2.1.3</version>
         </dependency>
         <dependency>
             <groupId>org.atlasapi</groupId>
@@ -214,7 +204,6 @@
 
     <properties>
         <common.version>${project.version}</common.version>
-        <purple.version>${project.version}</purple.version>
         <atlas.version>0.0.1-SNAPSHOT</atlas.version>
     </properties>
 </project>
