@@ -24,7 +24,7 @@ import com.google.common.collect.ImmutableMap.Builder;
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.query.Selection;
 import com.metabroadcast.common.time.DateTimeZones;
-import com.metabroadcast.purple.core.model.TargetRef;
+import com.metabroadcast.purple.common.social.model.TargetRef;
 
 @Component
 public class AtlasContentStore implements ContentStore {

@@ -15,9 +15,9 @@ import com.google.common.collect.Maps;
 import com.metabroadcast.common.persistence.mongo.DatabasedMongo;
 import com.metabroadcast.common.persistence.mongo.MongoQueryBuilder;
 import com.metabroadcast.common.stats.Count;
-import com.metabroadcast.purple.core.model.TargetRef;
-import com.metabroadcast.purple.core.model.UserRef;
-import com.metabroadcast.purple.core.model.translator.UserRefTranslator;
+import com.metabroadcast.purple.common.social.model.TargetRef;
+import com.metabroadcast.purple.common.social.model.UserRef;
+import com.metabroadcast.purple.common.social.model.translator.UserRefTranslator;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 

@@ -4,7 +4,7 @@ import org.atlasapi.media.entity.simple.Item;
 import org.atlasapi.media.entity.simple.Playlist;
 
 import com.google.common.base.Function;
-import com.metabroadcast.purple.core.model.TargetRef;
+import com.metabroadcast.purple.common.social.model.TargetRef;
 
 public class ContentRefs {
 

@@ -1,6 +1,6 @@
 package com.metabroadcast.user;
 
-import com.metabroadcast.purple.core.model.UserRef;
+import com.metabroadcast.purple.common.social.model.UserRef;
 
 /**
  * I represent request-scoped objects that

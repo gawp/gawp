@@ -4,8 +4,8 @@ import org.joda.time.DateTime;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
-import com.metabroadcast.purple.core.model.TargetRef;
-import com.metabroadcast.purple.core.model.UserRef;
+import com.metabroadcast.purple.common.social.model.TargetRef;
+import com.metabroadcast.purple.common.social.model.UserRef;
 
 public class Consumption implements Comparable<Consumption> {
 

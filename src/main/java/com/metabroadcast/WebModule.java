@@ -21,8 +21,8 @@ import com.metabroadcast.common.webapp.json.JsonView;
 import com.metabroadcast.common.webapp.soy.SoyTemplateRenderer;
 import com.metabroadcast.common.webapp.soy.SoyTemplateViewResolver;
 import com.metabroadcast.includes.www.IncludesController;
-import com.metabroadcast.purple.core.auth.AuthenticationInterceptor;
-import com.metabroadcast.purple.core.auth.RequestScopedAuthenticationProvider;
+import com.metabroadcast.purple.common.social.auth.AuthenticationInterceptor;
+import com.metabroadcast.purple.common.social.auth.RequestScopedAuthenticationProvider;
 
 @Configuration
 public class WebModule {

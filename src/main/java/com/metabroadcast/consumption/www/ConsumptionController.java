@@ -31,8 +31,8 @@ import com.metabroadcast.content.ContentRefs;
 import com.metabroadcast.content.ContentStore;
 import com.metabroadcast.content.SimpleItemAttributesModelBuilder;
 import com.metabroadcast.content.SimplePlaylistAttributesModelBuilder;
-import com.metabroadcast.purple.core.model.TargetRef;
-import com.metabroadcast.purple.core.model.UserRef;
+import com.metabroadcast.purple.common.social.model.TargetRef;
+import com.metabroadcast.purple.common.social.model.UserRef;
 import com.metabroadcast.user.UserProvider;
 
 @Controller

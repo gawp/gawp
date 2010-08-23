@@ -9,7 +9,7 @@ import org.atlasapi.media.entity.simple.Playlist;
 
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.query.Selection;
-import com.metabroadcast.purple.core.model.TargetRef;
+import com.metabroadcast.purple.common.social.model.TargetRef;
 
 public interface ContentStore {
 
