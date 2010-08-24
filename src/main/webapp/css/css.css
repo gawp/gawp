@@ -83,6 +83,44 @@ input.submit:hover { background-position: -450px 50%; }
     background-color: white;
 }
 
+.mainImage {
+	border: 6px solid white;
+    -webkit-box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    -moz-box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    width: 150px;
+}
+
+.topBrands {
+    display: block;
+    overflow: hidden;
+    clear: both;
+}
+
+.topBrand {
+	display: inline;
+    float: left;
+    margin-right: 20px;
+}
+
+.picture {
+	display:block;
+}
+
+.brandTitle {
+	color: darkgrey;
+	text-align: center;
+	width: 150px;
+	font-size: 0.8em;
+}
+
+.overlay {
+	background: transparent url(http://cdn.last.fm/flatness/picture_frame.png) 0% 0%;
+	height: 109px;
+	position: absolute;
+	width: 132px;
+}
+
 .consumption {
     position:               relative;
     list-style-type:        none;
@@ -108,6 +146,9 @@ input.submit:hover { background-position: -450px 50%; }
 .thumbnailImage {
     height:                 42px;
     width:                  75px;
+    -webkit-box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    -moz-box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
 }
 .title {
     font-weight:            bolder;

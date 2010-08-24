@@ -1,8 +1,10 @@
 package com.metabroadcast.consumption.www;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.atlasapi.media.entity.Publisher;
 import org.atlasapi.media.entity.simple.BrandSummary;
 import org.atlasapi.media.entity.simple.Description;
 import org.atlasapi.media.entity.simple.Item;
@@ -33,6 +35,7 @@ import com.metabroadcast.consumption.ConsumptionStore;
 import com.metabroadcast.content.Channel;
 import com.metabroadcast.content.ContentRefs;
 import com.metabroadcast.content.ContentStore;
+import com.metabroadcast.content.SeriesOrder;
 import com.metabroadcast.content.SimpleItemAttributesModelBuilder;
 import com.metabroadcast.content.SimplePlaylistAttributesModelBuilder;
 
@@ -86,11 +89,24 @@ public class ConsumptionController {
             if (description.hasValue()) {
                 if (description.requireValue() instanceof Playlist) {
                     Playlist playlist = (Playlist) description.requireValue();
-                    if (! playlist.getItems().isEmpty()) {
-                        item = playlist.getItems().get(0);
+                    List<Item> items = playlist.getItems();
+
+                    if (!items.isEmpty()) {
+                        Collections.sort(items, new SeriesOrder());
+                        Collections.reverse(items);
+                        item = items.get(0);
                     }
                 } else if (description.requireValue() instanceof Item) {
                     item = (Item) description.requireValue();
+                }
+            }
+            if (channel == null && item.getPublisher() != null) {
+                Maybe<Publisher> publisher = Publisher.fromKey(item.getPublisher().getKey());
+                if (publisher.hasValue()) {
+                    Channel c = Channel.onlineChannelForPublisher(publisher.requireValue());
+                    if (c != null) {
+                        channel = c.getUri();
+                    }
                 }
             }
         } else if (channel != null) {

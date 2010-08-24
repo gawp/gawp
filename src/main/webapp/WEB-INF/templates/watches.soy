@@ -19,9 +19,9 @@
     </head>
     <body id="buzz">
     <div class="container">
-        <h1 id="maintitle">You have been watching</h1>
+        <h1 id="maintitle">You Have Been Watching</h1>
         
-        <h2>Recently Watched Shows</h2>
+        <h2>Recently Watched Programs</h2>
         <ul class="consumptions">
             {foreach $item in $items}
                 <li class="consumption">
@@ -51,13 +51,12 @@
             {/foreach}
         </ul>
         
-        <h2>This week</h2>
-        <h3>Brands</h3>
-        {call .graphTable}
+        <h2>Your Favorite Shows</h2>
+        {call .topBrands}
             {param counts: $brands/}
         {/call}
         
-        <h3>Channels</h3>
+        <h2>This Week's Most Watched</h2>
         {call .graphTable}
             {param counts: $channels/}
         {/call}
@@ -85,6 +84,22 @@
     {/foreach}
     </tbody>
 </table>
+{/template}
+
+/**
+ * @param counts
+**/
+{template .topBrands}
+<div class="brandColumns">
+<ul class="topBrands">
+{foreach $count in $counts}
+    <li class="topBrand">
+        <p><span class="picture"><a href="{$count.target.uri}"><img src="{$count.target.logo}" class="mainImage" /></a></span>
+        <span class="brandTitle"><a href="{$count.target.uri}">{$count.target.title}</a>({$count.count} watches)</span></p>
+    </li>
+{/foreach}
+</ul>
+</div>
 {/template}
 
 /**
