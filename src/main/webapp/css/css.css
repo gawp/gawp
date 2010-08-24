@@ -81,6 +81,8 @@ input.submit:hover { background-position: -450px 50%; }
     padding: 20px;
     padding-top: 10px;
     background-color: white;
+    border: 1px solid darkGray;
+    margin-top: 10px;
 }
 
 .mainImage {
