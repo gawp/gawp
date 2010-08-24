@@ -21,7 +21,7 @@
     <div class="container">
         <h1 id="maintitle">You have been watching</h1>
         
-        <h2>Recently</h2>
+        <h2>Recently Watched Shows</h2>
         <ul class="consumptions">
             {foreach $item in $items}
                 <li class="consumption">
@@ -123,8 +123,14 @@
         </ul>
         </div>
         <br />
+        <div class="watch-url">
+            <form action="/watch" method="POST">
+                <input name="uri" id="uri" type="text" />
+                <input name="Submit" value="Submit" id="submit" class="submit" type="submit" />
+            </form>
+        </div>
         <div class="link">
-        <h2><a href="/watches">You have been watching</a></h2>
+        <h2><a href="/">You have been watching</a></h2>
         </div>
     </div>
     </body>

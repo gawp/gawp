@@ -25,7 +25,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 body {
     line-height: 1;
     color: black;
-    background: white;
+    background: lightgrey;
     font-family: 'Lucida Grande', Arial, Helvetica, Verdana, sans-serif;
     font-size: 12px;
     width: 1024px;
@@ -70,11 +70,17 @@ input.removeButton {
     cursor: pointer;
 }
 
+input { border-bottom-left-radius: 5px 5px; border-bottom-right-radius: 5px 5px; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; border: 1px solid rgb(143, 143, 143); font-size: 1.3em; padding: 5px; width: 320px; }
+input.submit { margin-left: 101px; width: 7em; background-color:#3392ce; background-image:url(/images/submitbg.png); background-repeat:repeat-x; background-position:0 center; width:122px; border:1px solid #2c8ecc; color:white; font-size:1.4em; letter-spacing:.05em; cursor:pointer; border-bottom-left-radius: 10px 10px; border-bottom-right-radius: 10px 10px; border-top-left-radius: 10px 10px; border-top-right-radius: 10px 10px; }
+input.submit:hover { background-position: -450px 50%; }
+
 .container {
-    width: 500px;
+    width: 800px;
     margin-left: auto;
     margin-right: auto;	
     padding: 20px;
+    padding-top: 10px;
+    background-color: white;
 }
 
 .consumption {
@@ -156,8 +162,7 @@ input.removeButton {
     letter-spacing:         0em;
     word-spacing:           0em;
     line-height:            1em;
-    margin-bottom:          10px;
-    text-align:             center;
+    margin-bottom:          20px;
 }
 .error {
 	background-color:       lightgrey;
@@ -177,6 +182,11 @@ input.removeButton {
     margin-right:           auto;
     margin-top:             10px;
 }
+.watch-url {
+	display: block;
+	clear: both;
+	margin-top: 50px;
+}
 #channelList {
 	display: inline;
 }
@@ -184,8 +194,6 @@ input.removeButton {
     display: inline;
 }
 .channels{
-    width: 1000px;
-    margin-left: 75px;
     margin-top:20px;
     background-color: #333; }
 
@@ -214,8 +222,8 @@ h2{
 	disply:                 block;
 	font-size:              1.5em;
     font-family:            'Lobster', serif;
-    text-align: center;
-    margin: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     color: #D51007;
 }
 
@@ -224,8 +232,8 @@ h3{
     disply:                 block;
     font-size:              1.5em;
     font-family:            'Lobster', serif;
-    margin: 10px;
-    margin-left:5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .counts {
