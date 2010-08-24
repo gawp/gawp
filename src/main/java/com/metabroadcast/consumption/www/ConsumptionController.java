@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.atlasapi.media.entity.Publisher;
 import org.atlasapi.media.entity.simple.BrandSummary;
 import org.atlasapi.media.entity.simple.Description;
@@ -54,6 +56,8 @@ public class ConsumptionController {
     private final ContentStore contentStore;
     private final UserProvider userProvider;
     private final UserDetailsProvider userDetailsProvider;
+    
+    private final Log log = LogFactory.getLog(getClass());
 
     public ConsumptionController(ConsumptionStore consumptionStore, ContentStore contentStore, UserProvider userProvider, UserDetailsProvider userDetailsProvider) {
         this.consumptionStore = consumptionStore;
@@ -86,9 +90,14 @@ public class ConsumptionController {
     }
 
     private Maybe<UserDetails> getUserDetails(UserRef userRef) {
-        Map<UserRef, UserDetails> userDetailsMap = userDetailsProvider.detailsFor(userRef, Lists.newArrayList(userRef));
-        if (userDetailsMap.containsKey(userRef)) {
-            return Maybe.fromPossibleNullValue(userDetailsMap.get(userRef));
+        try {
+            Map<UserRef, UserDetails> userDetailsMap = userDetailsProvider.detailsFor(userRef, Lists.newArrayList(userRef));
+            if (userDetailsMap.containsKey(userRef)) {
+                return Maybe.fromPossibleNullValue(userDetailsMap.get(userRef));
+            }
+        } catch (Exception e) {
+            log.warn("unable to get user details", e);
+            e.printStackTrace();
         }
         return Maybe.nothing();
     }
