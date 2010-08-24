@@ -23,7 +23,6 @@ import com.metabroadcast.common.social.auth.AuthenticationInterceptor;
 import com.metabroadcast.common.social.auth.CookieTranslator;
 import com.metabroadcast.common.social.auth.RequestScopedAuthenticationProvider;
 import com.metabroadcast.common.social.auth.credentials.CredentialsStore;
-import com.metabroadcast.common.social.auth.twitter.TwitterJsCookieReadingAuthenticationProvider;
 import com.metabroadcast.common.social.user.AccessTokenProcessor;
 import com.metabroadcast.common.social.user.ApplicationIdAwareUserRefBuilder;
 import com.metabroadcast.common.social.user.TwitterAccessTokenChecker;
@@ -55,7 +54,7 @@ public class WebModule {
     }
     
     public @Bean TwitterAuthController twitterAuthController() {
-        return new TwitterAuthController(cookieTranslator, twitterAccessTokenChecker(), twitterClientId, host);
+        return new TwitterAuthController(cookieTranslator, twitterAccessTokenChecker(), twitterClientId, host, "beige");
     }
     
     public @Bean AccessTokenProcessor twitterAccessTokenChecker() {

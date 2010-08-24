@@ -2,6 +2,7 @@ package com.metabroadcast.user.www;
 
 import static com.metabroadcast.common.url.UrlEncoding.encode;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,17 +37,29 @@ public class TwitterAuthController {
 	private final AccessTokenProcessor accessTokenProcessor;
 	private final CookieTranslator cookieTranslator;
 
-	public TwitterAuthController(CookieTranslator cookieTranslator, AccessTokenProcessor accessTokenProcessor, @Value("${twitter.clientId}") String clientId, @Value("${host}") String host) {
+    private final String cookieName;
+
+	public TwitterAuthController(CookieTranslator cookieTranslator, AccessTokenProcessor accessTokenProcessor, @Value("${twitter.clientId}") String clientId, @Value("${host}") String host, @Value("${cookie.name}") String cookieName) {
 		this.cookieTranslator = cookieTranslator;
 		this.accessTokenProcessor = accessTokenProcessor;
 		this.clientId = clientId;
 		this.host = host;
+        this.cookieName = cookieName;
 		authControllerHelper = new AuthControllerHelper(cookieTranslator, accessTokenProcessor);
 	}
 	
     @RequestMapping(value = "/login/twitter", method = RequestMethod.GET)
     public View sendToTwitter(@RequestParam(required=true) String continueTo, HttpServletRequest request) {
     	return authControllerHelper.redirectToThirdPartyLogin(continueTo, request, authUrl(continueTo));
+    }
+    
+    @RequestMapping(value = "/logout")
+    public String logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie(cookieName, "");
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        
+        return "redirect:/";
     }
     
     @RequestMapping(value = CALLBACK_URL)

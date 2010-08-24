@@ -4,6 +4,7 @@
  * @param items
  * @param channels
  * @param brands
+ * @param userDetails
 **/
 {template .list}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -19,44 +20,23 @@
     </head>
     <body id="buzz">
     <div class="container">
+        {if $userDetails}
+            {call .userDetails}
+                {param userDetails: $userDetails/}
+            {/call}
+        {else}
+            <div id="login"><a href="/login/twitter?continueTo=/">Login</a></div>
+        {/if}
         <h1 id="maintitle">You Have Been Watching</h1>
+        {call .content}
+            {param items: $items/}
+        {/call}
         
-        <h2>Recently Watched Programs</h2>
-        <ul class="consumptions">
-            {foreach $item in $items}
-                <li class="consumption">
-                    <div curie="{$item.content.curie}" class="item" >
-                        <div class="thumbnail">
-                        {if $item.content.thumbnail}
-                            <a href="{$item.content.uri}"><img src="{$item.content.thumbnail}" class="thumbnailImage"/></a>
-                        {/if}
-                        </div>
-                        <div class="info">
-                            <p class="title">
-                                <a href="{$item.content.uri}">{$item.content.primaryTitle}{if $item.content.secondaryTitle} - {$item.content.secondaryTitle}{/if}</a>
-                            </p>
-                            <p class="desc">
-                                {if $item.content.description}{$item.content.description}{/if}
-                            </p>
-                            <p class="actions">
-                                <span class="ago">{$item.ago}</span>
-                            </p>
-                            {if $item.channel}
-                                <div class="channelPromo"><a href="{$item.channel.uri}"><img src="{$item.channel.logo}" /></a></div>
-                            {/if}
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                </li>
-            {/foreach}
-        </ul>
-        
-        <h2>Your Favorite Shows</h2>
         {call .topBrands}
             {param counts: $brands/}
         {/call}
         
-        <h2>This Week's Most Watched</h2>
+        
         {call .graphTable}
             {param counts: $channels/}
         {/call}
@@ -70,9 +50,68 @@
 {/template}
 
 /**
+ * @param userDetails
+**/
+{template .userDetails}
+<div id="userDetails">
+    {if $userDetails.profileImage}
+        <div class="avatar"><a href="{$userDetails.profileUrl}"><img src="{$userDetails.profileImage}" /></a></div>
+    {/if}
+    <div class="profile">
+    {if $userDetails.fullName}
+        <p class="userTitle"><strong><a href="{$userDetails.profileUrl}">{$userDetails.fullName}</a></strong>{if $userDetails.location}<span class="location">{$userDetails.location}</span>{/if}</p>
+    {/if}
+    {if $userDetails.bio}
+        <p class="bio">{$userDetails.bio}</p>
+    {/if}
+        <div class="logout"><a href="/logout">Logout</a></div>
+    </div>
+</div>
+{/template}
+
+/**
+ * @param items
+**/
+{template .content}
+<div id="recentContent">
+    <h2>Recently Watched Programs</h2>
+    <ul class="consumptions">
+        {foreach $item in $items}
+            <li class="consumption">
+                <div curie="{$item.content.curie}" class="item" >
+                    <div class="thumbnail">
+                    {if $item.content.thumbnail}
+                        <a href="{$item.content.uri}"><img src="{$item.content.thumbnail}" class="thumbnailImage"/></a>
+                    {/if}
+                    </div>
+                    <div class="info">
+                        <p class="title">
+                            <a href="{$item.content.uri}">{$item.content.primaryTitle}{if $item.content.secondaryTitle} - {$item.content.secondaryTitle}{/if}</a>
+                        </p>
+                        <p class="desc">
+                            {if $item.content.description}{$item.content.description}{/if}
+                        </p>
+                        <p class="actions">
+                            <span class="ago">{$item.ago}</span>
+                        </p>
+                        {if $item.channel}
+                            <div class="channelPromo"><a href="{$item.channel.uri}"><img src="{$item.channel.logo}" /></a></div>
+                        {/if}
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </li>
+        {/foreach}
+    </ul>
+</div>
+{/template}
+
+/**
  * @param counts
 **/
 {template .graphTable}
+<div id="channelGraph">
+<h2>This Week's Most Watched</h2>
 <table class="counts">
     <tbody>
     {foreach $count in $counts}
@@ -84,13 +123,15 @@
     {/foreach}
     </tbody>
 </table>
+</div>
 {/template}
 
 /**
  * @param counts
 **/
 {template .topBrands}
-<div class="brandColumns">
+<div class="topBrands">
+<h2>Your Favorite Shows</h2>
 <ul class="topBrands">
 {foreach $count in $counts}
     <li class="topBrand">

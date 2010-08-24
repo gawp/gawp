@@ -23,8 +23,11 @@ import com.metabroadcast.DateTimeInQueryParser;
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.model.DelegatingModelListBuilder;
 import com.metabroadcast.common.model.ModelListBuilder;
+import com.metabroadcast.common.model.SimpleModel;
 import com.metabroadcast.common.social.model.TargetRef;
+import com.metabroadcast.common.social.model.UserDetails;
 import com.metabroadcast.common.social.model.UserRef;
+import com.metabroadcast.common.social.user.UserDetailsProvider;
 import com.metabroadcast.common.social.user.UserProvider;
 import com.metabroadcast.common.stats.Count;
 import com.metabroadcast.common.time.DateTimeZones;
@@ -50,10 +53,12 @@ public class ConsumptionController {
             new SimpleItemAttributesModelBuilder()));
     private final ContentStore contentStore;
     private final UserProvider userProvider;
+    private final UserDetailsProvider userDetailsProvider;
 
-    public ConsumptionController(ConsumptionStore consumptionStore, ContentStore contentStore, UserProvider userProvider) {
+    public ConsumptionController(ConsumptionStore consumptionStore, ContentStore contentStore, UserProvider userProvider, UserDetailsProvider userDetailsProvider) {
         this.consumptionStore = consumptionStore;
         this.contentStore = contentStore;
+        this.userDetailsProvider = userDetailsProvider;
         this.consumedContentProvider = new ConsumedContentProvider(consumptionStore, contentStore);
         this.userProvider = userProvider;
     }
@@ -62,19 +67,30 @@ public class ConsumptionController {
     public String watches(@RequestParam(required = false) String from, Map<String, Object> model) {
         DateTime timestampFrom = from != null ? queryParser.parse(from) : new DateTime(DateTimeZones.UTC).minusDays(1);
         UserRef userRef = userProvider.existingUser();
+        Maybe<UserDetails> userDetails = getUserDetails(userRef);
+        model.put("userDetails", userDetailsModel(userDetails.valueOrNull()));
+
         Preconditions.checkNotNull(timestampFrom);
         Preconditions.checkNotNull(userRef);
 
         List<ConsumedContent> consumedContent = consumedContentProvider.find(userRef, timestampFrom);
         model.put("items", consumedContentModelListBuilder.build(consumedContent));
 
-        List<Count<String>> brands = consumptionStore.findBrandCounts(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(1));
+        List<Count<String>> brands = consumptionStore.findBrandCounts(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(4));
         addBrandCountsModel(model, brands);
 
         List<Count<String>> channels = consumptionStore.findChannelCounts(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(1));
         addChannelCountsModel(model, channels);
 
         return "watches/list";
+    }
+
+    private Maybe<UserDetails> getUserDetails(UserRef userRef) {
+        Map<UserRef, UserDetails> userDetailsMap = userDetailsProvider.detailsFor(userRef, Lists.newArrayList(userRef));
+        if (userDetailsMap.containsKey(userRef)) {
+            return Maybe.fromPossibleNullValue(userDetailsMap.get(userRef));
+        }
+        return Maybe.nothing();
     }
 
     @RequestMapping(value = { "/watch" }, method = { RequestMethod.POST })
@@ -100,7 +116,7 @@ public class ConsumptionController {
                     item = (Item) description.requireValue();
                 }
             }
-            if (channel == null && item.getPublisher() != null) {
+            if (channel == null && item != null && item.getPublisher() != null) {
                 Maybe<Publisher> publisher = Publisher.fromKey(item.getPublisher().getKey());
                 if (publisher.hasValue()) {
                     Channel c = Channel.onlineChannelForPublisher(publisher.requireValue());
@@ -200,5 +216,21 @@ public class ConsumptionController {
             counts.add(countMap);
         }
         model.put("channels", counts);
+    }
+
+    public SimpleModel userDetailsModel(UserDetails userDetails) {
+        if (userDetails != null) {
+            SimpleModel model = new SimpleModel();
+            model.put("screenName", userDetails.getScreenName());
+            model.put("fullName", userDetails.getFullName());
+            model.put("followers", userDetails.getFollowerCount());
+            model.put("profileImage", userDetails.getProfileImage());
+            model.put("profileUrl", userDetails.getProfileUrl());
+            model.put("bio", userDetails.getBio());
+            model.put("location", userDetails.getLocation());
+
+            return model;
+        }
+        return null;
     }
 }

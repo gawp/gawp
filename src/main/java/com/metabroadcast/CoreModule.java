@@ -30,52 +30,62 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
 @Configuration
-@Import({WebModule.class, ConsumptionModule.class})
+@Import( { WebModule.class, ConsumptionModule.class })
 @ImportResource("context.xml")
 public class CoreModule {
-    
-    private @Autowired RequestScopedAuthenticationProvider authenticationProvider;
-    
-	public @Bean ContextConfigurer config() {
-		ContextConfigurer c = new ContextConfigurer();
-		c.init();
-		return c;
-	}
-	
-	public @Bean CookieTranslator cookieTranslator() {
+
+    private @Autowired
+    RequestScopedAuthenticationProvider authenticationProvider;
+
+    public @Bean
+    ContextConfigurer config() {
+        ContextConfigurer c = new ContextConfigurer();
+        c.init();
+        return c;
+    }
+
+    public @Bean
+    CookieTranslator cookieTranslator() {
         return new CookieTranslator("beige", "devsalt");
     }
-	
-	public @Bean CredentialsStore credentialsStore() throws UnknownHostException, MongoException {
-	    return new MongoDBCredentialsStore(mongo(), "credentials");
-	}
-	
-	public @Bean ApplicationIdAwareUserRefBuilder userRefBuilder() {
-		return new FixedAppIdUserRefBuilder("beige");
-	}
-	
-	public @Bean DatabasedMongo db() throws UnknownHostException, MongoException {
-		return new DatabasedMongo(mongo(), "beige");
-	}
-	
-	@Bean Mongo mongo() throws UnknownHostException, MongoException {
-	    return new Mongo();
-	}
-	
-	@Scope(value="request", proxyMode=ScopedProxyMode.TARGET_CLASS)
-	public @Bean AnonymousUserProvider anonymousUserProvider() {
-	    return new CookieBasedAnonymousUserProvider(cookieTranslator(), userRefBuilder());
-	}
-	
-	@Scope(value="request", proxyMode=ScopedProxyMode.TARGET_CLASS)
-	public @Bean UserProvider userProvider() {
-	    LoggedInOrAnonymousUserProvider userProvider = new LoggedInOrAnonymousUserProvider();
-	    userProvider.setAnonymousUserProvider(anonymousUserProvider());
-	    userProvider.setLoggedInUserProvider(authenticationProvider);
-	    return userProvider;
-	}
-	
-	public @Bean ContentStore contentStore() {
+
+    public @Bean
+    CredentialsStore credentialsStore() throws UnknownHostException, MongoException {
+        return new MongoDBCredentialsStore(mongo(), "credentials");
+    }
+
+    public @Bean
+    ApplicationIdAwareUserRefBuilder userRefBuilder() {
+        return new FixedAppIdUserRefBuilder("beige");
+    }
+
+    public @Bean
+    DatabasedMongo db() throws UnknownHostException, MongoException {
+        return new DatabasedMongo(mongo(), "beige");
+    }
+
+    @Bean
+    Mongo mongo() throws UnknownHostException, MongoException {
+        return new Mongo();
+    }
+
+    @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
+    public @Bean
+    AnonymousUserProvider anonymousUserProvider() {
+        return new CookieBasedAnonymousUserProvider(cookieTranslator(), userRefBuilder());
+    }
+
+    @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
+    public @Bean
+    UserProvider userProvider() {
+        LoggedInOrAnonymousUserProvider userProvider = new LoggedInOrAnonymousUserProvider();
+        userProvider.setAnonymousUserProvider(anonymousUserProvider());
+        userProvider.setLoggedInUserProvider(authenticationProvider);
+        return userProvider;
+    }
+
+    public @Bean
+    ContentStore contentStore() {
         return new AtlasContentStore(new CachingJaxbAtlasClient());
     }
 }
