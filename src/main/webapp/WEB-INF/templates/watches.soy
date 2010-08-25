@@ -55,7 +55,7 @@
 {template .userDetails}
 <div id="userDetails">
     {if $userDetails.profileImage}
-        <div class="avatar"><a href="{$userDetails.profileUrl}"><img src="{$userDetails.profileImage}" /></a></div>
+        <div class="avatar"><a href="{$userDetails.profileUrl}"><img src="{$userDetails.profileImage}" class="icon" /></a><div class="gloss"></div></div>
     {/if}
     <div class="profile">
     {if $userDetails.fullName}
@@ -135,7 +135,7 @@
 <ul class="topBrands">
 {foreach $count in $counts}
     <li class="topBrand">
-        <p><span class="picture"><a href="{$count.target.uri}"><img src="{$count.target.logo}" class="mainImage" /></a></span>
+        <p><span class="picture"><a href="{$count.target.uri}"><img src="{$count.target.logo}" class="mainImage" /><div class="mainGloss"></div></a></span>
         <span class="brandTitle"><a href="{$count.target.uri}">{$count.target.title}</a>({$count.count} watches)</span></p>
     </li>
 {/foreach}

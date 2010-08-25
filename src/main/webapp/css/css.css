@@ -85,12 +85,61 @@ input.submit:hover { background-position: -450px 50%; }
     margin-top: 10px;
 }
 
-.mainImage {
+/*.mainImage {
 	border: 6px solid white;
     -webkit-box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
     -moz-box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
     box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
     width: 150px;
+}*/
+
+.mainImage {
+    -webkit-box-shadow: rgba(0, 0, 0, 0.496094) 0px 4px 6px;
+    background: transparent;
+    border-bottom-left-radius: 5px 5px;
+    border-bottom-right-radius: 5px 5px;
+    border-top-left-radius: 5px 5px;
+    border-top-right-radius: 5px 5px;
+    float: left;
+    width: 150px;
+}
+
+.mainGloss {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.597656) 0px 2px 1px inset;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.699219)), to(rgba(255, 255, 255, 0.199219)));
+    border-bottom-left-radius: 18px 5px;
+    border-bottom-right-radius: 12px 5px;
+    border-top-left-radius: 5px 5px;
+    border-top-right-radius: 5px 5px;
+    position: absolute;
+    height: 40px;
+    width: 150px;
+    z-index: 100;
+}
+
+.gloss {
+	-webkit-box-shadow: rgba(255, 255, 255, 0.597656) 0px 2px 1px inset;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.699219)), to(rgba(255, 255, 255, 0.199219)));
+	border-bottom-left-radius: 30px 8px;
+	border-bottom-right-radius: 12px 8px;
+	border-top-left-radius: 5px 5px;
+	border-top-right-radius: 5px 5px;
+	position: absolute;
+	height: 25px;
+    width: 50px;
+	z-index: 100;
+}
+
+.icon {
+	-webkit-box-shadow: rgba(0, 0, 0, 0.496094) 0px 4px 6px;
+	background: transparent;
+	border-bottom-left-radius: 5px 5px;
+	border-bottom-right-radius: 5px 5px;
+	border-top-left-radius: 5px 5px;
+	border-top-right-radius: 5px 5px;
+	float: left;
+	height: 50px;
+	width: 50px;
 }
 
 .topBrands {
@@ -102,7 +151,7 @@ input.submit:hover { background-position: -450px 50%; }
 .topBrand {
 	display: inline;
     float: left;
-    margin-right: 20px;
+    margin: 10px;
 }
 
 .picture {
@@ -325,8 +374,6 @@ h3{
 }
 .avatar {
 	float:left;
-	border: 2px solid white;
-	-webkit-box-shadow: rgba(0, 0, 0, 0.296875) 2px 2px 6px;
 	margin-right: 5px;
 }
 .profile {
