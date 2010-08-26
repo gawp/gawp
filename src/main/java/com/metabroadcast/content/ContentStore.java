@@ -27,5 +27,5 @@ public interface ContentStore {
     
     List<Playlist> getBrandsByPlaylistUri(String playlistUri, Selection selection);
 
-    List<Item> getItemOnNow(String channel);
+    List<Item> getItemsOnNow(String channel);
 }

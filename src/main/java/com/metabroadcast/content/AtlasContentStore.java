@@ -52,9 +52,11 @@ public class AtlasContentStore implements ContentStore {
     }
 
     @Override
-    public List<Item> getItemOnNow(String channel) {
-        return performItemQuery(query().after(Attributes.BROADCAST_TRANSMISSION_TIME, new DateTime(DateTimeZones.UTC).minusMinutes(30)).before(Attributes.BROADCAST_TRANSMISSION_TIME,
-                new DateTime(DateTimeZones.UTC).plusMinutes(30)).equalTo(Attributes.BROADCAST_ON, channel));
+    public List<Item> getItemsOnNow(String channel) {
+        return performItemQuery(query().equalTo(Attributes.BROADCAST_TRANSMISSION_TIME, new DateTime(DateTimeZones.UTC))
+                        .equalTo(Attributes.BROADCAST_ON, channel));
+//        return performItemQuery(query().after(Attributes.BROADCAST_TRANSMISSION_TIME, new DateTime(DateTimeZones.UTC).minusMinutes(30)).before(Attributes.BROADCAST_TRANSMISSION_TIME,
+//                new DateTime(DateTimeZones.UTC).plusMinutes(30)).equalTo(Attributes.BROADCAST_ON, channel));
     }
 
     private List<Item> performItemQuery(ContentQueryBuilder query) {

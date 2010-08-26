@@ -134,7 +134,7 @@ public class ConsumptionController {
                 }
             }
         } else if (channel != null) {
-            List<Item> items = contentStore.getItemOnNow(channel);
+            List<Item> items = contentStore.getItemsOnNow(channel);
             if (!items.isEmpty()) {
                 item = items.get(0);
             }
