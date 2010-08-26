@@ -1,14 +1,14 @@
 package com.metabroadcast.content;
 
-import static org.atlasapi.content.criteria.ContentQueryBuilder.query;
+
+import static org.atlasapi.client.query.AtlasQuery.brands;
+import static org.atlasapi.client.query.AtlasQuery.items;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.atlasapi.client.AtlasClient;
-import org.atlasapi.content.criteria.ContentQueryBuilder;
-import org.atlasapi.content.criteria.attribute.Attributes;
 import org.atlasapi.media.entity.simple.Description;
 import org.atlasapi.media.entity.simple.Item;
 import org.atlasapi.media.entity.simple.Playlist;
@@ -19,12 +19,10 @@ import org.springframework.stereotype.Component;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.query.Selection;
 import com.metabroadcast.common.social.model.TargetRef;
-import com.metabroadcast.common.time.DateTimeZones;
 
 @Component
 public class AtlasContentStore implements ContentStore {
@@ -38,36 +36,27 @@ public class AtlasContentStore implements ContentStore {
 
     @Override
     public List<Item> getItemsByGenreUris(List<String> genreUris, Selection selection) {
-        return performItemQuery(query().equalTo(Attributes.ITEM_GENRE, genreUris).withSelection(selection));
+        return client.query(items().itemGenres().in(genreUris).withSelection(selection));
     }
 
     @Override
     public List<Item> getItemsByPlaylistUris(List<String> playlistUris, Selection selection) {
-        return performItemQuery(query().equalTo(Attributes.PLAYLIST_URI, playlistUris).withSelection(selection));
+        return client.query(items().playlistUri().in(playlistUris).withSelection(selection));
     }
     
     @Override
     public List<Playlist> getBrandsByPlaylistUri(String playlistUri, Selection selection) {
-        return performBrandQuery(query().equalTo(Attributes.PLAYLIST_URI, playlistUri));//.withSelection(selection));
+        return client.query(brands().playlistUri().equalTo(playlistUri));
     }
     
     @Override
     public List<Item> getItemOnNow(String channel) {
-        return performItemQuery(query().after(Attributes.BROADCAST_TRANSMISSION_TIME, new DateTime(DateTimeZones.UTC).minusMinutes(30)).before(Attributes.BROADCAST_TRANSMISSION_TIME, new DateTime(DateTimeZones.UTC).plusMinutes(30)).equalTo(Attributes.BROADCAST_ON, channel));
+        return client.query(items().transmissionTime().equalTo(new DateTime()).channel().equalTo(channel));
     }
-    
-    private List<Item> performItemQuery(ContentQueryBuilder query) {
-        return client.items(query.build());
-    }
-    
-    private List<Playlist> performBrandQuery(ContentQueryBuilder query) {
-        return client.brands(query.build());
-    }
-
    
 	@Override
 	public List<Item> itemsByUri(Iterable<String> itemUris) {
-		return performItemQuery(query().equalTo(Attributes.ITEM_URI, Lists.newArrayList(itemUris)));
+		return client.query(items().uri().in(itemUris));
 	}
 
 	@Override
@@ -75,7 +64,7 @@ public class AtlasContentStore implements ContentStore {
 		if (!Iterables.all(refs, Predicates.compose(Predicates.equalTo(ContentRefs.PLAYLIST_DOMAIN), TargetRef.TO_DOMAIN))) {
 			throw new UnsupportedOperationException("TODO: support genre lists and other lists");
 		}
-		List<Playlist> playlists = performBrandQuery(query().equalTo(Attributes.BRAND_URI, Iterables.transform(refs, TargetRef.TO_REF)));
+		List<Playlist> playlists = client.query(brands().uri().in(Iterables.transform(refs, TargetRef.TO_REF)));
 		
 		Builder<TargetRef, Playlist> map = ImmutableMap.builder();
 		
