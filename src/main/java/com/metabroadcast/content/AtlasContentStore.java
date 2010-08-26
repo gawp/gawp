@@ -26,9 +26,9 @@ import com.metabroadcast.common.social.model.TargetRef;
 
 @Component
 public class AtlasContentStore implements ContentStore {
-    
+
     private final AtlasClient client;
-    
+
     @Autowired
     public AtlasContentStore(AtlasClient client) {
         this.client = client;
@@ -43,14 +43,14 @@ public class AtlasContentStore implements ContentStore {
     public List<Item> getItemsByPlaylistUris(List<String> playlistUris, Selection selection) {
         return client.query(items().playlistUri().in(playlistUris).withSelection(selection));
     }
-    
+
     @Override
     public List<Playlist> getBrandsByPlaylistUri(String playlistUri, Selection selection) {
         return client.query(brands().playlistUri().equalTo(playlistUri));
     }
-    
+
     @Override
-    public List<Item> getItemOnNow(String channel) {
+    public List<Item> getItemsOnNow(String channel) {
         return client.query(items().transmissionTime().equalTo(new DateTime()).channel().equalTo(channel));
     }
    
@@ -74,20 +74,23 @@ public class AtlasContentStore implements ContentStore {
 		
 		return map.build();
 	}
+  
+    @Override
+    public Maybe<Description> resolve(String curieOrUri) {
+        try {
+            Map<String, Description> anyQueryResults = client.any(Collections.singleton(curieOrUri));
+            if (anyQueryResults.isEmpty()) {
+                return Maybe.nothing();
+            } else {
+                return Maybe.just(Iterables.getOnlyElement(anyQueryResults.values()));
+            }
+        } catch (Exception e) {
+            return Maybe.nothing();
+        }
+    }
 
-	@Override
-	public Maybe<Description> resolve(String curieOrUri) {
-		Map<String, Description> anyQueryResults = client.any(Collections.singleton(curieOrUri));
-		if (anyQueryResults.isEmpty()) {
-			return Maybe.nothing();
-		}
-		else {
-			return Maybe.just(Iterables.getOnlyElement(anyQueryResults.values()));
-		}
-	}
-
-	@Override
-	public Map<String, Description> resolveAll(Iterable<String> curiesOrUris) {
-		return client.any(curiesOrUris);
-	}
+    @Override
+    public Map<String, Description> resolveAll(Iterable<String> curiesOrUris) {
+        return client.any(curiesOrUris);
+    }
 }

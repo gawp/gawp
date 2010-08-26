@@ -3,12 +3,17 @@ package com.metabroadcast.content;
 import java.util.List;
 import java.util.Map;
 
+import org.atlasapi.media.entity.Publisher;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.metabroadcast.common.model.SimpleModel;
 
 public enum Channel {
 
+    BBC_IPLAYER("iPlayer", "http://www.bbc.co.uk/iplayer", "/images/bbc_iplayer.png"),
+    HULU("Hulu", "http://www.hulu.com", "/images/hulu.png"),
+    C4_4OD("4oD", "http://www.channel4.com", "/images/c4_4od.png"),
     BBC_ONE("BBC One", "http://www.bbc.co.uk/services/bbcone/london", "/images/bbc_one.png"), 
     BBC_TWO("BBC Two", "http://www.bbc.co.uk/services/bbctwo/england", "/images/bbc_two.png"),
     BBC_NEWS("BBC News", "http://www.bbc.co.uk/services/bbcnews", "/images/bbc_news.png"),
@@ -63,5 +68,18 @@ public enum Channel {
             channelList.add(channelMap);
         }
         return channelList;
+    }
+    
+    public static Channel onlineChannelForPublisher(Publisher publisher) {
+        if (publisher.equals(Publisher.BBC)) {
+            return Channel.BBC_IPLAYER;
+        }
+        if (publisher.equals(Publisher.HULU)) {
+            return Channel.HULU;
+        }
+        if (publisher.equals(Publisher.C4)) {
+            return Channel.C4_4OD;
+        }
+        return null;
     }
 }

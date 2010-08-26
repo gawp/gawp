@@ -1,0 +1,18 @@
+{namespace beige.templates.twitter}
+
+/**
+ * Passes the twitter oauth params in the query fragment to the server
+ */
+{template .springboard}
+<html>
+    <head>
+        <title>Parsing credentials</title>
+    </head>
+    <body>
+        <h1>Parsing credentials....</h1>
+        <script>
+            window.location = window.location.href.replace('#', '&') + '&extractedFragment=true';
+        </script>
+    </body> 
+</html>
+{/template}

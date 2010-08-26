@@ -25,7 +25,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 body {
     line-height: 1;
     color: black;
-    background: white;
+    background: lightgrey;
     font-family: 'Lucida Grande', Arial, Helvetica, Verdana, sans-serif;
     font-size: 12px;
     width: 1024px;
@@ -70,11 +70,106 @@ input.removeButton {
     cursor: pointer;
 }
 
+input { border-bottom-left-radius: 5px 5px; border-bottom-right-radius: 5px 5px; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; border: 1px solid rgb(143, 143, 143); font-size: 1.3em; padding: 5px; width: 320px; }
+input.submit { margin-left: 101px; width: 7em; background-color:#3392ce; background-image:url(/images/submitbg.png); background-repeat:repeat-x; background-position:0 center; width:122px; border:1px solid #2c8ecc; color:white; font-size:1.4em; letter-spacing:.05em; cursor:pointer; border-bottom-left-radius: 10px 10px; border-bottom-right-radius: 10px 10px; border-top-left-radius: 10px 10px; border-top-right-radius: 10px 10px; }
+input.submit:hover { background-position: -450px 50%; }
+
 .container {
-    width: 500px;
+    width: 800px;
     margin-left: auto;
     margin-right: auto;	
     padding: 20px;
+    padding-top: 10px;
+    background-color: white;
+    border: 1px solid darkGray;
+    margin-top: 10px;
+}
+
+/*.mainImage {
+	border: 6px solid white;
+    -webkit-box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    -moz-box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    width: 150px;
+}*/
+
+.mainImage {
+    -webkit-box-shadow: rgba(0, 0, 0, 0.496094) 0px 4px 6px;
+    background: transparent;
+    border-bottom-left-radius: 5px 5px;
+    border-bottom-right-radius: 5px 5px;
+    border-top-left-radius: 5px 5px;
+    border-top-right-radius: 5px 5px;
+    float: left;
+    width: 150px;
+}
+
+.mainGloss {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.597656) 0px 2px 1px inset;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.699219)), to(rgba(255, 255, 255, 0.199219)));
+    border-bottom-left-radius: 18px 5px;
+    border-bottom-right-radius: 12px 5px;
+    border-top-left-radius: 5px 5px;
+    border-top-right-radius: 5px 5px;
+    position: absolute;
+    height: 40px;
+    width: 150px;
+    z-index: 100;
+}
+
+.gloss {
+	-webkit-box-shadow: rgba(255, 255, 255, 0.597656) 0px 2px 1px inset;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.699219)), to(rgba(255, 255, 255, 0.199219)));
+	border-bottom-left-radius: 30px 8px;
+	border-bottom-right-radius: 12px 8px;
+	border-top-left-radius: 5px 5px;
+	border-top-right-radius: 5px 5px;
+	position: absolute;
+	height: 25px;
+    width: 50px;
+	z-index: 100;
+}
+
+.icon {
+	-webkit-box-shadow: rgba(0, 0, 0, 0.496094) 0px 4px 6px;
+	background: transparent;
+	border-bottom-left-radius: 5px 5px;
+	border-bottom-right-radius: 5px 5px;
+	border-top-left-radius: 5px 5px;
+	border-top-right-radius: 5px 5px;
+	float: left;
+	height: 50px;
+	width: 50px;
+}
+
+.topBrands {
+    display: block;
+    overflow: hidden;
+    clear: both;
+}
+
+.topBrand {
+	display: inline;
+    float: left;
+    margin: 10px;
+}
+
+.picture {
+	display:block;
+}
+
+.brandTitle {
+	color: darkgrey;
+	text-align: center;
+	width: 150px;
+	font-size: 0.8em;
+}
+
+.overlay {
+	background: transparent url(http://cdn.last.fm/flatness/picture_frame.png) 0% 0%;
+	height: 109px;
+	position: absolute;
+	width: 132px;
 }
 
 .consumption {
@@ -83,7 +178,7 @@ input.removeButton {
     border-bottom:          1px solid lightgrey;
  }
 .consumptions {
-    width:                  500px;
+    width:                  600px;
     margin:                 0px;
     padding:                0px;
     border:                 0px;
@@ -94,7 +189,7 @@ input.removeButton {
     padding:                4px;
 }
 .info {
-    width:                  350px;
+    width:                  450px;
     position:               relative;
     float:                  left;
     margin-top:             3px;
@@ -102,15 +197,18 @@ input.removeButton {
 .thumbnailImage {
     height:                 42px;
     width:                  75px;
+    -webkit-box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    -moz-box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
 }
 .title {
     font-weight:            bolder;
 }
-.title a {
+a {
     text-decoration: none;
     color: black;
 }
-.title a:hover {
+a:hover {
 	color: #0187C5;
 }
 .actions {
@@ -118,7 +216,7 @@ input.removeButton {
     top:                    0px;
     color:                  darkgrey;
     font-size:              0.8em;
-    margin-left:            216px;
+    margin-left:            316px;
     width:                  200px;
     text-align:             right;
 }
@@ -127,7 +225,7 @@ input.removeButton {
 	width: 37px;
 	position:               absolute;
     top:                    23px;
-    margin-left:            380px;
+    margin-left:            480px;
     opacity: 0.7;
 }
 .play {
@@ -138,7 +236,7 @@ input.removeButton {
 .desc {
     font-size:              0.8em;
     margin-top:             5px;
-    height:                 20px;
+    height:                 21px;
     overflow: hidden;
 }
 .clearfix {
@@ -156,8 +254,7 @@ input.removeButton {
     letter-spacing:         0em;
     word-spacing:           0em;
     line-height:            1em;
-    margin-bottom:          10px;
-    text-align:             center;
+    margin-bottom:          20px;
 }
 .error {
 	background-color:       lightgrey;
@@ -177,6 +274,11 @@ input.removeButton {
     margin-right:           auto;
     margin-top:             10px;
 }
+.watch-url {
+	display: block;
+	clear: both;
+	margin-top: 50px;
+}
 #channelList {
 	display: inline;
 }
@@ -184,8 +286,6 @@ input.removeButton {
     display: inline;
 }
 .channels{
-    width: 1000px;
-    margin-left: 75px;
     margin-top:20px;
     background-color: #333; }
 
@@ -214,8 +314,8 @@ h2{
 	disply:                 block;
 	font-size:              1.5em;
     font-family:            'Lobster', serif;
-    text-align: center;
-    margin: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     color: #D51007;
 }
 
@@ -224,8 +324,8 @@ h3{
     disply:                 block;
     font-size:              1.5em;
     font-family:            'Lobster', serif;
-    margin: 10px;
-    margin-left:5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .counts {
@@ -247,7 +347,7 @@ h3{
     vertical-align:         middle;
 }
 .countCell {
-    width:                  500px;
+    width:                  710px;
     vertical-align:         middle;
 }
 .chartbar {
@@ -260,4 +360,44 @@ h3{
 	color: white;
 	padding: 15px 0.5em 0px;
 	display: block;
+}
+
+#userDetails {
+	width: 210px;
+	overflow: hidden;
+	position: absolute;
+	top: 20px;
+	left: 700px;
+	background-color: lightgrey;
+	border: 1px solid darkgrey;
+	padding: 5px;
+}
+.avatar {
+	float:left;
+	margin-right: 5px;
+}
+.profile {
+	margin-left: 10px;
+}
+.bio {
+	margin-top: 5px;
+	font-size: 0.8em;
+}
+.location {
+	font-size: 0.8em;
+	margin-left: 10px;
+}
+.logout {
+	position: absolute;
+	right: 5px;
+	bottom: 5px;
+}
+#login {
+    overflow: hidden;
+    position: absolute;
+    top: 20px;
+    left: 875px;
+    background-color: lightgrey;
+    border: 1px solid darkgrey;
+    padding: 5px;
 }
