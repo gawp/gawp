@@ -10,9 +10,13 @@ import org.atlasapi.media.entity.Publisher;
 import org.joda.time.DateTime;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.metabroadcast.common.persistence.mongo.DatabasedMongo;
+import com.metabroadcast.common.persistence.mongo.MongoConstants;
 import com.metabroadcast.common.persistence.mongo.MongoQueryBuilder;
 import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.UserRef;
@@ -20,6 +24,9 @@ import com.metabroadcast.common.social.model.translator.UserRefTranslator;
 import com.metabroadcast.common.stats.Count;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.MapReduceOutput;
 
 public class MongoConsumptionStore implements ConsumptionStore {
 
@@ -28,6 +35,20 @@ public class MongoConsumptionStore implements ConsumptionStore {
     private final Log log = LogFactory.getLog(getClass());
     private final ConsumptionTranslator translator = new ConsumptionTranslator();
     private final UserRefTranslator userRefTranslator = new UserRefTranslator();
+    
+    private static final String REDUCE = 
+        "function(key , values ){" +
+            "sum = 0;" + 
+                "for(var i in values) {" +
+                    "sum += values[i];" + 
+                "}" +
+            "return sum;"+
+        "};";
+
+    private static final String MAP = 
+        "function() {" +
+            "emit(this.brand, 1);" +
+        "}";
 
     private DBCollection table;
 
@@ -39,6 +60,20 @@ public class MongoConsumptionStore implements ConsumptionStore {
         MongoQueryBuilder query = userRefTranslator.toQuery(userRef);
         query.fieldAfterOrAt(ConsumptionTranslator.TIMESTAMP_KEY, from);
         return translator.fromDBObjects(table.find(query.build()).sort(new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)));
+    }
+    
+    public ImmutableMap<String, Count<String>> topBrands(int limit) {
+        MapReduceOutput output = table.mapReduce(MAP, REDUCE, null, new BasicDBObject("brand", new BasicDBObject("$exists", Boolean.TRUE)));
+        DBCursor results = output.results().sort(new BasicDBObject("value", -1)).limit(limit);
+        
+        Builder<String, Count<String>> builder = ImmutableMap.builder();
+        for (DBObject dbObject : results) {
+            String brand = (String) dbObject.get(MongoConstants.ID);
+            long count = ((Double) dbObject.get("value")).longValue();
+            builder.put(brand, Count.of(brand, Ordering.arbitrary(), count));
+            
+        }
+        return builder.build();
     }
 
     public List<Count<TargetRef>> findTargetCounts(UserRef userRef, DateTime from) {
