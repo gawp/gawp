@@ -54,12 +54,15 @@ public class TwitterAuthController {
     }
     
     @RequestMapping(value = "/logout")
-    public String logout(HttpServletResponse response) {
+    public String logout(@RequestParam(required=false) String continueTo, HttpServletResponse response) {
         Cookie cookie = new Cookie(cookieName, "");
         cookie.setPath("/");
         response.addCookie(cookie);
         
-        return "redirect:/";
+        if (continueTo == null) {
+            continueTo = "/";
+        }
+        return "redirect:"+continueTo;
     }
     
     @RequestMapping(value = CALLBACK_URL)

@@ -17,6 +17,10 @@ public class IncludesController {
             return "<script type=\"text/javascript\" src=\"/js/base.js\"></script>" +
                     "<script type=\"text/javascript\" src=\"/js/soyutils.js\"></script>" +
                     "<script type=\"text/javascript\" src=\"/js/jquery.js\"></script>" +
+                    "<script type=\"text/javascript\" src=\"/js/jquery-ui.js\"></script>" +
+                    "<script type=\"text/javascript\" src=\"/js/jquery.iphone.js\"></script>" +
+                    "<script type=\"text/javascript\" src=\"/js/jquery.loading.1.6.4.js\"></script>" +
+                    "<script type=\"text/javascript\" src=\"/js/ui.iTabs.js\"></script>" +
                     "<script type=\"text/javascript\" src=\"/js/js.js\"></script>";
         }
         

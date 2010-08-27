@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.atlasapi.media.entity.Publisher;
@@ -29,6 +31,7 @@ import com.metabroadcast.common.model.SimpleModel;
 import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.UserDetails;
 import com.metabroadcast.common.social.model.UserRef;
+import com.metabroadcast.common.social.model.UserRef.UserNamespace;
 import com.metabroadcast.common.social.user.UserDetailsProvider;
 import com.metabroadcast.common.social.user.UserProvider;
 import com.metabroadcast.common.stats.Count;
@@ -102,7 +105,7 @@ public class ConsumptionController {
     }
 
     @RequestMapping(value = { "/watch" }, method = { RequestMethod.POST })
-    public String watch(@RequestParam(required = false) String channel, @RequestParam(required = false) String uri, Map<String, Object> model) {
+    public void watch(HttpServletResponse response, @RequestParam(required = false) String channel, @RequestParam(required = false) String uri, Map<String, Object> model) {
         UserRef userRef = userProvider.existingUser();
         Preconditions.checkNotNull(userRef);
 
@@ -145,19 +148,24 @@ public class ConsumptionController {
             PublisherDetails publisher = item.getPublisher();
             TargetRef targetRef = new TargetRef(item.getUri(), ContentRefs.ITEM_DOMAIN);
             consumptionStore.store(new Consumption(userRef, targetRef, new DateTime(DateTimeZones.UTC), channel, publisher != null ? publisher.getKey() : null, brand != null ? brand.getUri() : null));
-            model.put("success", "Enjoy!");
+            response.setStatus(HttpServletResponse.SC_OK);
         } else {
             model.put("error", "Unfortunately, there's nothing on that channel");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
-
-        model.put("channels", Channel.mapList());
-        return "watches/watch";
     }
 
     @RequestMapping(value = { "/watch" }, method = { RequestMethod.GET })
     public String watchOptions(Map<String, Object> model) {
 
-        model.put("channels", Channel.mapList());
+        model.put("channels", Channel.mapListWithoutVodServices());
+        
+        UserRef userRef = userProvider.existingUser();
+        model.put("loggedIn", !userRef.getNamespace().equals(UserNamespace.ANONYMOUS));
+        
+        List<Count<String>> brands = consumptionStore.findBrandCounts(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(4));
+        addBrandCountsModel(model, brands);
+        
         return "watches/watch";
     }
 

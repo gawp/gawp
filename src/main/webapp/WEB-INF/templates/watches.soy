@@ -145,8 +145,8 @@
 
 /**
  * @param channels
- * @param success
- * @param error
+ * @param brands
+ * @param loggedIn
 **/
 {template .watch}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -154,39 +154,77 @@
     <head>
         <title>You Have Been Watching</title>
         
-        <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
-        <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
-        <link rel="stylesheet" type="text/css" href="/css/css.css" />
+        <link href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
+        <link href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
+        
+        <!-- <link rel="stylesheet" type="text/css" media="only screen and (max-width: 480px), only screen and (max-device-width: 480px)" href="/css/iphone.css" />
+        <link rel="stylesheet" type="text/css" media="only screen and (max-width: 480px), only screen and (max-device-width: 480px)" href="/css/iphone-watch.css" /> -->
+        
+        <link rel="stylesheet" type="text/css" media="all" href="/css/iphone.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="/css/style.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="/css/iphone-watch.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="/css/jquery.loading.1.6.css" />
+        
+        <meta name="viewport" content="width=device-width" />        
         
         {include('/includes/javascript') |noAutoescape}
     </head>
     <body>
-        <div class="container">
-        <h1 id="maintitle">What are you watching?</h1>
-        {if $success}
-            <p class="success">{$success}</p>
-        {/if}
-        {if $error}
-            <p class="error">{$error}</p>
-        {/if}
-        <div class="channels">
-        <ul>
-        {foreach $channel in $channels}
-            <li class="channel">
-                <a href="#" class="channelLink" uri="{$channel.uri}"><img src="{$channel.logo}" /></a>
-            </li>
-        {/foreach}
-        </ul>
+    <div class="container">
+        <div class="wrapper"> 
+        <h1 id="maintitle">What Are You Watching?</h1>
+        <div id="channels" title="Channel" class="clearfix">
+            <ul>
+            {foreach $channel in $channels}
+                <li class="channel">
+                    <a href="#" class="channelLink" uri="{$channel.uri}"><img src="{$channel.logo}" class="icon" /><!--<div class="gloss"></div>--></a>
+                </li>
+            {/foreach}
+            </ul>
+            <div class="clearfix"></div>
         </div>
-        <br />
-        <div class="watch-url">
-            <form action="/watch" method="POST">
-                <input name="uri" id="uri" type="text" />
-                <input name="Submit" value="Submit" id="submit" class="submit" type="submit" />
+        
+        <div id="search" title="Search" class="clearfix">
+            <form method="POST" action="/watch">
+                <input type="text" name="uri" id="uri" />
+                <input type="submit" name="submit" id="submit" value="submit" />
             </form>
         </div>
-        <div class="link">
-        <h2><a href="/">You have been watching</a></h2>
+        
+        <div id="shows" title="Shows" class="clearfix">
+            <ul class="topBrands">
+                {foreach $count in $brands}
+                    <li class="channel">
+                        <a href="#" class="brandLink" uri="{$count.target.uri}"><img src="{$count.target.logo}" class="icon" /><div class="gloss"></div></a>
+                    </li>
+                {/foreach}
+                </ul>
+        </div>
+        
+        {if $loggedIn}
+            <div id="logout" title="Logout" class="clearfix">
+                <a href="/logout?continueTo=/watch">Logout</a>
+            </div>
+        {else}
+            <div id="login" title="Login" class="clearfix">
+                <a href="/login/twitter?continueTo=/watch"><img src="/images/sign-in-with-twitter-d.png" /></a>
+            </div>
+        {/if}
+        
+        <div class="clearfix">
+        </div>
+        </div>
+        <div class="footer">
+        <ul class="tabbar">
+             <li><a class="iicon" href="#channels" title="Channels"><em class="ii-tv"></em>Channels</a></li>
+             <li><a class="iicon" href="#shows" title="Shows"><em class="ii-movie1"></em>Shows</a></li>
+             <li><a class="iicon" href="#search" title="Search"><em class="ii-magnify"></em>Search</a></li>
+             {if $loggedIn}
+                <li><a class="iicon" href="#logout" title="Logout"><em class="ii-cloud"></em>Logout</a></li>
+             {else}
+                <li><a class="iicon" href="#login" title="Login"><em class="ii-cloud"></em>Login</a></li>
+             {/if}
+        </ul>
         </div>
     </div>
     </body>
