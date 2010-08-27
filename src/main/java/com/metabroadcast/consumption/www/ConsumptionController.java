@@ -3,7 +3,6 @@ package com.metabroadcast.consumption.www;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,7 +24,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.metabroadcast.DateTimeInQueryParser;
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.model.DelegatingModelListBuilder;
@@ -166,16 +164,24 @@ public class ConsumptionController {
         UserRef userRef = userProvider.existingUser();
         model.put("loggedIn", !userRef.getNamespace().equals(UserNamespace.ANONYMOUS));
         
-        Set<Count<String>> brands = Sets.newHashSet(consumptionStore.findBrandCounts(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(4)));
+        List<Count<String>> brands = consumptionStore.findBrandCounts(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(4));
         if (brands.size() < 12) {
             ImmutableMap<String, Count<String>> topBrands = consumptionStore.topBrands(20);
-            brands.addAll(topBrands.values());
+            for (Count<String> brand: topBrands.values()) {
+                if (! brands.contains(brand)) {
+                    brands.add(brand);
+                }
+            }
         }
-        addBrandCountsModel(model, Lists.newArrayList(brands).subList(0, 12));
+        
+        if (brands.size() > 12) {
+            brands = brands.subList(0, 12);
+        }
+        addBrandCountsModel(model, brands);
         
         return "watches/watch";
     }
-
+    
     private int max(List<Count<String>> counts) {
         int max = 0;
         for (Count<?> count : counts) {

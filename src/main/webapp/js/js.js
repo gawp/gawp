@@ -5,6 +5,12 @@ $(document).ready(function() {
     $(".tabbar").iTabs();
 });
 
+var registerSearchAutocomplete = function() {
+	$("input#searchBox").autocomplete({
+	    source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
+	});
+}
+
 var registerChannelClicks = function() {
 	$(".channelLink").click(function() {
 		var target = $(this);
