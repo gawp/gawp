@@ -17,6 +17,8 @@ public enum Channel {
     C4_4OD("4oD", "http://www.channel4.com", "/images/c4_4od.png"), 
     BBC_ONE("BBC One", "http://www.bbc.co.uk/services/bbcone/london", "/images/bbc_one.png"), 
     BBC_TWO("BBC Two", "http://www.bbc.co.uk/services/bbctwo/england", "/images/bbc_two.png"),
+    BBC_THREE("BBC Three", "http://www.bbc.co.uk/services/bbcthree", "/images/bbc_three.png"),
+    BBC_FOUR("BBC Four", "http://www.bbc.co.uk/services/bbcfour", "/images/bbc_four.png"),
     BBC_NEWS("BBC News", "http://www.bbc.co.uk/services/bbcnews", "/images/bbc_news.png"), 
     BBC_PARLIMENT("BBC Parliment", "http://www.bbc.co.uk/services/parliament", "/images/bbc_parliment.png");
 
