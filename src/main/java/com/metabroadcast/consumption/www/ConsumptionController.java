@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.metabroadcast.DateTimeInQueryParser;
@@ -166,7 +165,7 @@ public class ConsumptionController {
         
         List<Count<String>> brands = consumptionStore.findBrandCounts(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(4));
         if (brands.size() < 12) {
-            ImmutableMap<String, Count<String>> topBrands = consumptionStore.topBrands(20);
+            Map<String, Count<String>> topBrands = consumptionStore.topBrands(20);
             for (Count<String> brand: topBrands.values()) {
                 if (! brands.contains(brand)) {
                     brands.add(brand);
