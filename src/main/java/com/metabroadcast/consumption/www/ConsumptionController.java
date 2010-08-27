@@ -72,22 +72,39 @@ public class ConsumptionController {
 
     @RequestMapping(value = { "/watches", "/" }, method = { RequestMethod.GET })
     public String watches(@RequestParam(required = false) String from, Map<String, Object> model) {
+        long start = System.currentTimeMillis();
+        
         DateTime timestampFrom = from != null ? queryParser.parse(from) : new DateTime(DateTimeZones.UTC).minusDays(1);
         UserRef userRef = userProvider.existingUser();
+        
+        long getUser = System.currentTimeMillis();
+        
         Maybe<UserDetails> userDetails = getUserDetails(userRef);
         model.put("userDetails", userDetailsModel(userDetails.valueOrNull()));
+        
+        long getUserDetails = System.currentTimeMillis();
 
         Preconditions.checkNotNull(timestampFrom);
         Preconditions.checkNotNull(userRef);
 
         List<ConsumedContent> consumedContent = consumedContentProvider.find(userRef, timestampFrom);
         model.put("items", consumedContentModelListBuilder.build(consumedContent));
+        
+        long getConsumptions = System.currentTimeMillis();
 
         List<Count<String>> brands = consumptionStore.findBrandCounts(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(4));
         addBrandCountsModel(model, brands);
+        
+        long getBrands = System.currentTimeMillis();
 
         List<Count<String>> channels = consumptionStore.findChannelCounts(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(1));
         addChannelCountsModel(model, channels);
+        
+        long getChannels = System.currentTimeMillis();
+        
+        if (log.isInfoEnabled()) {
+            log.info("Get user: "+(getUser - start)+", get user details: "+(getUserDetails - getUser)+", get consumptions: "+(getConsumptions - getUserDetails)+", get brands: "+(getBrands - getConsumptions)+", get channels: "+(getChannels - getBrands));
+        }
 
         return "watches/list";
     }
