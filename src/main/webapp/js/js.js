@@ -2,13 +2,46 @@ $(document).ready(function() {
     registerChannelClicks();
     registerBrandClicks();
     registerConsumptionHovers();
+    registerSearchAutocomplete();
     $(".tabbar").iTabs();
 });
 
+var uriLookup = {};
 var registerSearchAutocomplete = function() {
 	$("input#searchBox").autocomplete({
-	    source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
+	    source: function (req, add) {
+	    	$.getJSON("http://atlasapi.org/2.0/brands.json?callback=?&limit=5", {'title': req.term}, function(data) {
+	    		var suggestions = []; 
+	    		
+	    		$.each(data.playlists, function(i, val){  
+	    			uriLookup[val.title] = val.uri;
+                    suggestions.push({'label': val.title, 'value': val.title});  
+                });
+                
+                add(suggestions);
+	    	});
+	    },
+	    select: function(e, ui) { 
+	       var uri = uriLookup[ui.item.label];
+	       if (uri) {
+		       $("#searchBox").ajaxError(function() {
+		           searchResponse(false);
+		       });
+	           $.post("/watch.json", { uri: uri }, function () {
+	           	   searchResponse(true);
+	           });
+	       }
+	    }
 	});
+}
+
+var searchResponse = function (success) {
+    var resultImage = (success ? '/images/tick.png' : '/images/cross.png');
+    $.loading(true, { img:resultImage, align:'center'});
+    setTimeout(function() {
+        $.loading();
+        $("#searchBox").unbind('ajaxError');
+    }, 300);
 }
 
 var registerChannelClicks = function() {
