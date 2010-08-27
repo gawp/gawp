@@ -157,13 +157,21 @@ public class ConsumptionController {
 
     @RequestMapping(value = { "/watch" }, method = { RequestMethod.GET })
     public String watchOptions(Map<String, Object> model) {
-
+        long start = System.currentTimeMillis();
+        
         model.put("channels", Channel.mapListWithoutVodServices());
+        
+        long getUser = System.currentTimeMillis();
         
         UserRef userRef = userProvider.existingUser();
         model.put("loggedIn", !userRef.getNamespace().equals(UserNamespace.ANONYMOUS));
         
+        long getBrands = System.currentTimeMillis();
+        
         List<Count<String>> brands = consumptionStore.findBrandCounts(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(4));
+        
+        long getMoreBrands = System.currentTimeMillis();
+        
         if (brands.size() < 12) {
             Map<String, Count<String>> topBrands = consumptionStore.topBrands(20);
             for (Count<String> brand: topBrands.values()) {
@@ -177,6 +185,12 @@ public class ConsumptionController {
             brands = brands.subList(0, 12);
         }
         addBrandCountsModel(model, brands);
+        
+        long end = System.currentTimeMillis();
+        
+        if (log.isInfoEnabled()) {
+            log.info("Get channels: "+(getUser - start)+", get user: "+(getBrands - getUser)+", get brands: "+(getMoreBrands - getBrands)+", get more brands: "+(end - getMoreBrands));
+        }
         
         return "watches/watch";
     }
