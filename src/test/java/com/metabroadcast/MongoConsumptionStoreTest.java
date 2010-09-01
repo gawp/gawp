@@ -43,11 +43,11 @@ public class MongoConsumptionStoreTest {
         store.store(consumption1);
         store.store(consumption2);
         
-        List<Consumption> consumptions = store.find(alice, timestamp2);
+        List<Consumption> consumptions = store.find(alice, 10);
         assertFalse(consumptions.isEmpty());
         assertEquals(Lists.newArrayList(consumption1, consumption2), consumptions);
         
-        consumptions = store.find(alice, new DateTime(DateTimeZones.UTC).minusDays(1));
+        consumptions = store.find(alice, 1);
         assertFalse(consumptions.isEmpty());
         assertEquals(Lists.newArrayList(consumption1), consumptions);
     }

@@ -50,8 +50,14 @@ public class MongoConsumptionStore implements ConsumptionStore {
     public MongoConsumptionStore(DatabasedMongo db) {
         table = db.collection(TABLE_NAME);
     }
+    
+    public List<Consumption> find(UserRef userRef, int limit) {
+        MongoQueryBuilder query = userRefTranslator.toQuery(userRef);
+        return translator.fromDBObjects(table.find(query.build()).sort(
+                        new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)).limit(limit));
+    }
 
-    public List<Consumption> find(UserRef userRef, DateTime from) {
+    private List<Consumption> findFrom(UserRef userRef, DateTime from) {
         MongoQueryBuilder query = userRefTranslator.toQuery(userRef);
         query.fieldAfterOrAt(ConsumptionTranslator.TIMESTAMP_KEY, from);
         return translator.fromDBObjects(table.find(query.build()).sort(
@@ -107,7 +113,7 @@ public class MongoConsumptionStore implements ConsumptionStore {
 
     @SuppressWarnings("unchecked")
     public List<Count<String>> findCounts(UserRef userRef, DateTime from, Function<Consumption, String> keyFunction) {
-        List<Consumption> consumptions = find(userRef, from);
+        List<Consumption> consumptions = findFrom(userRef, from);
         Map<String, Count<String>> counts = Maps.newHashMap();
 
         for (Consumption consumption : consumptions) {

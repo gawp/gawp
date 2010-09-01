@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.atlasapi.media.entity.simple.Description;
-import org.joda.time.DateTime;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -24,9 +23,9 @@ public class ConsumedContentProvider {
         this.contentStore = contentStore;
     }
 
-    public List<ConsumedContent> find(UserRef userRef, DateTime from) {
+    public List<ConsumedContent> find(UserRef userRef, int limit) {
         Map<String, ConsumedContent> consumedContent = Maps.newHashMap();
-        for (Consumption consumption: consumptionStore.find(userRef, from)) {
+        for (Consumption consumption: consumptionStore.find(userRef, limit)) {
             if (consumedContent.containsKey(consumption.targetRef().toKey())) {
                 ConsumedContent current = consumedContent.get(consumption.targetRef().toKey());
                 Consumption latestConsumption = consumption.timestamp().isAfter(current.getConsumption().timestamp()) ? consumption : current.getConsumption();

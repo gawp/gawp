@@ -49,6 +49,8 @@ import com.metabroadcast.content.SimplePlaylistAttributesModelBuilder;
 
 @Controller
 public class ConsumptionController {
+    
+    private final static int MAX_RECENT_ITEMS = 10;
 
     private final ConsumptionStore consumptionStore;
     private final ConsumedContentProvider consumedContentProvider;
@@ -71,10 +73,9 @@ public class ConsumptionController {
     }
 
     @RequestMapping(value = { "/watches", "/" }, method = { RequestMethod.GET })
-    public String watches(@RequestParam(required = false) String from, Map<String, Object> model) {
+    public String watches(Map<String, Object> model) {
         long start = System.currentTimeMillis();
         
-        DateTime timestampFrom = from != null ? queryParser.parse(from) : new DateTime(DateTimeZones.UTC).minusDays(1);
         UserRef userRef = userProvider.existingUser();
         
         long getUser = System.currentTimeMillis();
@@ -84,10 +85,9 @@ public class ConsumptionController {
         
         long getUserDetails = System.currentTimeMillis();
 
-        Preconditions.checkNotNull(timestampFrom);
         Preconditions.checkNotNull(userRef);
 
-        List<ConsumedContent> consumedContent = consumedContentProvider.find(userRef, timestampFrom);
+        List<ConsumedContent> consumedContent = consumedContentProvider.find(userRef, MAX_RECENT_ITEMS);
         model.put("items", consumedContentModelListBuilder.build(consumedContent));
         
         long getConsumptions = System.currentTimeMillis();
