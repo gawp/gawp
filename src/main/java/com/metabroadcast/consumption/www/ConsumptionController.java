@@ -29,6 +29,7 @@ import com.metabroadcast.common.model.DelegatingModelListBuilder;
 import com.metabroadcast.common.model.ModelListBuilder;
 import com.metabroadcast.common.model.SimpleModel;
 import com.metabroadcast.common.social.model.TargetRef;
+import com.metabroadcast.common.social.model.TwitterUserDetails;
 import com.metabroadcast.common.social.model.UserDetails;
 import com.metabroadcast.common.social.model.UserRef;
 import com.metabroadcast.common.social.model.UserRef.UserNamespace;
@@ -81,7 +82,7 @@ public class ConsumptionController {
         long getUser = System.currentTimeMillis();
         
         Maybe<UserDetails> userDetails = getUserDetails(userRef);
-        model.put("userDetails", userDetailsModel(userDetails.valueOrNull()));
+        model.put("userDetails", userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
         
         long getUserDetails = System.currentTimeMillis();
 
@@ -277,7 +278,7 @@ public class ConsumptionController {
         model.put("channels", counts);
     }
 
-    public SimpleModel userDetailsModel(UserDetails userDetails) {
+    public SimpleModel userDetailsModel(TwitterUserDetails userDetails) {
         if (userDetails != null) {
             SimpleModel model = new SimpleModel();
             model.put("screenName", userDetails.getScreenName());
