@@ -76,7 +76,7 @@ public class ConsumedContentModelBuilder implements ModelBuilder<ConsumedContent
     }
 
     private int printPeriod(StringBuffer ago, int printed, int value, String desc) {
-        if (printed > 1) {
+        if (printed > 0) {
             return printed;
         }
 

@@ -25,10 +25,9 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 body {
     line-height: 1;
     color: black;
-    background: lightgrey;
+    background: #E6E6E6;
     font-family: 'Lucida Grande', Arial, Helvetica, Verdana, sans-serif;
     font-size: 12px;
-    width: 1024px;
 }
 ol, ul {
     list-style: none;
@@ -75,14 +74,12 @@ input.submit { margin-left: 101px; width: 7em; background-color:#3392ce; backgro
 input.submit:hover { background-position: -450px 50%; }
 
 .container {
-    width: 800px;
-    margin-left: auto;
-    margin-right: auto;	
+    width: 1124px;
     padding: 20px;
     padding-top: 10px;
     background-color: white;
     border: 1px solid darkGray;
-    margin-top: 10px;
+    margin: 10px;
 }
 
 /*.mainImage {
@@ -96,10 +93,10 @@ input.submit:hover { background-position: -450px 50%; }
 .mainImage {
     -webkit-box-shadow: rgba(0, 0, 0, 0.496094) 0px 4px 6px;
     background: transparent;
-    border-bottom-left-radius: 5px 5px;
+    /*border-bottom-left-radius: 5px 5px;
     border-bottom-right-radius: 5px 5px;
     border-top-left-radius: 5px 5px;
-    border-top-right-radius: 5px 5px;
+    border-top-right-radius: 5px 5px;*/
     float: left;
     width: 150px;
 }
@@ -133,19 +130,16 @@ input.submit:hover { background-position: -450px 50%; }
 .icon {
 	-webkit-box-shadow: rgba(0, 0, 0, 0.496094) 0px 4px 6px;
 	background: transparent;
-	border-bottom-left-radius: 5px 5px;
+	/*border-bottom-left-radius: 5px 5px;
 	border-bottom-right-radius: 5px 5px;
 	border-top-left-radius: 5px 5px;
-	border-top-right-radius: 5px 5px;
+	border-top-right-radius: 5px 5px;*/
 	float: left;
 	height: 50px;
 	width: 50px;
 }
 
 .topBrands {
-    display: block;
-    overflow: hidden;
-    clear: both;
 }
 
 .topBrand {
@@ -178,7 +172,7 @@ input.submit:hover { background-position: -450px 50%; }
     border-bottom:          1px solid lightgrey;
  }
 .consumptions {
-    width:                  600px;
+    width:                  400px;
     margin:                 0px;
     padding:                0px;
     border:                 0px;
@@ -189,7 +183,7 @@ input.submit:hover { background-position: -450px 50%; }
     padding:                4px;
 }
 .info {
-    width:                  450px;
+    width:                  250px;
     position:               relative;
     float:                  left;
     margin-top:             3px;
@@ -209,14 +203,14 @@ a {
     color: black;
 }
 a:hover {
-	color: #0187C5;
+	color: #71B7E6;
 }
 .actions {
     position:               absolute;
     top:                    0px;
     color:                  darkgrey;
     font-size:              0.8em;
-    margin-left:            316px;
+    margin-left:            116px;
     width:                  200px;
     text-align:             right;
 }
@@ -225,7 +219,7 @@ a:hover {
 	width: 37px;
 	position:               absolute;
     top:                    23px;
-    margin-left:            480px;
+    margin-left:            280px;
     opacity: 0.7;
 }
 .play {
@@ -256,6 +250,30 @@ a:hover {
     line-height:            1em;
     margin-bottom:          20px;
 }
+
+#overview {
+    font-size:              6em;
+    font-family:            'Lobster', serif;
+    font-style:             normal;
+    font-weight:            400;
+    text-shadow:            none;
+    text-decoration:        none;
+    text-transform:         none;
+    letter-spacing:         0em;
+    word-spacing:           0em;
+    line-height:            1em;
+    margin-bottom:          20px;
+    color: darkgrey;
+}
+
+#overview a {
+    text-decoration: none;
+    color: darkgrey;
+}
+#overview a:hover {
+    color: #71B7E6;
+}
+
 .error {
 	background-color:       lightgrey;
 	border:                 1px solid red;
@@ -312,7 +330,7 @@ a:hover {
 h2{
 	clear:                  both;
 	disply:                 block;
-	font-size:              1.5em;
+	font-size:              2em;
     font-family:            'Lobster', serif;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -343,11 +361,15 @@ h3{
 	width:                  70px;
 }
 .titleCell {
-    width:                  100px;
-    vertical-align:         middle;
+    font-family: Lobster, serif;
+	font-size: 1.5em;
+	height: 43px;
+	padding-right: 3px;
+	text-align: right;
+	vertical-align: middle;
 }
 .countCell {
-    width:                  710px;
+    width:                  100%;
     vertical-align:         middle;
 }
 .chartbar {
@@ -363,14 +385,6 @@ h3{
 }
 
 #userDetails {
-	width: 210px;
-	overflow: hidden;
-	position: absolute;
-	top: 20px;
-	left: 700px;
-	background-color: lightgrey;
-	border: 1px solid darkgrey;
-	padding: 5px;
 }
 .avatar {
 	float:left;
@@ -387,17 +401,26 @@ h3{
 	font-size: 0.8em;
 	margin-left: 10px;
 }
-.logout {
-	position: absolute;
-	right: 5px;
-	bottom: 5px;
-}
 #login {
     overflow: hidden;
     position: absolute;
     top: 20px;
-    left: 875px;
+    left: 1110px;
     background-color: lightgrey;
     border: 1px solid darkgrey;
     padding: 5px;
+}
+
+.module {
+	width: 400px;
+	float: left;
+	padding: 10px;
+}
+
+#userDetails {
+	overflow: hidden;
+	height: 100px;
+}
+
+#neighbours {
 }

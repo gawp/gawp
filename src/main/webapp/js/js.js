@@ -3,8 +3,16 @@ $(document).ready(function() {
     registerBrandClicks();
     registerConsumptionHovers();
     registerSearchAutocomplete();
+    registerOverviewLinks();
     $(".tabbar").iTabs();
 });
+
+var registerOverviewLinks = function() {
+    $("#overview").hover(
+        function() { $(this).children("a").css('color', '#71B7E6'); },
+        function() { $(this).children("a").css('color', 'darkgrey'); }
+    );
+}
 
 var uriLookup = {};
 var registerSearchAutocomplete = function() {

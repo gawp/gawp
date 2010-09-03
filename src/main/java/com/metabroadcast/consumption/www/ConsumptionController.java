@@ -3,6 +3,7 @@ package com.metabroadcast.consumption.www;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,6 +17,7 @@ import org.atlasapi.media.entity.simple.Playlist;
 import org.atlasapi.media.entity.simple.PublisherDetails;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.metabroadcast.DateTimeInQueryParser;
+import com.google.common.collect.Sets;
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.model.DelegatingModelListBuilder;
 import com.metabroadcast.common.model.ModelListBuilder;
@@ -47,64 +49,107 @@ import com.metabroadcast.content.ContentStore;
 import com.metabroadcast.content.SeriesOrder;
 import com.metabroadcast.content.SimpleItemAttributesModelBuilder;
 import com.metabroadcast.content.SimplePlaylistAttributesModelBuilder;
+import com.metabroadcast.user.twitter.TwitterUserRefProvider;
 
 @Controller
 public class ConsumptionController {
-    
+
     private final static int MAX_RECENT_ITEMS = 10;
 
     private final ConsumptionStore consumptionStore;
     private final ConsumedContentProvider consumedContentProvider;
-    private final DateTimeInQueryParser queryParser = new DateTimeInQueryParser();
 
     private final ModelListBuilder<ConsumedContent> consumedContentModelListBuilder = DelegatingModelListBuilder.delegateTo(new ConsumedContentModelBuilder(new SimplePlaylistAttributesModelBuilder(),
             new SimpleItemAttributesModelBuilder()));
     private final ContentStore contentStore;
     private final UserProvider userProvider;
     private final UserDetailsProvider userDetailsProvider;
-    
+
     private final Log log = LogFactory.getLog(getClass());
 
-    public ConsumptionController(ConsumptionStore consumptionStore, ContentStore contentStore, UserProvider userProvider, UserDetailsProvider userDetailsProvider) {
+    private final TwitterUserRefProvider userRefProvider;
+
+    public ConsumptionController(ConsumptionStore consumptionStore, ContentStore contentStore, UserProvider userProvider, UserDetailsProvider userDetailsProvider,
+            TwitterUserRefProvider userRefProvider) {
         this.consumptionStore = consumptionStore;
         this.contentStore = contentStore;
         this.userDetailsProvider = userDetailsProvider;
+        this.userRefProvider = userRefProvider;
         this.consumedContentProvider = new ConsumedContentProvider(consumptionStore, contentStore);
         this.userProvider = userProvider;
     }
 
+    @RequestMapping(value = { "/{user}" }, method = { RequestMethod.GET })
+    public String watches(@PathVariable String user, Map<String, Object> model) {
+
+        Maybe<UserRef> userRef = userRefProvider.ref(user);
+        UserRef currentUserRef = userProvider.existingUser();
+
+        Maybe<UserDetails> userDetails = getUserDetails(currentUserRef);
+        model.put("currentUserDetails", userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
+
+        return watches(model, userRef.requireValue());
+    }
+
     @RequestMapping(value = { "/watches", "/" }, method = { RequestMethod.GET })
-    public String watches(Map<String, Object> model) {
-        long start = System.currentTimeMillis();
-        
+    public String userWatches(Map<String, Object> model) {
         UserRef userRef = userProvider.existingUser();
-        
+
+        if (userRef.isInNamespace(UserNamespace.TWITTER)) {
+            Maybe<UserDetails> userDetails = getUserDetails(userRef);
+
+            if (userDetails.hasValue()) {
+                return "redirect:/" + userDetails.requireValue().getScreenName();
+            }
+        }
+
+        model.put("currentUserDetails", null);
+
+        return watches(model, userRef);
+    }
+
+    private String watches(Map<String, Object> model, UserRef userRef) {
         long getUser = System.currentTimeMillis();
-        
+
         Maybe<UserDetails> userDetails = getUserDetails(userRef);
         model.put("userDetails", userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
-        
+
         long getUserDetails = System.currentTimeMillis();
 
         Preconditions.checkNotNull(userRef);
 
         List<ConsumedContent> consumedContent = consumedContentProvider.find(userRef, MAX_RECENT_ITEMS);
         model.put("items", consumedContentModelListBuilder.build(consumedContent));
-        
+
+        long getContent = System.currentTimeMillis();
+
+        List<Consumption> consumptions = consumptionStore.find(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(4));
+
         long getConsumptions = System.currentTimeMillis();
 
-        List<Count<String>> brands = consumptionStore.findBrandCounts(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(4));
+        List<Count<String>> brands = consumedContentProvider.findBrandCounts(consumptions);
+        if (brands.size() > 6) {
+            brands = brands.subList(0, 6);
+        }
         addBrandCountsModel(model, brands);
-        
+
         long getBrands = System.currentTimeMillis();
 
-        List<Count<String>> channels = consumptionStore.findChannelCounts(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(1));
+        List<Count<String>> channels = consumedContentProvider.findChannelCounts(consumptions);
         addChannelCountsModel(model, channels);
-        
+
         long getChannels = System.currentTimeMillis();
+
+        List<Count<String>> genres = consumedContentProvider.findGenreCounts(consumptions);
+        addGenreCountsModel(model, genres);
+
+        long getGenres = System.currentTimeMillis();
         
+        addOverviewModel(model, channels, genres, consumptions, (TwitterUserDetails) userDetails.valueOrNull());
+
         if (log.isInfoEnabled()) {
-            log.info("Get user: "+(getUser - start)+", get user details: "+(getUserDetails - getUser)+", get consumptions: "+(getConsumptions - getUserDetails)+", get brands: "+(getBrands - getConsumptions)+", get channels: "+(getChannels - getBrands));
+            log.info("Get user details: " + (getUserDetails - getUser) + ", get content: " + (getContent - getUserDetails) + " get consumptions: " + (getConsumptions - getContent) + ", get brands: "
+                    + (getBrands - getConsumptions) + ", get channels: " + (getChannels - getBrands) + ", get genres: " + (getBrands - getGenres));
         }
 
         return "watches/list";
@@ -165,7 +210,10 @@ public class ConsumptionController {
             BrandSummary brand = item.getBrandSummary();
             PublisherDetails publisher = item.getPublisher();
             TargetRef targetRef = new TargetRef(item.getUri(), ContentRefs.ITEM_DOMAIN);
-            consumptionStore.store(new Consumption(userRef, targetRef, new DateTime(DateTimeZones.UTC), channel, publisher != null ? publisher.getKey() : null, brand != null ? brand.getUri() : null));
+            Set<String> genres = genres(item);
+
+            consumptionStore.store(new Consumption(userRef, targetRef, new DateTime(DateTimeZones.UTC), channel, publisher != null ? publisher.getKey() : null, brand != null ? brand.getUri() : null,
+                    genres));
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             model.put("error", "Unfortunately, there's nothing on that channel");
@@ -173,46 +221,57 @@ public class ConsumptionController {
         }
     }
 
+    private Set<String> genres(Item item) {
+        Set<String> genres = Sets.newHashSet();
+        for (String genre : item.getGenres()) {
+            if (genre.startsWith("http://ref.atlasapi.org")) {
+                genres.add(genre);
+            }
+        }
+        return genres;
+    }
+
     @RequestMapping(value = { "/watch" }, method = { RequestMethod.GET })
     public String watchOptions(Map<String, Object> model) {
         long start = System.currentTimeMillis();
-        
+
         model.put("channels", Channel.mapListWithoutVodServices());
-        
+
         long getUser = System.currentTimeMillis();
-        
+
         UserRef userRef = userProvider.existingUser();
         model.put("loggedIn", !userRef.getNamespace().equals(UserNamespace.ANONYMOUS));
-        
+
         long getBrands = System.currentTimeMillis();
-        
-        List<Count<String>> brands = consumptionStore.findBrandCounts(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(4));
-        
+
+        List<Consumption> consumptions = consumptionStore.find(userRef, new DateTime(DateTimeZones.UTC).minusWeeks(4));
+        List<Count<String>> brands = consumedContentProvider.findBrandCounts(consumptions);
+
         long getMoreBrands = System.currentTimeMillis();
-        
+
         if (brands.size() < 12) {
             Map<String, Count<String>> topBrands = consumptionStore.topBrands(20);
-            for (Count<String> brand: topBrands.values()) {
-                if (! brands.contains(brand)) {
+            for (Count<String> brand : topBrands.values()) {
+                if (!brands.contains(brand)) {
                     brands.add(brand);
                 }
             }
         }
-        
+
         if (brands.size() > 12) {
             brands = brands.subList(0, 12);
         }
         addBrandCountsModel(model, brands);
-        
+
         long end = System.currentTimeMillis();
-        
+
         if (log.isInfoEnabled()) {
-            log.info("Get channels: "+(getUser - start)+", get user: "+(getBrands - getUser)+", get brands: "+(getMoreBrands - getBrands)+", get more brands: "+(end - getMoreBrands));
+            log.info("Get channels: " + (getUser - start) + ", get user: " + (getBrands - getUser) + ", get brands: " + (getMoreBrands - getBrands) + ", get more brands: " + (end - getMoreBrands));
         }
-        
+
         return "watches/watch";
     }
-    
+
     private int max(List<Count<String>> counts) {
         int max = 0;
         for (Count<?> count : counts) {
@@ -278,6 +337,27 @@ public class ConsumptionController {
         model.put("channels", counts);
     }
 
+    private void addGenreCountsModel(Map<String, Object> model, List<Count<String>> genres) {
+        List<Map<String, Object>> counts = Lists.newArrayList();
+        int max = max(genres);
+        model.put("max", max);
+
+        for (Count<String> count : genres) {
+            Map<String, Object> countMap = Maps.newHashMap();
+            int countVal = Long.valueOf(count.getCount()).intValue();
+            countMap.put("count", Long.valueOf(count.getCount()).intValue());
+            countMap.put("width", Float.valueOf((float) countVal / (float) max * 100).intValue());
+
+            Map<String, Object> targetMap = Maps.newHashMap();
+            targetMap.put("title", count.getTarget().replace("http://ref.atlasapi.org/genres/atlas/", ""));
+            targetMap.put("uri", count.getTarget());
+
+            countMap.put("target", targetMap);
+            counts.add(countMap);
+        }
+        model.put("genres", counts);
+    }
+
     public SimpleModel userDetailsModel(TwitterUserDetails userDetails) {
         if (userDetails != null) {
             SimpleModel model = new SimpleModel();
@@ -292,5 +372,59 @@ public class ConsumptionController {
             return model;
         }
         return null;
+    }
+
+    private void addOverviewModel(Map<String, Object> model, List<Count<String>> channels, List<Count<String>> genres, List<Consumption> consumptions, TwitterUserDetails userDetails) {
+        Map<String, Object> overview = Maps.newHashMap();
+
+        Channel topChannel = null;
+        String recentContent = null;
+        String topGenre = null;
+
+        if (!channels.isEmpty()) {
+            topChannel = Channel.fromUri(channels.get(0).getTarget());
+
+            for (Consumption consumption : consumptions) {
+                if (consumption.getChannel() != null && consumption.getChannel().equals(topChannel.getUri())) {
+                    recentContent = consumption.getBrandUri();
+                }
+            }
+        }
+        if (!genres.isEmpty()) {
+            topGenre = genres.iterator().next().getTarget();
+        }
+
+        Map<String, Object> targetMap = Maps.newHashMap();
+        if (recentContent != null) {
+            Maybe<Description> desc = contentStore.resolve(recentContent);
+            if (desc.hasValue()) {
+                Description brand = desc.requireValue();
+                targetMap.put("title", brand.getTitle());
+                targetMap.put("uri", brand.getUri());
+                targetMap.put("logo", brand.getThumbnail());
+                targetMap.put("link", brand.getUri());
+            }
+        }
+        overview.put("target", targetMap);
+
+        targetMap = Maps.newHashMap();
+        if (topChannel != null) {
+            targetMap.put("title", topChannel.getName());
+            targetMap.put("uri", topChannel.getUri());
+            targetMap.put("logo", topChannel.getLogo());
+            targetMap.put("link", topChannel.getUri());
+        }
+        overview.put("channel", targetMap);
+        
+        targetMap = Maps.newHashMap();
+        if (topGenre != null) {
+            targetMap.put("title", topGenre.replace("http://ref.atlasapi.org/genres/atlas/", ""));
+            targetMap.put("uri", topGenre);
+        }
+        overview.put("genre", targetMap);
+        
+        overview.put("userDetails", userDetailsModel(userDetails).asMap());
+        
+        model.put("overview", overview);
     }
 }

@@ -28,8 +28,8 @@ public class MongoConsumptionStoreTest {
     private DateTime timestamp1 = new DateTime(DateTimeZones.UTC);
     private DateTime timestamp2 = new DateTime(DateTimeZones.UTC).minusDays(2);
     
-    private Consumption consumption1 = new Consumption(alice, target1, timestamp1, null, null, null);
-    private Consumption consumption2 = new Consumption(alice, target2, timestamp2, null, null, null);
+    private Consumption consumption1 = new Consumption(alice, target1, timestamp1, null, null, null, null);
+    private Consumption consumption2 = new Consumption(alice, target2, timestamp2, null, null, null, null);
 
     private ConsumptionStore store;
     

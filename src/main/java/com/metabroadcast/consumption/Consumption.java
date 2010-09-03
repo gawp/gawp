@@ -1,9 +1,12 @@
 package com.metabroadcast.consumption;
 
+import java.util.Set;
+
 import org.joda.time.DateTime;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.UserRef;
 
@@ -15,8 +18,9 @@ public class Consumption implements Comparable<Consumption> {
     private final String channel;
     private final String publisher;
     private final String brandUri;
+    private final Set<String> genres;
 
-    public Consumption(UserRef userRef, TargetRef targetRef, DateTime timestamp, String channel, String publisher, String brandUri) {
+    public Consumption(UserRef userRef, TargetRef targetRef, DateTime timestamp, String channel, String publisher, String brandUri, Set<String> genres) {
         this.channel = channel;
         this.publisher = publisher;
         this.brandUri = brandUri;
@@ -28,6 +32,7 @@ public class Consumption implements Comparable<Consumption> {
         this.userRef = userRef;
         this.targetRef = targetRef;
         this.timestamp = timestamp;
+        this.genres = genres != null ? genres : Sets.<String>newHashSet();
     }
     
     public UserRef userRef() {
@@ -56,6 +61,10 @@ public class Consumption implements Comparable<Consumption> {
 
     public String toKey() {
         return userRef.toKey()+":"+timestamp.getMillis();
+    }
+    
+    public Set<String> getGenres() {
+        return genres;
     }
     
     @Override

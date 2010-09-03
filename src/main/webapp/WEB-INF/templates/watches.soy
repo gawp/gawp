@@ -5,6 +5,9 @@
  * @param channels
  * @param brands
  * @param userDetails
+ * @param currentUserDetails
+ * @param genres
+ * @param overview
 **/
 {template .list}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -20,14 +23,14 @@
     </head>
     <body id="buzz">
     <div class="container">
-        {if $userDetails}
-            {call .userDetails}
-                {param userDetails: $userDetails/}
-            {/call}
-        {else}
-            <div id="login"><a href="/login/twitter?continueTo=/">Login</a></div>
-        {/if}
-        <h1 id="maintitle">You Have Been Watching</h1>
+        {call .overview}
+            {param overview: $overview/}
+        {/call}
+        
+        {call .currentUserDetails}
+            {param currentUserDetails: $currentUserDetails/}
+        {/call}
+        
         {call .content}
             {param items: $items/}
         {/call}
@@ -36,17 +39,57 @@
             {param counts: $brands/}
         {/call}
         
+        <div class="module" style="width: 300px;">
+            {if $userDetails}
+                {call .userDetails}
+                    {param userDetails: $userDetails/}
+                {/call}
+            {/if}
+            
+            {call .neighbours /}
+        </div>
+        
+        <div class="clearfix"></div>
         
         {call .graphTable}
+            {param title}
+                Top Channels
+            {/param}
             {param counts: $channels/}
         {/call}
-        <br />
-        <div class="link">
-        <h2><a href="/watch">Go watch something</a></h2>
-        </div>
+        
+        {call .graphTable}
+            {param title}
+                Top Genres
+            {/param}
+            {param counts: $genres/}
+        {/call}
+        
+        <div class="clearfix"></div>
     </div>
     </body>
 </html>
+{/template}
+
+/**
+ * @param overview
+ **/
+{template .overview}
+<p id="overview">
+    {if $overview.userDetails}
+        <a href="{$overview.userDetails.profileUrl}">{$overview.userDetails.fullName}</a>
+    {/if}
+    {if $overview.channel}
+        's mostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
+        {if $overview.target}
+            , particularly <a href="{$overview.target.uri}">{$overview.target.title}</a>, 
+        {/if}
+    {/if}
+    {if $overview.channel and $overview.target and $overview.genre} and {/if}
+    {if $overview.genre}
+        has a penchant for {$overview.genre.title} programs.
+    {/if}
+</p>
 {/template}
 
 /**
@@ -54,8 +97,9 @@
 **/
 {template .userDetails}
 <div id="userDetails">
+    <h2>{$userDetails.fullName}</h2>
     {if $userDetails.profileImage}
-        <div class="avatar"><a href="{$userDetails.profileUrl}"><img src="{$userDetails.profileImage}" class="icon" /></a><div class="gloss"></div></div>
+        <div class="avatar"><a href="{$userDetails.profileUrl}"><img src="{$userDetails.profileImage}" class="icon" /></a><!-- <div class="gloss"></div> --></div>
     {/if}
     <div class="profile">
     {if $userDetails.fullName}
@@ -64,17 +108,38 @@
     {if $userDetails.bio}
         <p class="bio">{$userDetails.bio}</p>
     {/if}
-        <div class="logout"><a href="/logout">Logout</a></div>
     </div>
 </div>
+{/template}
+
+/**
+ * 
+**/
+{template .neighbours}
+<div id="neighbours">
+    <h2>Neighbours</h2>
+    <ul>
+    </ul>
+</div>
+{/template}
+
+/**
+ * @param currentUserDetails
+**/
+{template .currentUserDetails}
+{if $currentUserDetails}
+    <div id="login"><a href="/logout">Logout</a></div>
+{else}
+    <div id="login"><a href="/login/twitter?continueTo=/">Login</a></div>
+{/if}
 {/template}
 
 /**
  * @param items
 **/
 {template .content}
-<div id="recentContent">
-    <h2>Recently Watched Programs</h2>
+<div id="recentContent" class="module">
+    <h2>Recently Watched</h2>
     <ul class="consumptions">
         {foreach $item in $items}
             <li class="consumption">
@@ -107,17 +172,21 @@
 {/template}
 
 /**
+ * @param title
  * @param counts
 **/
 {template .graphTable}
-<div id="channelGraph">
-<h2>This Week's Most Watched</h2>
+<div class="module" style="width:540px;">
+<h2>{$title}</h2>
 <table class="counts">
     <tbody>
     {foreach $count in $counts}
         <tr class="count">
+        {if $count.target.uri and $count.target.logo}
             <td class="iconCell"><a href="{$count.target.uri}"><img src="{$count.target.logo}" class="thumbnailImage" /></a></td>
-            <!-- <td class="titleCell"><a href="{$count.target.uri}">{$count.target.title}</a></td> -->
+        {else}
+            <td class="titleCell"><a href="{$count.target.uri}">{$count.target.title}</a></td>
+        {/if}
             <td class="countCell"><div style="width: {$count.width}%;" class="chartbar"><span class="actualCount">{$count.count}</span></div></td>
         </tr>
     {/foreach}
@@ -130,13 +199,18 @@
  * @param counts
 **/
 {template .topBrands}
-<div class="topBrands">
+<div class="topBrands module" style="width:340px;">
 <h2>Your Favorite Shows</h2>
 <ul class="topBrands">
 {foreach $count in $counts}
     <li class="topBrand">
-        <p><span class="picture"><a href="{$count.target.uri}"><img src="{$count.target.logo}" class="mainImage" /><div class="mainGloss"></div></a></span>
-        <span class="brandTitle"><a href="{$count.target.uri}">{$count.target.title}</a>({$count.count} watches)</span></p>
+            <span class="picture">
+                <a href="{$count.target.uri}">
+                    <img src="{$count.target.logo}" class="mainImage" />
+                    <!-- <div class="mainGloss"></div> -->
+                </a>
+            </span>
+            <span class="brandTitle"><a href="{$count.target.uri}">{$count.target.title}</a>({$count.count} watches)</span>
     </li>
 {/foreach}
 </ul>

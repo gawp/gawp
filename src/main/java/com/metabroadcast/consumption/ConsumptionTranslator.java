@@ -1,6 +1,7 @@
 package com.metabroadcast.consumption;
 
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.DateTime;
 
@@ -21,6 +22,7 @@ public class ConsumptionTranslator {
     public static final String CHANNEL_KEY = "channel";
     public static final String PUBLISHER_KEY = "publisher";
     public static final String BRAND_KEY = "brand";
+    public static final String GENRES_KEY = "genres";
     
     private final UserRefTranslator userTranslator = new UserRefTranslator();
     private final TargetRefTranslator targetTranslator = new TargetRefTranslator();
@@ -32,7 +34,8 @@ public class ConsumptionTranslator {
         String channel = (String) dbObject.get(CHANNEL_KEY);
         String publisher = (String) dbObject.get(PUBLISHER_KEY);
         String brand = (String) dbObject.get(BRAND_KEY);
-        return new Consumption(userRef, targetRef, timestamp, channel, publisher, brand);
+        Set<String> genres = TranslatorUtils.toSet(dbObject, GENRES_KEY);
+        return new Consumption(userRef, targetRef, timestamp, channel, publisher, brand, genres);
     }
     
     public List<Consumption> fromDBObjects(Iterable<DBObject> objects) {
@@ -53,6 +56,7 @@ public class ConsumptionTranslator {
         TranslatorUtils.from(dbObject, CHANNEL_KEY, model.getChannel());
         TranslatorUtils.from(dbObject, PUBLISHER_KEY, model.getPublisher());
         TranslatorUtils.from(dbObject, BRAND_KEY, model.getBrandUri());
+        TranslatorUtils.fromSet(dbObject, model.getGenres(), GENRES_KEY);
         
         return dbObject;
     }
