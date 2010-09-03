@@ -220,6 +220,23 @@ public class ConsumptionController {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }
+    
+//    @RequestMapping(value = { "/watch" }, method = { RequestMethod.DELETE })
+//    public void unwatch(HttpServletResponse response, @RequestParam(required = true) String uri) {
+//        UserRef userRef = userProvider.existingUser();
+//        Preconditions.checkNotNull(userRef);
+//
+//        Consumption consumption = consumptionStore.find(userRef, from);
+//
+//        if (item != null) {
+//            TargetRef targetRef = new TargetRef(item.getUri(), ContentRefs.ITEM_DOMAIN);
+//
+//            consumptionStore.store(new Consumption(userRef, targetRef, new DateTime(DateTimeZones.UTC), null, null, null));
+//            response.setStatus(HttpServletResponse.SC_OK);
+//        } else {
+//            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//        }
+//    }
 
     private Set<String> genres(Item item) {
         Set<String> genres = Sets.newHashSet();

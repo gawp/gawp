@@ -2,6 +2,7 @@ package com.metabroadcast;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -50,5 +51,18 @@ public class MongoConsumptionStoreTest {
         consumptions = store.find(alice, 1);
         assertFalse(consumptions.isEmpty());
         assertEquals(Lists.newArrayList(consumption1), consumptions);
+    }
+    
+    @Test
+    public void shouldRemove() {
+        store.store(consumption1);
+        
+        List<Consumption> consumptions = store.find(alice, 10);
+        assertFalse(consumptions.isEmpty());
+        
+        store.remove(consumption1);
+        
+        consumptions = store.find(alice, 10);
+        assertTrue(consumptions.isEmpty());
     }
 }

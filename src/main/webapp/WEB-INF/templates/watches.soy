@@ -86,7 +86,7 @@
         {/if}
     {/if}
     {if $overview.channel and $overview.target and $overview.genre} and {/if}
-    {if $overview.genre}
+    {if $overview.genre and $overview.genre.title}
         has a penchant for {$overview.genre.title} programs.
     {/if}
 </p>

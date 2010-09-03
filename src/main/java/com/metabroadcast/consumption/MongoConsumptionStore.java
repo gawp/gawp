@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableMap.Builder;
 import com.metabroadcast.common.persistence.mongo.DatabasedMongo;
 import com.metabroadcast.common.persistence.mongo.MongoConstants;
 import com.metabroadcast.common.persistence.mongo.MongoQueryBuilder;
+import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.UserRef;
 import com.metabroadcast.common.social.model.translator.UserRefTranslator;
 import com.metabroadcast.common.stats.Count;
@@ -57,6 +58,15 @@ public class MongoConsumptionStore implements ConsumptionStore {
         return translator.fromDBObjects(table.find(query.build()).sort(
                         new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)));
     }
+    
+    public Consumption findLatest(UserRef userRef, TargetRef targetRef) {
+        MongoQueryBuilder query = userRefTranslator.toQuery(userRef).fieldEquals("target.domain", targetRef.domain()).fieldEquals("target.ref", targetRef.ref());
+        List<Consumption> consumptions = translator.fromDBObjects(table.find(query.build()).sort(new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)).limit(1));
+        if (consumptions.isEmpty()) {
+            return null;
+        }
+        return consumptions.get(0);
+    }
 
     public Map<String, Count<String>> topBrands(int limit) {
         if (topBrands.isEmpty()) {
@@ -83,5 +93,10 @@ public class MongoConsumptionStore implements ConsumptionStore {
 
     public void store(Consumption consumption) {
         table.save(translator.toDBObject(consumption));
+    }
+
+    @Override
+    public void remove(Consumption consumption) {
+        table.remove(translator.toDBObject(consumption));
     }
 }
