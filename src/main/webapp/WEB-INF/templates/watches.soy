@@ -75,27 +75,32 @@
  * @param overview
  **/
 {template .overview}
+{if $overview.userDetails and $overview.userDetails.profileUrl and $overview.userDetails.fullName and $overview.channel and $overview.channel.uri and $overview.channel.title}
 <p id="overview">
-    {if $overview.userDetails}
-        <a href="{$overview.userDetails.profileUrl}">{$overview.userDetails.fullName}</a>
+    {if $overview.userDetails and $overview.userDetails.profileUrl and $overview.userDetails.fullName}
+        <a href="{$overview.userDetails.profileUrl}">{$overview.userDetails.fullName}</a>'s 
+    {else}
+        You've 
     {/if}
-    {if $overview.channel}
-        's mostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
-        {if $overview.target}
+    {if $overview.channel and $overview.channel.uri and $overview.channel.title}
+        mostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
+        {if $overview.target and $overview.target.uri}
             , particularly <a href="{$overview.target.uri}">{$overview.target.title}</a>, 
         {/if}
     {/if}
-    {if $overview.channel and $overview.target and $overview.genre} and {/if}
+    {if $overview.channel and $overview.target and $overview.genre and $overview.genre.title} and {/if}
     {if $overview.genre and $overview.genre.title}
         has a penchant for {$overview.genre.title} programs.
     {/if}
 </p>
+{/if}
 {/template}
 
 /**
  * @param userDetails
 **/
 {template .userDetails}
+{if $userDetails.fullName}
 <div id="userDetails">
     <h2>{$userDetails.fullName}</h2>
     {if $userDetails.profileImage}
@@ -110,6 +115,7 @@
     {/if}
     </div>
 </div>
+{/if}
 {/template}
 
 /**

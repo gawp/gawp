@@ -376,8 +376,8 @@ public class ConsumptionController {
     }
 
     public SimpleModel userDetailsModel(TwitterUserDetails userDetails) {
+        SimpleModel model = new SimpleModel();
         if (userDetails != null) {
-            SimpleModel model = new SimpleModel();
             model.put("screenName", userDetails.getScreenName());
             model.put("fullName", userDetails.getFullName());
             model.put("followers", userDetails.getFollowerCount());
@@ -385,10 +385,8 @@ public class ConsumptionController {
             model.put("profileUrl", userDetails.getProfileUrl());
             model.put("bio", userDetails.getBio());
             model.put("location", userDetails.getLocation());
-
-            return model;
         }
-        return null;
+        return model;
     }
 
     private void addOverviewModel(Map<String, Object> model, List<Count<String>> channels, List<Count<String>> genres, List<Consumption> consumptions, TwitterUserDetails userDetails) {
