@@ -145,9 +145,10 @@ input.submit:hover { background-position: -450px 50%; }
 .topBrand {
 	display: inline;
 	float: left;
-	height: 120px;
+	height: 122px;
 	overflow: hidden;
-	width: 180px;
+	width: 170px;
+	margin-left: 10px
 }
 
 .picture {
@@ -155,10 +156,15 @@ input.submit:hover { background-position: -450px 50%; }
 }
 
 .brandTitle {
-	color: darkgrey;
-	text-align: center;
+	padding-top: 3px;
 	width: 150px;
+	clear:both;
+}
+
+.watches {
+	color: darkgrey;
 	font-size: 0.8em;
+	display:block;
 }
 
 .overlay {
