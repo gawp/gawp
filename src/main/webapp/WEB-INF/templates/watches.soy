@@ -83,15 +83,16 @@
         You've 
     {/if}
     {if $overview.channel and $overview.channel.uri and $overview.channel.title}
-        mostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
+        &nbsp mostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
         {if $overview.target and $overview.target.uri}
-            , particularly <a href="{$overview.target.uri}">{$overview.target.title}</a>, 
+            , particularly <a href="{$overview.target.uri}">{$overview.target.title}</a>
         {/if}
     {/if}
-    {if $overview.channel and $overview.target and $overview.genre and $overview.genre.title} and {/if}
+    {if $overview.channel and $overview.target and $overview.genre and $overview.genre.title}, and {/if}
     {if $overview.genre and $overview.genre.title}
-        has a penchant for {$overview.genre.title} programs.
+        has a penchant for {$overview.genre.title} programs
     {/if}
+    .
 </p>
 {/if}
 {/template}
@@ -205,7 +206,7 @@
  * @param counts
 **/
 {template .topBrands}
-<div class="topBrands module" style="width:340px;">
+<div class="topBrands module" style="width:360px;">
 <h2>Your Favorite Shows</h2>
 <ul class="topBrands">
 {foreach $count in $counts}

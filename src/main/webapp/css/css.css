@@ -144,8 +144,10 @@ input.submit:hover { background-position: -450px 50%; }
 
 .topBrand {
 	display: inline;
-    float: left;
-    margin: 10px;
+	float: left;
+	height: 120px;
+	overflow: hidden;
+	width: 180px;
 }
 
 .picture {
@@ -272,6 +274,7 @@ a:hover {
 }
 #overview a:hover {
     color: #71B7E6;
+    text-decoration: underline;
 }
 
 .error {

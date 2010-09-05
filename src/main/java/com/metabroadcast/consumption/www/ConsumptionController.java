@@ -402,6 +402,7 @@ public class ConsumptionController {
             for (Consumption consumption : consumptions) {
                 if (consumption.getChannel() != null && consumption.getChannel().equals(topChannel.getUri())) {
                     recentContent = consumption.getBrandUri();
+                    break;
                 }
             }
         }
