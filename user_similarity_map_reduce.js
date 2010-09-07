@@ -1,22 +1,39 @@
 var identity_map = function () {
-	emit(this.user.userId, this.target.ref);
+	emit(this.user.userId, {refs: [this.target.ref], count: 1});
 };
 
 var count_reduce = function (key, values) {
-	return {refs: values, count: values.length};
+	var refs = [];
+	values.forEach( function (val) {
+		val.refs.forEach( function (ref) {
+			refs.push(ref);
+		});
+	});
+	
+	return {refs: refs, count: refs.length};
 };
 
 var count_res = db.consumption.mapReduce(identity_map, count_reduce);
 
 var swap_map = function () {
-	var count = this.value.refs[0].count;
+	var count = this.value.refs.count;
 	var user = this._id;
 	
-	this.value.refs[0].refs.forEach(function (ref) {emit(ref, {user: user, count: count});});
+	this.value.refs.forEach( function (ref) {
+			emit(ref, {values: [{user: user, count: count}]});
+	});
 };
 
 var id_reduce = function (key, values) {
-	return {values: values};
+	var refs = [];
+	values.forEach( function (val) {
+		val.values.forEach( function (v) {
+			print (v);
+			refs.push(v);
+		});
+	});
+	print("refs: "+refs);
+	return {values: refs};
 }
 
 var swap_res = db[count_res.result].mapReduce(swap_map, id_reduce);
