@@ -27,7 +27,7 @@ import com.mongodb.MapReduceOutput;
 
 public class MongoConsumptionStore implements ConsumptionStore {
 
-    private static final String TABLE_NAME = "consumption";
+    public static final String TABLE_NAME = "consumption";
 
     private final Log log = LogFactory.getLog(getClass());
     private final ConsumptionTranslator translator = new ConsumptionTranslator();
