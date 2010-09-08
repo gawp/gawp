@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -49,6 +51,8 @@ import com.metabroadcast.content.ContentStore;
 import com.metabroadcast.content.SeriesOrder;
 import com.metabroadcast.content.SimpleItemAttributesModelBuilder;
 import com.metabroadcast.content.SimplePlaylistAttributesModelBuilder;
+import com.metabroadcast.neighbours.Neighbour;
+import com.metabroadcast.neighbours.NeighboursProvider;
 import com.metabroadcast.user.twitter.TwitterUserRefProvider;
 
 @Controller
@@ -61,20 +65,22 @@ public class ConsumptionController {
 
     private final ModelListBuilder<ConsumedContent> consumedContentModelListBuilder = DelegatingModelListBuilder.delegateTo(new ConsumedContentModelBuilder(new SimplePlaylistAttributesModelBuilder(),
             new SimpleItemAttributesModelBuilder()));
+    
     private final ContentStore contentStore;
     private final UserProvider userProvider;
     private final UserDetailsProvider userDetailsProvider;
-
+    private final TwitterUserRefProvider userRefProvider;
+    private final NeighboursProvider neighboursProvider;
+    
     private final Log log = LogFactory.getLog(getClass());
 
-    private final TwitterUserRefProvider userRefProvider;
-
     public ConsumptionController(ConsumptionStore consumptionStore, ContentStore contentStore, UserProvider userProvider, UserDetailsProvider userDetailsProvider,
-            TwitterUserRefProvider userRefProvider) {
+            TwitterUserRefProvider userRefProvider, NeighboursProvider neighboursProvider) {
         this.consumptionStore = consumptionStore;
         this.contentStore = contentStore;
         this.userDetailsProvider = userDetailsProvider;
         this.userRefProvider = userRefProvider;
+        this.neighboursProvider = neighboursProvider;
         this.consumedContentProvider = new ConsumedContentProvider(consumptionStore, contentStore);
         this.userProvider = userProvider;
     }
@@ -146,10 +152,14 @@ public class ConsumptionController {
         long getGenres = System.currentTimeMillis();
         
         addOverviewModel(model, channels, genres, consumptions, (TwitterUserDetails) userDetails.valueOrNull());
+        
+        addNeighboursModel(model, userRef);
+        
+        long getNeighbours = System.currentTimeMillis();
 
         if (log.isInfoEnabled()) {
             log.info("Get user details: " + (getUserDetails - getUser) + ", get content: " + (getContent - getUserDetails) + " get consumptions: " + (getConsumptions - getContent) + ", get brands: "
-                    + (getBrands - getConsumptions) + ", get channels: " + (getChannels - getBrands) + ", get genres: " + (getBrands - getGenres));
+                    + (getBrands - getConsumptions) + ", get channels: " + (getChannels - getBrands) + ", get genres: " + (getBrands - getGenres) + ", get neighbours: "+(getNeighbours - getGenres));
         }
 
         return "watches/list";
@@ -300,6 +310,26 @@ public class ConsumptionController {
 
         return max;
     }
+    
+    private void addNeighboursModel(Map<String, Object> model, UserRef userRef) {
+        List<Map<String, ?>> users = Lists.newArrayList();
+        
+        List<UserRef> userRefs = Lists.newArrayList(Iterables.transform(neighboursProvider.neighbours(userRef, UserNamespace.TWITTER, 10), neighbourToUserRef));
+        Map<UserRef, UserDetails> userDetails = userDetailsProvider.detailsFor(null, userRefs);
+        
+        for (UserDetails details: userDetails.values()) {
+            users.add(this.userDetailsModel((TwitterUserDetails) details).asMap()); 
+        }
+        
+        model.put("neighbours", users);
+    }
+    
+    private static final Function<Neighbour, UserRef> neighbourToUserRef = new Function<Neighbour, UserRef>() {
+        @Override
+        public UserRef apply(Neighbour n) {
+            return n.neighbour();
+        }
+    };
 
     private void addBrandCountsModel(Map<String, Object> model, List<Count<String>> brands) {
         List<Map<String, Object>> counts = Lists.newArrayList();

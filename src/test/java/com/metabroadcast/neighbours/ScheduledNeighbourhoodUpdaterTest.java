@@ -1,18 +1,14 @@
 package com.metabroadcast.neighbours;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.concurrent.DeterministicScheduler;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.metabroadcast.common.persistence.MongoTestHelper;
 import com.metabroadcast.common.persistence.mongo.DatabasedMongo;
@@ -24,10 +20,8 @@ import com.metabroadcast.consumption.Consumption;
 import com.metabroadcast.consumption.ConsumptionStore;
 import com.metabroadcast.consumption.MongoConsumptionStore;
 
-@RunWith(JMock.class)
 public class ScheduledNeighbourhoodUpdaterTest {
     private final DateTime now = new DateTime(DateTimeZones.UTC);
-    private final Mockery mockery = new JUnit4Mockery();
     private final DeterministicScheduler scheduler = new DeterministicScheduler();
     
     private final UserRef ben = new UserRef("101", UserNamespace.TWITTER, "beige");
@@ -37,7 +31,6 @@ public class ScheduledNeighbourhoodUpdaterTest {
     private final TargetRef show1 = new TargetRef("101", "domain");
     private final TargetRef show2 = new TargetRef("102", "domain");
     private final TargetRef show3 = new TargetRef("103", "domain");
-    private final TargetRef show4 = new TargetRef("104", "domain");
     
     private final Consumption consumption1 = new Consumption(ben, show1, now.minusSeconds(1), null, null, null, null);
     private final Consumption consumption2 = new Consumption(ben, show2, now.minusSeconds(2), null, null, null, null);
@@ -72,8 +65,14 @@ public class ScheduledNeighbourhoodUpdaterTest {
     public void shouldGetNeighbours() {
         scheduler.tick(1, TimeUnit.HOURS);
         
-        List<Neighbour> neighbours = provider.neighbours(ben);
+        List<Neighbour> neighbours = provider.neighbours(ben, 10);
         assertEquals(1, neighbours.size());
         assertEquals(john, neighbours.get(0).neighbour());
+        assertEquals(0.25, neighbours.get(0).similarity());
+        
+        neighbours = provider.neighbours(dan, UserNamespace.TWITTER, 10);
+        assertEquals(1, neighbours.size());
+        assertEquals(john, neighbours.get(0).neighbour());
+        assertEquals(1.0/3.0, neighbours.get(0).similarity());
     }
 }

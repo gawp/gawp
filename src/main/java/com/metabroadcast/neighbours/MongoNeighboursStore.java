@@ -5,6 +5,7 @@ import java.util.List;
 import com.metabroadcast.common.persistence.mongo.DatabasedMongo;
 import com.metabroadcast.common.persistence.mongo.MongoQueryBuilder;
 import com.metabroadcast.common.social.model.UserRef;
+import com.metabroadcast.common.social.model.UserRef.UserNamespace;
 import com.mongodb.DBCollection;
 
 public class MongoNeighboursStore implements NeighboursProvider {
@@ -17,8 +18,13 @@ public class MongoNeighboursStore implements NeighboursProvider {
         this.db = db.collection(TABLE_NAME);
     }
     
-    public List<Neighbour> neighbours(UserRef userRef) {
+    public List<Neighbour> neighbours(UserRef userRef, int limit) {
         MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals("_id", userRef.toKey());
+        return translator.fromDBObjects(db.find(query.build()));
+    }
+
+    public List<Neighbour> neighbours(UserRef userRef, UserNamespace namespace, int limit) {
+        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals("_id", userRef.toKey()).fieldEquals("value.neighbours.neighbour.userNamespace", namespace.prefix());
         return translator.fromDBObjects(db.find(query.build()));
     }
 }

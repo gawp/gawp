@@ -16,6 +16,8 @@ import com.metabroadcast.common.social.user.details.twitter.TwitterMasterUserDet
 import com.metabroadcast.consumption.www.ConsumptionController;
 import com.metabroadcast.content.AtlasContentStore;
 import com.metabroadcast.content.ContentStore;
+import com.metabroadcast.neighbours.MongoNeighboursStore;
+import com.metabroadcast.neighbours.NeighboursProvider;
 import com.metabroadcast.user.twitter.TwitterUserRefProvider;
 
 @Configuration
@@ -35,7 +37,11 @@ public class ConsumptionModule {
     }
     
     public @Bean ConsumptionController consumptionController() {
-        return new ConsumptionController(consumptionStore(), contentStore(), userProvider, userDetailsProvider(), userRefProvider());
+        return new ConsumptionController(consumptionStore(), contentStore(), userProvider, userDetailsProvider(), userRefProvider(), neighboursProvider());
+    }
+    
+    @Bean NeighboursProvider neighboursProvider() {
+        return new MongoNeighboursStore(db);
     }
     
     @Bean TwitterUserRefProvider userRefProvider() {
