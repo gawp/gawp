@@ -1,5 +1,5 @@
 var identity_map = function () {
-	emit(this.user.userId, {refs: [this.target.ref], count: 1});
+	emit(this.user, {refs: [this.target], count: 1});
 };
 
 var count_reduce = function (key, values) {
@@ -44,9 +44,9 @@ var combine_map = function () {
 			if (val.user && inner.user && val.count && inner.count) {
 				var count = val.count+inner.count;
 			
-				if (val.user > inner.user) {
+				if (val.user.userId > inner.user.userId) {
 					emit({user1: val.user, user2: inner.user}, {counts: [count]});
-				} else if (val.user < inner.user) {
+				} else if (val.user.userId < inner.user.userId) {
 					emit({user1: inner.user, user2: val.user}, {counts: [count]});
 				}
 			}
