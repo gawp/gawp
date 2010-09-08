@@ -79,25 +79,25 @@ var finalize = function (key, value) {
 var similarity_result = db[swap_res.result].mapReduce(combine_map, similarity_reduce, {finalize: finalize});
 
 var user_map = function () {
-    emit(this._id.user1, {users: [{neighbour: this._id.user2, similarity: this.value}]});
-    emit(this._id.user2, {users: [{neighbour: this._id.user1, similarity: this.value}]});
-}
-
-var sort_neighbours = function (a, b) {
-    return a.similarity > b.similarity;
+    var user1 = this._id.user1.userId+this._id.user1.userNamespace+this._id.user1.appId;
+    var user2 = this._id.user2.userId+this._id.user2.userNamespace+this._id.user2.appId;
+    if (this.value > 0.0) {
+        emit(user1, {neighbours: [{neighbour: this._id.user2, similarity: this.value}]});
+        emit(user2, {neighbours: [{neighbour: this._id.user1, similarity: this.value}]});
+    }
 }
 
 var user_reduce = function (key, values) {
     var users = [];
     values.forEach( function (val) {
-        val.users.forEach( function (user) {
+        val.neighbours.forEach( function (user) {
             users.push(user);
         });
     });
     users.sort(function (a, b) { return b.similarity - a.similarity; });
-    return {users: users};
+    return {neighbours: users};
 }
 
-var users_res = db[similarity_result.result].mapReduce(user_map, user_reduce);
+var users_res = db[similarity_result.result].mapReduce(user_map, user_reduce, {out: 'neighbours'});
 
 db[users_res.result].find();

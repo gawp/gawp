@@ -1,10 +1,16 @@
 package com.metabroadcast.neighbours;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.metabroadcast.common.persistence.mongo.DatabasedMongo;
 import com.metabroadcast.consumption.MongoConsumptionStore;
@@ -13,6 +19,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MapReduceOutput;
 
+@Controller
 public class ScheduledNeighbourhoodUpdater {
     
     private static final String IDENTITY_MAP = "function () { emit(this.user, {refs: [this.target], count: 1}); };";
@@ -26,6 +33,7 @@ public class ScheduledNeighbourhoodUpdater {
     private static final String USER_REDUCE = "function (key, values) {     var users = [];     values.forEach( function (val) {         val.neighbours.forEach( function (user) {             users.push(user);         });     });     users.sort(function (a, b) { return b.similarity - a.similarity; });     return {neighbours: users}; }  ";
     
     private final ScheduledExecutorService executorService;
+    private final ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
     private final DBCollection db;
     
     public ScheduledNeighbourhoodUpdater(DatabasedMongo db) {
@@ -39,6 +47,12 @@ public class ScheduledNeighbourhoodUpdater {
     
     public void start() {
         executorService.scheduleWithFixedDelay(new NeighbourhoodJob(), 1, 2, TimeUnit.HOURS);
+    }
+    
+    @RequestMapping(value = { "/system/neighbourhood/update" }, method = { RequestMethod.GET })
+    public void oneoff(HttpServletResponse response) {
+        singleExecutor.execute(new NeighbourhoodJob());
+        response.setStatus(HttpServletResponse.SC_OK);
     }
     
     class NeighbourhoodJob implements Runnable {
@@ -79,5 +93,6 @@ public class ScheduledNeighbourhoodUpdater {
     @PreDestroy
     public void shutdown() {
         executorService.shutdown();
+        singleExecutor.shutdown();
     }
 }

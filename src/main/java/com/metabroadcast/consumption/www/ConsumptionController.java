@@ -314,7 +314,7 @@ public class ConsumptionController {
     private void addNeighboursModel(Map<String, Object> model, UserRef userRef) {
         List<Map<String, ?>> users = Lists.newArrayList();
         
-        List<UserRef> userRefs = Lists.newArrayList(Iterables.transform(neighboursProvider.neighbours(userRef, UserNamespace.TWITTER, 10), neighbourToUserRef));
+        List<UserRef> userRefs = Lists.newArrayList(Iterables.transform(neighboursProvider.neighbours(userRef), neighbourToUserRef));
         Map<UserRef, UserDetails> userDetails = userDetailsProvider.detailsFor(null, userRefs);
         
         for (UserDetails details: userDetails.values()) {

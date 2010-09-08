@@ -65,12 +65,12 @@ public class ScheduledNeighbourhoodUpdaterTest {
     public void shouldGetNeighbours() {
         scheduler.tick(1, TimeUnit.HOURS);
         
-        List<Neighbour> neighbours = provider.neighbours(ben, 10);
+        List<Neighbour> neighbours = provider.neighbours(ben);
         assertEquals(1, neighbours.size());
         assertEquals(john, neighbours.get(0).neighbour());
         assertEquals(0.25, neighbours.get(0).similarity());
         
-        neighbours = provider.neighbours(dan, UserNamespace.TWITTER, 10);
+        neighbours = provider.neighbours(dan);
         assertEquals(1, neighbours.size());
         assertEquals(john, neighbours.get(0).neighbour());
         assertEquals(1.0/3.0, neighbours.get(0).similarity());
