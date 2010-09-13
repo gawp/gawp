@@ -11,6 +11,7 @@ import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.UserRef;
 import com.metabroadcast.common.social.model.translator.TargetRefTranslator;
 import com.metabroadcast.common.social.model.translator.UserRefTranslator;
+import com.metabroadcast.content.Channel;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
@@ -31,7 +32,8 @@ public class ConsumptionTranslator {
         UserRef userRef = userTranslator.fromDBObject((DBObject) dbObject.get(USER_REF_KEY));
         TargetRef targetRef = targetTranslator.fromDBObject((DBObject) dbObject.get(TARGET_REF_KEY));
         DateTime timestamp = TranslatorUtils.toDateTime(dbObject, TIMESTAMP_KEY);
-        String channel = (String) dbObject.get(CHANNEL_KEY);
+        String channelUri = (String) dbObject.get(CHANNEL_KEY);
+		Channel channel = channelUri == null ? null : Channel.valueOf(channelUri);
         String publisher = (String) dbObject.get(PUBLISHER_KEY);
         String brand = (String) dbObject.get(BRAND_KEY);
         Set<String> genres = TranslatorUtils.toSet(dbObject, GENRES_KEY);
