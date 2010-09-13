@@ -20,8 +20,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.metabroadcast.common.media.MimeType;
 import com.metabroadcast.common.social.auth.AuthenticationInterceptor;
+import com.metabroadcast.common.social.auth.CookieAuthenticator;
 import com.metabroadcast.common.social.auth.CookieTranslator;
-import com.metabroadcast.common.social.auth.RequestScopedAuthenticationProvider;
 import com.metabroadcast.common.social.auth.credentials.CredentialsStore;
 import com.metabroadcast.common.social.user.AccessTokenProcessor;
 import com.metabroadcast.common.social.user.ApplicationIdAwareUserRefBuilder;
@@ -36,11 +36,12 @@ import com.metabroadcast.user.www.TwitterAuthController;
 @Configuration
 public class WebModule {
     
+	private static final String COOKIE_NAME = "beige";
+	
 	private @Value("${login.view}") String loginView;
 	private @Value("${host}") String host;
     private @Value("${twitter.clientId}") String twitterClientId;
     
-    private @Autowired RequestScopedAuthenticationProvider authProvider;
 	private @Autowired CookieTranslator cookieTranslator;
 	private @Autowired CredentialsStore credentialsStore;
 	
@@ -54,7 +55,7 @@ public class WebModule {
     }
     
     public @Bean TwitterAuthController twitterAuthController() {
-        return new TwitterAuthController(cookieTranslator, twitterAccessTokenChecker(), twitterClientId, host, "beige");
+        return new TwitterAuthController(cookieTranslator, twitterAccessTokenChecker(), twitterClientId, host, COOKIE_NAME);
     }
     
     public @Bean AccessTokenProcessor twitterAccessTokenChecker() {
@@ -74,21 +75,21 @@ public class WebModule {
         methodToPath.put("GET", ImmutableList.<String>of());
         methodToPath.put("POST", ImmutableList.<String>of());
         
-        List<String> exceptions = ImmutableList.of("/login", "/includes/javascript", "/stats/chart", "/goodbye", "/notTrackedUser");
+        List<String> exceptions = ImmutableList.of("/login", "/includes/javascript", "/stats/chart", "/goodbye");
         
         AuthenticationInterceptor authenticationInterceptor = new AuthenticationInterceptor();
         authenticationInterceptor.setViewResolver(resolver());
         authenticationInterceptor.setLoginView(loginView);
-        authenticationInterceptor.setAuthService(authProvider);
+        authenticationInterceptor.setAuthService(cookieAuthenticator());
         authenticationInterceptor.setAuthenticationRequiredByMethod(methodToPath);
         authenticationInterceptor.setExceptions(exceptions);
-//        authenticationInterceptor.setUserNotAuthenticatedHandler(getUserNotAuthenticatedHandler());
         return authenticationInterceptor;
     }
     
-//    public @Bean UserNotAuthenticatedHandler getUserNotAuthenticatedHandler() {
-//        return new RedirectingUserNotAuthenticatedHandler(authProvider, resolver(), loginView, notTrackedUserView);
-//    }
+	@Scope(value="request", proxyMode=ScopedProxyMode.TARGET_CLASS)
+    public @Bean CookieAuthenticator cookieAuthenticator() {
+		return new CookieAuthenticator();
+    }
 
     public @Bean
     ViewResolver resolver() {
@@ -107,8 +108,7 @@ public class WebModule {
         return resolver;
     }
 
-    @Bean
-    SoyTemplateRenderer soyRenderer() {
+    @Bean SoyTemplateRenderer soyRenderer() {
         SoyTemplateRenderer renderer = new SoyTemplateRenderer();
         renderer.setPrefix("/WEB-INF/templates/");
         renderer.setSuffix(".soy");

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 
@@ -31,11 +30,9 @@ import com.mongodb.MongoException;
 
 @Configuration
 @Import( { WebModule.class, ConsumptionModule.class })
-@ImportResource("context.xml")
 public class CoreModule {
 
-    private @Autowired
-    RequestScopedAuthenticationProvider authenticationProvider;
+    private @Autowired RequestScopedAuthenticationProvider authenticationProvider;
 
     public @Bean
     ContextConfigurer config() {
@@ -43,7 +40,7 @@ public class CoreModule {
         c.init();
         return c;
     }
-
+    
     public @Bean
     CookieTranslator cookieTranslator() {
         return new CookieTranslator("beige", "devsalt");
@@ -64,28 +61,24 @@ public class CoreModule {
         return new DatabasedMongo(mongo(), "beige");
     }
 
-    @Bean
-    Mongo mongo() throws UnknownHostException, MongoException {
+    @Bean Mongo mongo() throws UnknownHostException, MongoException {
         return new Mongo();
     }
 
     @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
-    public @Bean
-    AnonymousUserProvider anonymousUserProvider() {
+    public @Bean AnonymousUserProvider anonymousUserProvider() {
         return new CookieBasedAnonymousUserProvider(cookieTranslator(), userRefBuilder());
     }
 
     @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
-    public @Bean
-    UserProvider userProvider() {
+    public @Bean UserProvider userProvider() {
         LoggedInOrAnonymousUserProvider userProvider = new LoggedInOrAnonymousUserProvider();
         userProvider.setAnonymousUserProvider(anonymousUserProvider());
         userProvider.setLoggedInUserProvider(authenticationProvider);
         return userProvider;
     }
 
-    public @Bean
-    ContentStore contentStore() {
+    public @Bean ContentStore contentStore() {
         return new AtlasContentStore(new CachingJaxbAtlasClient());
     }
 }
