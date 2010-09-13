@@ -9,6 +9,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.UserRef;
+import com.metabroadcast.content.Channel;
 
 public class Consumption implements Comparable<Consumption> {
 
@@ -19,9 +20,9 @@ public class Consumption implements Comparable<Consumption> {
     private final String publisher;
     private final String brandUri;
     private final Set<String> genres;
-
-    public Consumption(UserRef userRef, TargetRef targetRef, DateTime timestamp, String channel, String publisher, String brandUri, Set<String> genres) {
-        this.channel = channel;
+    
+    public Consumption(UserRef userRef, TargetRef targetRef, DateTime timestamp, Channel channel, String publisher, String brandUri, Set<String> genres) {
+        this.channel = channel.getUri();
         this.publisher = publisher;
         this.brandUri = brandUri;
         

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.metabroadcast.beige.bookmarklet.BookmarkletController;
 import com.metabroadcast.common.persistence.mongo.DatabasedMongo;
 import com.metabroadcast.common.social.user.ApplicationIdAwareUserRefBuilder;
 import com.metabroadcast.common.social.user.UserDetailsProvider;
@@ -64,4 +65,8 @@ public class ConsumptionModule {
     private Duration getCacheDuration() {
         return Duration.standardMinutes(refreshPeriod);
     }
+    
+	public @Bean BookmarkletController bookmarkletController() {
+		return new BookmarkletController(contentStore());
+	}
 }

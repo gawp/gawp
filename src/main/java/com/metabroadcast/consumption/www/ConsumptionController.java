@@ -178,8 +178,11 @@ public class ConsumptionController {
     }
 
     @RequestMapping(value = { "/watch" }, method = { RequestMethod.POST })
-    public void watch(HttpServletResponse response, @RequestParam(required = false) String channel, @RequestParam(required = false) String uri, Map<String, Object> model) {
-        UserRef userRef = userProvider.existingUser();
+    public void watch(HttpServletResponse response, @RequestParam(required = false, value="channel") String channelUri, @RequestParam(required = false) String uri, Map<String, Object> model) {
+       
+    	Channel channel = channelUri == null ? null : Channel.fromUri(channelUri);
+    	
+    	UserRef userRef = userProvider.existingUser();
         Preconditions.checkNotNull(userRef);
 
         Item item = null;
@@ -205,12 +208,12 @@ public class ConsumptionController {
                 if (publisher.hasValue()) {
                     Channel c = Channel.onlineChannelForPublisher(publisher.requireValue());
                     if (c != null) {
-                        channel = c.getUri();
+                        channel = c;
                     }
                 }
             }
         } else if (channel != null) {
-            List<Item> items = contentStore.getItemsOnNow(channel);
+            List<Item> items = contentStore.getItemsOnNow(channel.getUri());
             if (!items.isEmpty()) {
                 item = items.get(0);
             }

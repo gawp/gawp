@@ -29,35 +29,30 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
 @Configuration
-@Import( { WebModule.class, ConsumptionModule.class })
+@Import({WebModule.class, ConsumptionModule.class})
 public class CoreModule {
 
     private @Autowired RequestScopedAuthenticationProvider authenticationProvider;
 
-    public @Bean
-    ContextConfigurer config() {
+    public @Bean ContextConfigurer config() {
         ContextConfigurer c = new ContextConfigurer();
         c.init();
         return c;
     }
     
-    public @Bean
-    CookieTranslator cookieTranslator() {
+    public @Bean CookieTranslator cookieTranslator() {
         return new CookieTranslator("beige", "devsalt");
     }
 
-    public @Bean
-    CredentialsStore credentialsStore() throws UnknownHostException, MongoException {
+    public @Bean CredentialsStore credentialsStore() throws UnknownHostException, MongoException {
         return new MongoDBCredentialsStore(mongo(), "credentials");
     }
 
-    public @Bean
-    ApplicationIdAwareUserRefBuilder userRefBuilder() {
+    public @Bean ApplicationIdAwareUserRefBuilder userRefBuilder() {
         return new FixedAppIdUserRefBuilder("beige");
     }
 
-    public @Bean
-    DatabasedMongo db() throws UnknownHostException, MongoException {
+    public @Bean DatabasedMongo db() throws UnknownHostException, MongoException {
         return new DatabasedMongo(mongo(), "beige");
     }
 
