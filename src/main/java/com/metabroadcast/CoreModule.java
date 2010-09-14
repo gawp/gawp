@@ -25,11 +25,12 @@ import com.metabroadcast.common.webapp.properties.ContextConfigurer;
 import com.metabroadcast.consumption.ConsumptionModule;
 import com.metabroadcast.content.AtlasContentStore;
 import com.metabroadcast.content.ContentStore;
+import com.metabroadcast.invites.InvitesModule;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
 @Configuration
-@Import({WebModule.class, ConsumptionModule.class})
+@Import({WebModule.class, ConsumptionModule.class, InvitesModule.class})
 public class CoreModule {
 
     private @Autowired RequestScopedAuthenticationProvider authenticationProvider;

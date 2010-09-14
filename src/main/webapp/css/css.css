@@ -80,7 +80,33 @@ input.submit:hover { background-position: -450px 50%; }
     padding-top: 10px;
     background-color: white;
     border: 1px solid darkGray;
-    margin: 10px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.joinus {
+	font-size:              2em;
+    font-family:            'Lobster', serif;
+    font-style:             normal;
+    font-weight:            400;
+    text-shadow:            none;
+    text-decoration:        none;
+    text-transform:         none;
+    letter-spacing:         0em;
+    word-spacing:           0em;
+    line-height:            1em;
+    margin-top:          20px;
+    color: darkgrey;
+    text-align: center;
+}
+
+.joinus a {
+	color: red;
+	font-size: 1.5em;
+}
+.joinusPic {
+	margin-left: 125px;
 }
 
 /*.mainImage {
@@ -140,7 +166,8 @@ input.submit:hover { background-position: -450px 50%; }
 	width: 50px;
 }
 
-.topBrands {
+.topBrands ul{
+	margin-left: 20px;
 }
 
 .topBrand {
@@ -149,7 +176,6 @@ input.submit:hover { background-position: -450px 50%; }
 	height: 122px;
 	overflow: hidden;
 	width: 170px;
-	margin-left: 10px
 }
 
 .picture {
@@ -399,6 +425,21 @@ h3{
 .avatar {
 	float:left;
 	margin-right: 5px;
+	margin-bottom: 10px;
+}
+.emptyAvatar {
+    float:left;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.496094) 0px 4px 6px;
+    background: #EEE;
+    border-bottom-left-radius: 5px 5px;
+    border-bottom-right-radius: 5px 5px;
+    border-top-left-radius: 5px 5px;
+    border-top-right-radius: 5px 5px;
+    float: left;
+    height: 50px;
+    width: 50px;
+    margin-right: 5px;
+    margin-bottom: 5px;
 }
 .profile {
 	margin-left: 10px;
@@ -414,8 +455,8 @@ h3{
 #login {
     overflow: hidden;
     position: absolute;
-    top: 20px;
-    left: 1110px;
+    top: 276px;
+    left: 1130px;
     background-color: lightgrey;
     border: 1px solid darkgrey;
     padding: 5px;
