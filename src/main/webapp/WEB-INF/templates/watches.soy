@@ -26,6 +26,7 @@
     <div class="container">
         {call .overview}
             {param overview: $overview/}
+            {param currentUserDetails: $currentUserDetails/}
         {/call}
         
         {call .currentUserDetails}
@@ -76,15 +77,14 @@
 
 /**
  * @param overview
+ * @param currentUserDetails
  **/
 {template .overview}
-{if $overview.userDetails and $overview.userDetails.profileUrl and $overview.userDetails.fullName and $overview.channel and $overview.channel.uri and $overview.channel.title}
+{if $overview.userDetails}
 <p id="overview">
-    {if $overview.userDetails and $overview.userDetails.profileUrl and $overview.userDetails.fullName}
-        <a href="{$overview.userDetails.profileUrl}">{$overview.userDetails.fullName}</a>'s 
-    {else}
-        You've 
-    {/if}
+    <a href="{if $overview.userDetails.profileUrl}{$overview.userDetails.profileUrl}{else}http://twitter.com/{$overview.userDetails.screenName}{/if}">
+        {if $overview.userDetails.screenName == $currentUserDetails.screenName}You've{else}{if $overview.userDetails.fullName}{$overview.userDetails.fullName}{else}{$overview.userDetails.screenName}{/if}'s{/if}
+    </a>
     {if $overview.channel and $overview.channel.uri and $overview.channel.title}
         &nbsp mostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
         {if $overview.target and $overview.target.uri}
@@ -241,19 +241,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>You Have Been Watching</title>
+        <title>What Are You Watching?</title>
         
         <link href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
         <link href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
         
-        <!-- <link rel="stylesheet" type="text/css" media="only screen and (max-width: 480px), only screen and (max-device-width: 480px)" href="/css/iphone.css" />
-        <link rel="stylesheet" type="text/css" media="only screen and (max-width: 480px), only screen and (max-device-width: 480px)" href="/css/iphone-watch.css" /> -->
-        
-        <link rel="stylesheet" type="text/css" media="all" href="/css/iphone.css" />
+        <link rel="stylesheet" type="text/css" media="all and (min-device-width: 481px)" href="/css/watch.css" />
+        <link rel="stylesheet" type="text/css" media="only screen and (max-width: 480px), only screen and (max-device-width: 480px)" href="/css/iphone.css" />
         <link rel="stylesheet" type="text/css" media="all" href="/css/style.css" />
-        <link rel="stylesheet" type="text/css" media="all" href="/css/iphone-watch.css" />
+        <link rel="stylesheet" type="text/css" media="only screen and (max-width: 480px), only screen and (max-device-width: 480px)" href="/css/iphone-watch.css" />
         <link rel="stylesheet" type="text/css" media="all" href="/css/jquery.loading.1.6.css" />
-        <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+        <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" media="all" rel="stylesheet" type="text/css"/>
         
         <meta name="viewport" content="width=device-width" />        
         
@@ -263,7 +261,8 @@
     <div class="container">
         <div class="wrapper"> 
         <h1 id="maintitle">What Are You Watching?</h1>
-        <div id="channels" title="Channel" class="clearfix">
+        <div id="channels" title="Channel" class="clearfix module">
+            <h2 class="subtitle">Channels</h2>
             <ul>
             {foreach $channel in $channels}
                 <li class="channel">
@@ -271,29 +270,32 @@
                 </li>
             {/foreach}
             </ul>
-            <div class="clearfix"></div>
         </div>
         
-        <div id="search" title="Search" class="clearfix">
+        <div id="search" title="Search" class="clearfix module" style="width:250px;">
+            <h2 class="subtitle">Search</h2>
             <input type="text" name="uri" id="searchBox" />
         </div>
         
-        <div id="shows" title="Shows" class="clearfix">
+        <div id="shows" title="Shows" class="clearfix module">
+            <h2 class="subtitle">Shows</h2>
             <ul class="topBrands">
                 {foreach $count in $brands}
+                    {if $count.target.uri and $count.target.logo}
                     <li class="channel">
-                        <a href="#" class="brandLink" uri="{$count.target.uri}"><img src="{$count.target.logo}" class="icon" /><div class="gloss"></div></a>
+                        <a href="#" class="brandLink" uri="{$count.target.uri}"><img src="{$count.target.logo}" class="icon" /></a>
                     </li>
+                    {/if}
                 {/foreach}
                 </ul>
         </div>
         
         {if $loggedIn}
-            <div id="logout" title="Logout" class="clearfix">
+            <div id="logout" title="Logout" class="clearfix module">
                 <a href="/logout?continueTo=/watch">Logout</a>
             </div>
         {else}
-            <div id="login" title="Login" class="clearfix">
+            <div id="login" title="Login" class="clearfix module">
                 <a href="/login/twitter?continueTo=/watch"><img src="/images/sign-in-with-twitter-d.png" /></a>
             </div>
         {/if}

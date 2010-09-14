@@ -4,7 +4,13 @@ $(document).ready(function() {
     registerConsumptionHovers();
     registerSearchAutocomplete();
     registerOverviewLinks();
-    $(".tabbar").iTabs();
+    if((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) { 
+    	$(".subtitle").remove();
+        $(".tabbar").iTabs();
+    } else {
+    	$(".footer").remove();
+    	$(".module").removeClass('clearfix');
+    }
 });
 
 var registerOverviewLinks = function() {
