@@ -18,7 +18,6 @@ import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.metabroadcast.beige.bookmarklet.BookmarkletController;
 import com.metabroadcast.common.media.MimeType;
 import com.metabroadcast.common.social.auth.AuthenticationInterceptor;
 import com.metabroadcast.common.social.auth.CookieAuthenticator;
