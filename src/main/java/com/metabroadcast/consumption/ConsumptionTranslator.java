@@ -33,7 +33,7 @@ public class ConsumptionTranslator {
         TargetRef targetRef = targetTranslator.fromDBObject((DBObject) dbObject.get(TARGET_REF_KEY));
         DateTime timestamp = TranslatorUtils.toDateTime(dbObject, TIMESTAMP_KEY);
         String channelUri = (String) dbObject.get(CHANNEL_KEY);
-		Channel channel = channelUri == null ? null : Channel.valueOf(channelUri);
+		Channel channel = channelUri == null ? null : Channel.fromUri(channelUri);
         String publisher = (String) dbObject.get(PUBLISHER_KEY);
         String brand = (String) dbObject.get(BRAND_KEY);
         Set<String> genres = TranslatorUtils.toSet(dbObject, GENRES_KEY);

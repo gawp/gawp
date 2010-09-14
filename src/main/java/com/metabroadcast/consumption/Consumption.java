@@ -22,7 +22,11 @@ public class Consumption implements Comparable<Consumption> {
     private final Set<String> genres;
     
     public Consumption(UserRef userRef, TargetRef targetRef, DateTime timestamp, Channel channel, String publisher, String brandUri, Set<String> genres) {
-        this.channel = channel.getUri();
+        if (channel != null) {
+            this.channel = channel.getUri();
+        } else {
+            this.channel = null;
+        }
         this.publisher = publisher;
         this.brandUri = brandUri;
         
