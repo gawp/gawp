@@ -8,7 +8,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>{$item.primaryTitle}{if $item.secondaryTitle} - {$item.secondaryTitle}{/if} | You Have Been Watching</title>
+        <title>{$item.primaryTitle}{if $item.secondaryTitle} - {$item.secondaryTitle}{/if} | Title Goes Here</title>
         <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
         <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
         <link rel="stylesheet" type="text/css" href="/css/css.css" />
@@ -23,18 +23,16 @@
                 <a href="{$item.uri}"><img src="{$item.thumbnail}" class="thumbnailImage"/></a>
             {/if}
             </div>
-            <div class="info">
+            <div>
                 <p class="title">
                     <a href="{$item.uri}">{$item.primaryTitle}{if $item.secondaryTitle} - {$item.secondaryTitle}{/if}</a>
                 </p>
                 <p class="desc">
                     {if $item.description}{$item.description}{/if}
                 </p>
-                {if $item.channel}
-                    <div class="channelPromo"><a href="{$item.channel.uri}"><img src="{$item.channel.logo}" /></a></div>
-                {/if}
             </div>
         <div class="clearfix"></div>
+        <a href="#yes" class="yes">Yes</a><a href="#no">No</a> {if $item.brand}<a href="#another">A different episode of {$item.brand.title}{/if}</a>
     </body> 
 </html>
 {/template}
@@ -46,14 +44,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>Not found | You Have Been Watching</title>
+        <title>Not found | Title Goes Here</title>
         <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
         <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
         <link rel="stylesheet" type="text/css" href="/css/css.css" />
         {include('/includes/javascript') |noAutoescape}
     </head>
     <body style="padding: 10px">
-    <div style="background-color: white; border: 1px solid darkGray; position: relative; padding: 10px;">
+    <div style="background-color: white; border: 1px solid darkGray; position: relative; padding: 10px; height: 435px; overflow: hidden;">
         <p id="overview">Sorry, nothing to see here</p>
         <p>Try searching for it</p>
        </div>
@@ -74,36 +72,52 @@
         <link rel="stylesheet" type="text/css" href="/css/css.css" />
         {include('/includes/javascript') |noAutoescape}
     </head>
-    <body style="padding: 10px">
-    <div style="background-color: white; border: 1px solid darkGray; position: relative; padding: 10px;">
+    <body style="padding: 10px;">
+    {literal}
+    <script>
+        $("li").live('click', function() {
+            var $loader = $('<img src="/images/ajax-loader.gif"/>');
+            $(this).find('.thumbnail').html($loader);
+            var curie = $(this).attr('curie');
+            $.ajax({
+                type: 'POST',
+                url: '/watch',
+                data: {'uri': curie},
+                success: function(data) {
+                    $loader.attr('src', '/images/tick.png');
+                 }
+            });
+            return false;
+        });
+    </script>
+    {/literal}
+    <div style="background-color: white; border: 1px solid darkGray; position: relative; padding: 10px; height: 435px; overflow: hidden;">
         <p id="overview">
             Which episode did you watch?
         </p>
         <ol>
             {foreach $item in $items}
-               <li class="consumption">
+               <li class="consumption" style="cursor: pointer;" curie="{$item.curie}">
                 <div curie="{$item.curie}" class="item" >
                     <div class="thumbnail">
                     {if $item.thumbnail}
-                        <a href="{$item.uri}"><img src="{$item.thumbnail}" class="thumbnailImage"/></a>
+                        <img src="{$item.thumbnail}" class="thumbnailImage"/>
                     {/if}
                     </div>
-                    <div class="info">
+                    <div>
                         <p class="title">
                             <a href="{$item.uri}">{$item.primaryTitle}{if $item.secondaryTitle} - {$item.secondaryTitle}{/if}</a>
                         </p>
                         <p class="desc">
                             {if $item.description}{$item.description}{/if}
                         </p>
-                        {if $item.channel}
-                            <div class="channelPromo"><a href="{$item.channel.uri}"><img src="{$item.channel.logo}" /></a></div>
-                        {/if}
                     </div>
                 </div>
                 <div class="clearfix"></div>
             </li>
             {/foreach}
-        </ol>        
+        </ol>
+        
     </body> 
 </html>
 {/template}
