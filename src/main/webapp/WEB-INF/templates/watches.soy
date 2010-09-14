@@ -4,6 +4,61 @@
  * @param items
  * @param channels
  * @param brands
+ * @param genres
+ * @param overview
+**/
+{template .home}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>You Have Been Watching</title>
+        
+        <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
+        <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
+        <link rel="stylesheet" type="text/css" href="/css/css.css" />
+        
+        {include('/includes/javascript') |noAutoescape}
+    </head>
+    <body id="buzz">
+    <div class="container">
+        {call .homeOverview}
+            {param overview: $overview/}
+        {/call}
+        
+        {call .content}
+            {param items: $items/}
+        {/call}
+        
+        {call .topBrands}
+            {param counts: $brands/}
+        {/call}
+        
+        <div class="clearfix"></div>
+        
+        {call .graphTable}
+            {param title}
+                Top Channels
+            {/param}
+            {param counts: $channels/}
+        {/call}
+        
+        {call .graphTable}
+            {param title}
+                Top Genres
+            {/param}
+            {param counts: $genres/}
+        {/call}
+        
+        <div class="clearfix"></div>
+    </div>
+    </body>
+</html>
+{/template}
+
+/**
+ * @param items
+ * @param channels
+ * @param brands
  * @param userDetails
  * @param currentUserDetails
  * @param genres
@@ -88,9 +143,13 @@
 {template .overview}
 {if $overview.userDetails}
 <p id="overview">
+    {if $overview.userDetails.screenName}
     <a href="{if $overview.userDetails.profileUrl}{$overview.userDetails.profileUrl}{else}http://twitter.com/{$overview.userDetails.screenName}{/if}">
         {if $overview.userDetails.screenName == $currentUserDetails.screenName}You've{else}{if $overview.userDetails.fullName}{$overview.userDetails.fullName}{else}{$overview.userDetails.screenName}{/if}'s{/if}
     </a>
+    {else}
+    You've 
+    {/if}
     {if $overview.channel and $overview.channel.uri and $overview.channel.title}
         &nbsp mostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
         {if $overview.target and $overview.target.uri}
