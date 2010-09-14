@@ -23,18 +23,16 @@
                 <a href="{$item.uri}"><img src="{$item.thumbnail}" class="thumbnailImage"/></a>
             {/if}
             </div>
-            <div class="info">
+            <div>
                 <p class="title">
                     <a href="{$item.uri}">{$item.primaryTitle}{if $item.secondaryTitle} - {$item.secondaryTitle}{/if}</a>
                 </p>
                 <p class="desc">
                     {if $item.description}{$item.description}{/if}
                 </p>
-                {if $item.channel}
-                    <div class="channelPromo"><a href="{$item.channel.uri}"><img src="{$item.channel.logo}" /></a></div>
-                {/if}
             </div>
         <div class="clearfix"></div>
+        <a href="#yes" class="yes">Yes</a><a href="#no">No</a> {if $item.brand}<a href="#another">A different episode of {$item.brand.title}{/if}</a>
     </body> 
 </html>
 {/template}
@@ -74,36 +72,48 @@
         <link rel="stylesheet" type="text/css" href="/css/css.css" />
         {include('/includes/javascript') |noAutoescape}
     </head>
-    <body style="padding: 10px">
+    <body style="padding: 10px;">
+    {literal}
+    <script>
+        $("li").live('click', function() {
+            var curie = $(this).attr('curie');
+            $.ajax({
+                type: 'POST',
+                url: '/watch',
+                data: {'uri': curie},
+                success: function(data) { window.close(); }
+            });
+            return false;
+        });
+    </script>
+    {/literal}
     <div style="background-color: white; border: 1px solid darkGray; position: relative; padding: 10px;">
         <p id="overview">
             Which episode did you watch?
         </p>
         <ol>
             {foreach $item in $items}
-               <li class="consumption">
+               <li class="consumption" style="cursor: pointer;" curie="{$item.curie}">
                 <div curie="{$item.curie}" class="item" >
                     <div class="thumbnail">
                     {if $item.thumbnail}
-                        <a href="{$item.uri}"><img src="{$item.thumbnail}" class="thumbnailImage"/></a>
+                        <img src="{$item.thumbnail}" class="thumbnailImage"/>
                     {/if}
                     </div>
-                    <div class="info">
+                    <div>
                         <p class="title">
                             <a href="{$item.uri}">{$item.primaryTitle}{if $item.secondaryTitle} - {$item.secondaryTitle}{/if}</a>
                         </p>
                         <p class="desc">
                             {if $item.description}{$item.description}{/if}
                         </p>
-                        {if $item.channel}
-                            <div class="channelPromo"><a href="{$item.channel.uri}"><img src="{$item.channel.logo}" /></a></div>
-                        {/if}
                     </div>
                 </div>
                 <div class="clearfix"></div>
             </li>
             {/foreach}
-        </ol>        
+        </ol>
+        
     </body> 
 </html>
 {/template}
