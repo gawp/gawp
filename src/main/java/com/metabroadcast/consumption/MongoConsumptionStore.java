@@ -35,10 +35,8 @@ public class MongoConsumptionStore implements ConsumptionStore {
     private final MapMaker mapMaker = new MapMaker().expiration(5, TimeUnit.MINUTES);
     private Map<String, Count<String>> topBrands = mapMaker.makeMap();
 
-    private static final String REDUCE = "function(key , values ){" + "sum = 0;" + "for(var i in values) {"
-                    + "sum += values[i];" + "}" + "return sum;" + "};";
-
-    private static final String MAP = "function() {" + "emit(this.brand, 1);" + "}";
+    private static final String REDUCE = "function(key , values ){ sum = 0;" + "for(var i in values) { sum += values[i];" + "}" + "return sum;" + "};";
+    private static final String MAP = "function() { emit(this.brand, 1); }";
 
     private DBCollection table;
 
@@ -47,20 +45,21 @@ public class MongoConsumptionStore implements ConsumptionStore {
     }
     
     public List<Consumption> find(UserRef userRef, int limit) {
-        MongoQueryBuilder query = userRefTranslator.toQuery(userRef);
+        MongoQueryBuilder query = userRef != null ? userRefTranslator.toQuery(userRef) : new MongoQueryBuilder();
         return translator.fromDBObjects(table.find(query.build()).sort(
                         new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)).limit(limit));
     }
 
     public List<Consumption> find(UserRef userRef, DateTime from) {
-        MongoQueryBuilder query = userRefTranslator.toQuery(userRef);
+        MongoQueryBuilder query = userRef != null ? userRefTranslator.toQuery(userRef) : new MongoQueryBuilder();
         query.fieldAfterOrAt(ConsumptionTranslator.TIMESTAMP_KEY, from);
         return translator.fromDBObjects(table.find(query.build()).sort(
                         new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)));
     }
     
     public Consumption findLatest(UserRef userRef, TargetRef targetRef) {
-        MongoQueryBuilder query = userRefTranslator.toQuery(userRef).fieldEquals("target.domain", targetRef.domain()).fieldEquals("target.ref", targetRef.ref());
+        MongoQueryBuilder query = userRef != null ? userRefTranslator.toQuery(userRef) : new MongoQueryBuilder();
+        query.fieldEquals("target.domain", targetRef.domain()).fieldEquals("target.ref", targetRef.ref());
         List<Consumption> consumptions = translator.fromDBObjects(table.find(query.build()).sort(new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)).limit(1));
         if (consumptions.isEmpty()) {
             return null;

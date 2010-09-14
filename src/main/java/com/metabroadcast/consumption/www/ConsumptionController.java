@@ -111,7 +111,44 @@ public class ConsumptionController {
 
         model.put("currentUserDetails", null);
 
-        return watches(model, userRef);
+        return allWatches(model);
+    }
+    
+    @RequestMapping(value = { "/all" }, method = { RequestMethod.GET })
+    public String all(Map<String, Object> model) {
+        UserRef userRef = userProvider.existingUser();
+
+        model.put("currentUserDetails", userRef);
+
+        return allWatches(model);
+    }
+    
+    private String allWatches(Map<String, Object> model) {
+        UserRef currentUserRef = userProvider.existingUser();
+
+        Maybe<UserDetails> userDetails = getUserDetails(currentUserRef);
+        model.put("currentUserDetails", userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
+        
+        List<ConsumedContent> consumedContent = consumedContentProvider.find(null, MAX_RECENT_ITEMS);
+        model.put("items", consumedContentModelListBuilder.build(consumedContent));
+        
+        List<Consumption> consumptions = consumptionStore.find(null, new DateTime(DateTimeZones.UTC).minusWeeks(4));
+        
+        List<Count<String>> brands = consumedContentProvider.findBrandCounts(consumptions);
+        if (brands.size() > 6) {
+            brands = brands.subList(0, 6);
+        }
+        addBrandCountsModel(model, brands);
+        
+        List<Count<String>> channels = consumedContentProvider.findChannelCounts(consumptions);
+        addChannelCountsModel(model, channels);
+        
+        List<Count<String>> genres = consumedContentProvider.findGenreCounts(consumptions);
+        addGenreCountsModel(model, genres);
+        
+        addOverviewModel(model, channels, genres, consumptions, null);
+        
+        return "watches/home";
     }
 
     private String watches(Map<String, Object> model, UserRef userRef) {

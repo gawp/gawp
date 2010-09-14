@@ -6,6 +6,7 @@
  * @param brands
  * @param genres
  * @param overview
+ * @param currentUserDetails
 **/
 {template .home}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -31,6 +32,10 @@
         
         {call .topBrands}
             {param counts: $brands/}
+        {/call}
+        
+        {call .loginOrSignUp}
+            {param currentUserDetails: $currentUserDetails/}
         {/call}
         
         <div class="clearfix"></div>
@@ -132,6 +137,24 @@
 
 /**
  * @param overview
+ **/
+{template .homeOverview}
+<p id="overview">
+    {if $overview.channel and $overview.channel.uri and $overview.channel.title}
+        Overall, people have mostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
+        {if $overview.target and $overview.target.uri}
+            , particularly <a href="{$overview.target.uri}">{$overview.target.title}</a>
+        {/if}
+        .
+    {/if}
+    {if $overview.genre and $overview.genre.title}
+        &nbspAcross all channels, {$overview.genre.title} programs have been the most popular.
+    {/if}
+</p>
+{/template}
+
+/**
+ * @param overview
  * @param currentUserDetails
  **/
 {template .overview}
@@ -145,7 +168,7 @@
     You've 
     {/if}
     {if $overview.channel and $overview.channel.uri and $overview.channel.title}
-        &nbsp mostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
+        &nbspmostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
         {if $overview.target and $overview.target.uri}
             , particularly <a href="{$overview.target.uri}">{$overview.target.title}</a>
         {/if}
@@ -157,6 +180,23 @@
     .
 </p>
 {/if}
+{/template}
+
+/**
+ * @param currentUserDetails
+ **/
+{template .loginOrSignUp}
+<div id="loginOrSignUp" class="module" style="width: 300px;">
+    {if $currentUserDetails and $currentUserDetails.screenName}
+        <p class="joinus"><a href="/{$currentUserDetails.screenName}" class="biglink">Your Profile</a>.
+        {if $currentUserDetails.profileImage}
+            <div class="joinusPic"><a href="{$currentUserDetails.screenName}"><img src="{$currentUserDetails.profileImage}" class="icon" /></a></div>
+        {/if}
+        </p>
+    {else}
+        <p class="joinus"><a href="/login/twitter?continueTo=/" class="biglink">Login</a><span class="or clearfix">or</span><a href="/invites" class="biglink">Request An Invite</a></p>
+    {/if}
+</div>
 {/template}
 
 /**
