@@ -173,15 +173,19 @@
     {else}
     You've 
     {/if}
-    {if $overview.channel and $overview.channel.uri and $overview.channel.title}
-        &nbspmostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
-        {if $overview.target and $overview.target.uri}
-            , particularly <a href="{$overview.target.uri}">{$overview.target.title}</a>
+    {if $overview.channel and $overview.channel.uri and $overview.channel.title and $overview.genre.title}
+        {if $overview.channel and $overview.channel.uri and $overview.channel.title}
+            &nbsp;mostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
+            {if $overview.target and $overview.target.uri}
+                , particularly <a href="{$overview.target.uri}">{$overview.target.title}</a>
+            {/if}
         {/if}
-    {/if}
-    {if $overview.channel and $overview.target and $overview.genre and $overview.genre.title}, and {/if}
-    {if $overview.genre and $overview.genre.title}
-        has a penchant for {$overview.genre.title} programs
+        {if $overview.channel and $overview.target and $overview.genre and $overview.genre.title}, and {/if}
+        {if $overview.genre and $overview.genre.title} 
+            has a penchant for {$overview.genre.title} programs
+        {/if}
+    {else}
+        &nbsp;not watched anything yet..
     {/if}
     .
 </p>
@@ -231,6 +235,7 @@
  * @param neighbours
 **/
 {template .neighbours}
+
 <div id="neighbours">
     <h2>Neighbours</h2>
     <ul>
@@ -238,6 +243,10 @@
           <li class="neighbour">
               <div class="avatar"><a href="/{$neighbour.screenName}"><img src="{$neighbour.profileImage}" class="icon" /></a><!-- <div class="gloss"></div> --></div>
           </li>
+        {ifempty}
+          {for $i in range(10)}
+            <li><div class="emptyAvatar"></div></li>
+          {/for}
         {/foreach}
     </ul>
 </div>
@@ -286,6 +295,15 @@
                 </div>
                 <div class="clearfix"></div>
             </li>
+        {ifempty}
+            {for $i in range(3)}
+                <li class="consumption">
+                    <div class="item" >
+                            <div class="thumbnail emptyAvatar"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </li>
+            {/for}
         {/foreach}
     </ul>
 </div>
@@ -309,6 +327,13 @@
         {/if}
             <td class="countCell"><div style="width: {$count.width}%;" class="chartbar"><span class="actualCount">{$count.count}</span></div></td>
         </tr>
+    {ifempty}
+        {for $i in range(4,8)}
+            <tr class="count">
+                <td class="titleCell"></td>
+                <td class="countCell"><div style="width: {$i}0%;" class="chartbar"><span class="actualCount">{$i}</span></div></td>
+            </tr>
+        {/for}
     {/foreach}
     </tbody>
 </table>
@@ -320,8 +345,8 @@
 **/
 {template .topBrands}
 <div class="topBrands module" style="width:360px;">
-<h2>Favorite Shows</h2>
 <ul class="topBrands">
+<h2>Favorite Shows</h2>
 {foreach $count in $counts}
     <li class="topBrand">
         <span class="picture">
@@ -332,6 +357,12 @@
         </span>
         <p class="brandTitle"><a href="{$count.target.uri}">{$count.target.title}</a><span class="watches">({$count.count} watches)</span></p>
     </li>
+{ifempty}
+    {for $i in range(0, 4)}
+        <li class="topBrand">
+            <div class="picture mainImage emptyAvatar" style="width:150px;height:84px;"></div>
+        </li>
+    {/for}
 {/foreach}
 </ul>
 </div>

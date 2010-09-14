@@ -12,7 +12,7 @@
         return false; 
     };
     closeButton.innerHTML = "Close";
-    closeButton.style.cssText="position:fixed; z-index: 1001; top: 10px; right: 20px;";
+    closeButton.style.cssText="position:fixed; z-index: 1001; top: 15px; right: 20px; color: black; font-size: 12pt;";
     document.body.appendChild(iframe);
     document.body.appendChild(closeButton);
 })();
