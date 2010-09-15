@@ -43,7 +43,7 @@
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>*.png</url-pattern>
-        <url-pattern>/js/*</url-pattern>
+        <url-pattern>*.js</url-pattern>
         <url-pattern>*.gif</url-pattern>
         <url-pattern>*.jpg</url-pattern>
         <url-pattern>*.css</url-pattern>

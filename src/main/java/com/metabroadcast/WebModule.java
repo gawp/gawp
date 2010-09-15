@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,12 +28,14 @@ import com.metabroadcast.common.media.MimeType;
 import com.metabroadcast.common.social.auth.AuthenticationInterceptor;
 import com.metabroadcast.common.social.auth.CookieAuthenticator;
 import com.metabroadcast.common.social.auth.CookieTranslator;
+import com.metabroadcast.common.social.auth.AuthenticationInterceptor.UserNotAuthenticatedHandler;
 import com.metabroadcast.common.social.auth.credentials.CredentialsStore;
 import com.metabroadcast.common.social.user.AccessTokenProcessor;
 import com.metabroadcast.common.social.user.ApplicationIdAwareUserRefBuilder;
 import com.metabroadcast.common.social.user.TwitterAccessTokenChecker;
 import com.metabroadcast.common.social.user.UserDetailsProvider;
 import com.metabroadcast.common.social.user.UserRefHelper;
+import com.metabroadcast.common.url.UrlEncoding;
 import com.metabroadcast.common.webapp.json.JsonView;
 import com.metabroadcast.common.webapp.soy.SoyTemplateRenderer;
 import com.metabroadcast.common.webapp.soy.SoyTemplateViewResolver;
@@ -44,7 +49,6 @@ public class WebModule {
     
 	private static final String COOKIE_NAME = "beige";
 	
-	private @Value("${login.view}") String loginView;
 	private @Value("${host}") String host;
     private @Value("${twitter.clientId}") String twitterClientId;
     
@@ -77,7 +81,7 @@ public class WebModule {
         return controllerClassNameHandlerMapping;
     }
 
-    private final static Set<String> exceptions = ImmutableSet.of("/login", "/includes/javascript", "/invites", "/goodbye", "/logout", "/system");
+    private final static Set<String> exceptions = ImmutableSet.of("/login/twitter","/login", "/includes/javascript", "/invites", "/goodbye", "/logout", "/system");
     
     @Bean WhitelistInterceptor whitelistInterceptor() {
 		return new WhitelistInterceptor(whitelist, cookieAuthenticator(), userDetailsProvider, exceptions);
@@ -85,13 +89,22 @@ public class WebModule {
 	public @Bean AuthenticationInterceptor authenticationInterceptor() {
         Map<String, List<String>> methodToPath = Maps.newHashMap();
         
-        methodToPath.put("GET", ImmutableList.<String>of());
+        methodToPath.put("GET", ImmutableList.<String>of("/bookmark/iframe"));
         methodToPath.put("POST", ImmutableList.<String>of());
         
         
         AuthenticationInterceptor authenticationInterceptor = new AuthenticationInterceptor();
         authenticationInterceptor.setViewResolver(resolver());
-        authenticationInterceptor.setLoginView(loginView);
+        authenticationInterceptor.setUserNotAuthenticatedHandler(new UserNotAuthenticatedHandler() {
+			
+			@Override
+			public boolean userNotAuthenticated(HttpServletRequest request, HttpServletResponse response) throws Exception {
+				String queryString = request.getQueryString() == null ? "" : "?" + request.getQueryString();
+				response.sendRedirect(host + "/login?continueTo=" + UrlEncoding.encode(request.getRequestURI() + queryString));
+				return false;
+			}
+		});
+        
         authenticationInterceptor.setAuthService(cookieAuthenticator());
         authenticationInterceptor.setAuthenticationRequiredByMethod(methodToPath);
         authenticationInterceptor.setExceptions(Lists.newArrayList(exceptions));
