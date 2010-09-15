@@ -412,6 +412,9 @@ h3{
 	background:             #71B7E6;
 	border-top-right-radius: 8px;
 	border-bottom-right-radius:  8px;
+    -webkit-border-top-right-radius: 8px;
+    -webkit-border-bottom-right-radius:  8px;
+    -moz-border-radius: 0 8px 8px 0;
 	height: 42px;
 }
 .actualCount {
