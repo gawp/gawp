@@ -53,13 +53,38 @@
         {include('/includes/javascript') |noAutoescape}
     </head>
     <body style="padding: 10px">
-    <div style="background-color: white; border: 1px solid darkGray; position: relative; padding: 10px; height: 435px; overflow: hidden;">
+    <div style="background-color: white; border: 1px solid darkGray; position: relative; padding: 10px;">
         <p id="overview">Sorry, nothing to see here</p>
-        <p>Try searching for it</p>
        </div>
        {call beige.templates.decor.footer /}
     </body> 
 </html>
+{/template}
+
+/**
+ * Injected into the page
+ * @param frameHeight
+ * @param frameSrc
+*/
+{template .bootstrap}
+(function(){lb}
+    var iframe=document.createElement('iframe');
+    iframe.width=480;
+    iframe.height={$frameHeight};
+    iframe.style.cssText="position:absolute; z-index: 1000; top: 0; right: 0; border: 10px 0 0 0 solid #aaa;";
+    iframe.src='{$frameSrc}';
+    var closeButton=document.createElement('a');
+    closeButton.href="#";
+    closeButton.onclick = function() {lb} 
+        document.body.removeChild(iframe); 
+        document.body.removeChild(closeButton); 
+        return false; 
+    {rb};
+    closeButton.innerHTML = "Close";
+    closeButton.style.cssText="position:absolute; z-index: 1001; top: 15px; right: 20px; color: black; font-size: 12pt;";
+    document.body.appendChild(iframe);
+    document.body.appendChild(closeButton);
+{rb})();
 {/template}
 
 /**
@@ -69,7 +94,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>Not found | You Have Been Watching</title>
+        <title>Choose episode | gawp.tv</title>
         <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
         <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
         <link rel="stylesheet" type="text/css" href="/css/css.css" />
@@ -94,7 +119,7 @@
         });
     </script>
     {/literal}
-    <div style="background-color: white; border: 1px solid darkGray; position: relative; padding: 10px; height: 435px; overflow: hidden;">
+    <div style="background-color: white; border: 1px solid darkGray; position: relative; padding: 10px;">
         <p id="overview">
             Which episode did you watch?
         </p>
