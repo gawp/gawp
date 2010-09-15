@@ -1,0 +1,27 @@
+{
+  "name": "Beige",
+  "version": "0.1",
+  "description": "Record your TV watching habits",
+  "background_page": "background.html",
+  
+  "content_scripts": [{
+    "js": ["jquery-1.4.2.min.js", "doc_start.js"],
+    "matches": ["http://*/*"],
+    "run_at": "document_start"	
+  }, {
+  	"js": ["jquery-1.4.2.min.js", "doc_end.js"],
+  	"matches": ["http://*/*"],
+    "run_at": "document_end"	
+  }],
+  
+  "page_action": {
+    "name": "Consume this show",
+    "default_icon": "chrome-ext-play-button.png",
+    "default_popup": "iframepopup.html"
+  },
+  
+  "permissions": [
+    "tabs", "http://*/*"
+  ]
+}
+

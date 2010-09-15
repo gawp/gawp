@@ -4,8 +4,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.metabroadcast.common.properties.Platform;
-
 @Controller
 public class IncludesController {
     
@@ -13,7 +11,7 @@ public class IncludesController {
     @ResponseBody
     public String javascript() {
         
-        if (Platform.isDev() || Platform.isTest()) {
+        //if (true) {
             return "<script type=\"text/javascript\" src=\"/js/base.js\"></script>" +
                     "<script type=\"text/javascript\" src=\"/js/soyutils.js\"></script>" +
                     "<script type=\"text/javascript\" src=\"/js/jquery.js\"></script>" +
@@ -22,8 +20,8 @@ public class IncludesController {
                     "<script type=\"text/javascript\" src=\"/js/jquery.loading.1.6.4.js\"></script>" +
                     "<script type=\"text/javascript\" src=\"/js/ui.iTabs.js\"></script>" +
                     "<script type=\"text/javascript\" src=\"/js/js.js\"></script>";
-        }
-        
-        return "<script type=\"text/javascript\" src=\"/js/closure/generated/global.js\"></script>";
+        //}
+        // Naughty
+        //return "<script type=\"text/javascript\" src=\"/js/closure/generated/global.js\"></script>";
     }
 }

@@ -77,7 +77,7 @@ public class WebModule {
         return controllerClassNameHandlerMapping;
     }
 
-    private final static Set<String> exceptions = ImmutableSet.of("/login", "/includes/javascript", "/invites", "/goodbye", "/logout");
+    private final static Set<String> exceptions = ImmutableSet.of("/login", "/includes/javascript", "/invites", "/goodbye", "/logout", "/system");
     
     @Bean WhitelistInterceptor whitelistInterceptor() {
 		return new WhitelistInterceptor(whitelist, cookieAuthenticator(), userDetailsProvider, exceptions);
@@ -94,7 +94,7 @@ public class WebModule {
         authenticationInterceptor.setLoginView(loginView);
         authenticationInterceptor.setAuthService(cookieAuthenticator());
         authenticationInterceptor.setAuthenticationRequiredByMethod(methodToPath);
-        authenticationInterceptor.setExceptions(exceptions);
+        authenticationInterceptor.setExceptions(Lists.newArrayList(exceptions));
         return authenticationInterceptor;
     }
     

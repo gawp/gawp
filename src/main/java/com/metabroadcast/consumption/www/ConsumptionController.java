@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
@@ -98,7 +99,13 @@ public class ConsumptionController {
     }
 
     @RequestMapping(value = { "/watches", "/" }, method = { RequestMethod.GET })
-    public String userWatches(Map<String, Object> model) {
+    public String userWatches(Map<String, Object> model, HttpServletRequest request) {
+        
+        String useragent = request.getHeader("User-Agent");
+        if (useragent != null && useragent.contains("iPhone")) {
+            return "redirect:/watch";
+        }
+        
         UserRef userRef = userProvider.existingUser();
 
         if (userRef.isInNamespace(UserNamespace.TWITTER)) {
@@ -310,6 +317,8 @@ public class ConsumptionController {
         long getUser = System.currentTimeMillis();
 
         UserRef userRef = userProvider.existingUser();
+        Maybe<UserDetails> userDetails = getUserDetails(userRef);
+        model.put("userDetails", userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
         model.put("loggedIn", !userRef.getNamespace().equals(UserNamespace.ANONYMOUS));
 
         long getBrands = System.currentTimeMillis();
@@ -451,8 +460,12 @@ public class ConsumptionController {
     public SimpleModel userDetailsModel(TwitterUserDetails userDetails) {
         SimpleModel model = new SimpleModel();
         if (userDetails != null) {
+            String targetName = userDetails.getFullName() != null ? userDetails.getFullName() : userDetails.getScreenName();
+            String possessivePostfix = targetName.endsWith("s") ? "'" : "'s";
+            
             model.put("screenName", userDetails.getScreenName());
             model.put("fullName", userDetails.getFullName());
+            model.put("possessivePostfix", possessivePostfix);
             model.put("followers", userDetails.getFollowerCount());
             model.put("profileImage", userDetails.getProfileImage());
             model.put("profileUrl", userDetails.getProfileUrl());
