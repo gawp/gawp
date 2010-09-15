@@ -1,4 +1,4 @@
-var beigeUrl = 'http://beige.mbst.tv/bookmark?uri=';
+var beigeUrl = 'http://beige.mbst.tv/bookmark/iframe?uri=';
 
 chrome.tabs.getSelected(null, function(tab) {
     console.log(tab.url);
