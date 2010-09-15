@@ -110,7 +110,9 @@
             
             <div id="tools">
                 <h2>Tools</h2>
-                {literal}<a style="background-color: #eee; padding: 5px;" onClick="alert('drag me onto your bookmarks bar'); return false;" href="javascript:(function(){bootstrap=document.createElement('script');bootstrap.src='http://dev.mbst.tv:8080/js/bookmarklet.js';document.getElementsByTagName('head')[0].appendChild(bootstrap);})();">Bookmarklet</a>{/literal}
+                <ul>
+                    <li class="tool">{literal}<a onClick="alert('Drag me onto your bookmarks bar'); return false;" href="javascript:(function(){bootstrap=document.createElement('script');bootstrap.src='http://dev.mbst.tv:8080/js/bookmarklet.js';document.getElementsByTagName('head')[0].appendChild(bootstrap);})();">Bookmarklet</a>{/literal}</li>
+                    <li class="tool"><a href="/watch">Log watches</a></li>
             </div>
 
             {call .neighbours}

@@ -201,6 +201,10 @@ input.submit:hover { background-position: -450px 50%; }
 	width: 132px;
 }
 
+.tool {
+	background: #EEE;
+}
+
 .consumption {
     position:               relative;
     list-style-type:        none;
