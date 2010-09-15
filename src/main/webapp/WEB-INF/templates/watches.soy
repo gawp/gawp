@@ -111,9 +111,10 @@
             
             <div id="tools">
                 <h2>Tools</h2>
+                <p>Watch shows with these tools:</p>
                 <ul>
                     <li class="tool">{literal}<a onClick="alert('Drag me onto your bookmarks bar'); return false;" href="javascript:(function(){bootstrap=document.createElement('script');bootstrap.src='http://dev.mbst.tv:8080/js/bookmarklet.js';document.getElementsByTagName('head')[0].appendChild(bootstrap);})();">Bookmarklet</a>{/literal}</li>
-                    <li class="tool"><a href="/watch">Log watches</a></li>
+                    <li class="tool"><a href="/watch">iPhone page</a></li>
                 </ul>
             </div>
 
@@ -173,8 +174,8 @@
 <p id="overview">
     {if $overview.userDetails.screenName}
     <a href="{if $overview.userDetails.profileUrl}{$overview.userDetails.profileUrl}{else}http://twitter.com/{$overview.userDetails.screenName}{/if}">
-        {if $overview.userDetails.screenName == $currentUserDetails.screenName}You've{else}{if $overview.userDetails.fullName}{$overview.userDetails.fullName}{else}{$overview.userDetails.screenName}{/if}'s{/if}
-    </a>
+        {if $overview.userDetails.screenName == $currentUserDetails.screenName}You've{else}{if $overview.userDetails.fullName}{$overview.userDetails.fullName}{else}{$overview.userDetails.screenName}{/if}{/if}
+    </a> has
     {else}
     You've 
     {/if}
@@ -185,9 +186,9 @@
                 , particularly <a href="{$overview.target.uri}">{$overview.target.title}</a>
             {/if}
         {/if}
-        {if $overview.channel and $overview.target and $overview.genre and $overview.genre.title}, and {/if}
+        {if $overview.channel and $overview.target and $overview.genre and $overview.genre.title}, and has {/if}
         {if $overview.genre and $overview.genre.title} 
-            has a penchant for {$overview.genre.title} programs
+            a penchant for {$overview.genre.title} programs
         {/if}
     {else}
         &nbsp;not watched anything yet..
@@ -328,7 +329,7 @@
         {if $count.target.uri and $count.target.logo}
             <td class="iconCell"><a href="{$count.target.uri}"><img src="{$count.target.logo}" class="thumbnailImage" /></a></td>
         {else}
-            <td class="titleCell"><a href="{$count.target.uri}">{$count.target.title}</a></td>
+            <td class="titleCell">{$count.target.title}</td>
         {/if}
             <td class="countCell"><div style="width: {$count.width}%;" class="chartbar"><span class="actualCount">{$count.count}</span></div></td>
         </tr>
@@ -336,7 +337,7 @@
         {for $i in range(4,8)}
             <tr class="count">
                 <td class="titleCell"></td>
-                <td class="countCell"><div style="width: {$i}0%;" class="chartbar"><span class="actualCount">{$i}</span></div></td>
+                <td class="countCell"><div style="width: {$i}0%;" class="chartbar"></div></td>
             </tr>
         {/for}
     {/foreach}
