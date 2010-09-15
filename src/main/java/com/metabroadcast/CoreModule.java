@@ -43,7 +43,7 @@ public class CoreModule {
     }
     
     public @Bean CookieTranslator cookieTranslator() {
-        return new CookieTranslator("beige", "devsalt");
+        return new CookieTranslator("beige", "f8bc218051364f2194f612182fc327c9");
     }
 
     public @Bean CredentialsStore credentialsStore() throws UnknownHostException, MongoException {
