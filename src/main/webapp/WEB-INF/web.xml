@@ -48,6 +48,7 @@
         <url-pattern>*.jpg</url-pattern>
         <url-pattern>*.css</url-pattern>
         <url-pattern>*.ico</url-pattern>
+        <url-pattern>/downloads/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
