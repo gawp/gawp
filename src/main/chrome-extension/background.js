@@ -1,6 +1,9 @@
 var atlasUrl = "http://atlasapi.org/2.0/";
 var playerHookUrl = "http://beige.mbst.tv/js/browser-hooks/";
 var consumeUrl = "http://beige.mbst.tv/watch";
+var beigeCookieUrl = 'http://beige.mbst.tv/';
+var beigeCookieName = 'beige';
+var loggedOutIcon = 'chrome-ext-play-button-logged-out.png';
 
 chrome.extension.onRequest.addListener(receiveMessage);
 
@@ -13,6 +16,7 @@ function receiveMessage(request, sender, callback) {
 	else if (request.msg == "getPlayerHook") {
 	    var hook = getPageHook(sender.tab.url);
 	    if (hook) {
+	        checkLoginStatus(sender.tab);
 	        callback(playerHookUrl + hook);
 	    }
 	}
@@ -34,6 +38,19 @@ function receiveMessage(request, sender, callback) {
 	        }
 	    });
     }
+}
+
+function checkLoginStatus(tab) {
+    chrome.cookies.get({'url': beigeCookieUrl, 'name': beigeCookieName}, function(cookie) {
+        if (cookie && cookie.value.substring(0, 2) != "an") {
+            console.log('found beige cookie');
+        }
+        else {
+            console.log('could not find beige cookie');
+            chrome.pageAction.setIcon({'tabId': tab.id, 'path': loggedOutIcon});
+            chrome.pageAction.show(tab.id);
+        }
+    })
 }
 
 function getPageHook(url) {
