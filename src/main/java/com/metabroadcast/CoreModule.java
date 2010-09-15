@@ -26,11 +26,12 @@ import com.metabroadcast.consumption.ConsumptionModule;
 import com.metabroadcast.content.AtlasContentStore;
 import com.metabroadcast.content.ContentStore;
 import com.metabroadcast.invites.InvitesModule;
+import com.metabroadcast.neighbours.NeighbourhoodModule;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
 @Configuration
-@Import({WebModule.class, ConsumptionModule.class, InvitesModule.class})
+@Import({WebModule.class, ConsumptionModule.class, InvitesModule.class, NeighbourhoodModule.class})
 public class CoreModule {
 
     private @Autowired RequestScopedAuthenticationProvider authenticationProvider;

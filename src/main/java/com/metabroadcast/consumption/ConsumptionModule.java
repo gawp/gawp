@@ -17,9 +17,7 @@ import com.metabroadcast.common.social.user.details.twitter.TwitterMasterUserDet
 import com.metabroadcast.consumption.www.ConsumptionController;
 import com.metabroadcast.content.AtlasContentStore;
 import com.metabroadcast.content.ContentStore;
-import com.metabroadcast.neighbours.MongoNeighboursStore;
 import com.metabroadcast.neighbours.NeighboursProvider;
-import com.metabroadcast.neighbours.ScheduledNeighbourhoodUpdater;
 import com.metabroadcast.user.twitter.TwitterUserRefProvider;
 
 @Configuration
@@ -27,6 +25,7 @@ public class ConsumptionModule {
     private @Autowired DatabasedMongo db;
     private @Autowired UserProvider userProvider;
     private @Autowired ApplicationIdAwareUserRefBuilder userRefBuilder;
+    private @Autowired NeighboursProvider neighboursProvider;
     
     private @Value("${twitter.consumerKey}") String consumerKey;
     private @Value("${twitter.consumerSecret}") String consumerSecret;
@@ -39,15 +38,7 @@ public class ConsumptionModule {
     }
     
     public @Bean ConsumptionController consumptionController() {
-        return new ConsumptionController(consumptionStore(), contentStore(), userProvider, userDetailsProvider(), userRefProvider(), neighboursProvider());
-    }
-    
-    public @Bean ScheduledNeighbourhoodUpdater neighbourhoodUpdater() {
-        return new ScheduledNeighbourhoodUpdater(db);
-    }
-    
-    @Bean NeighboursProvider neighboursProvider() {
-        return new MongoNeighboursStore(db);
+        return new ConsumptionController(consumptionStore(), contentStore(), userProvider, userDetailsProvider(), userRefProvider(), neighboursProvider);
     }
     
     @Bean TwitterUserRefProvider userRefProvider() {

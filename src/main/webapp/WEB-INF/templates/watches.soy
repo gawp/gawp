@@ -259,7 +259,7 @@
 {if $currentUserDetails}
     <div id="login"><a href="/logout">Logout</a></div>
 {else}
-    <div id="login"><a href="/login/twitter?continueTo=/">Login</a></div>
+    <div id="login"><a href="/login/twitter?continueTo=/"><img src="/images/sign-in-with-twitter-d.png" /></a></div>
 {/if}
 {/template}
 
@@ -397,6 +397,14 @@
     <div class="container">
         <div class="wrapper"> 
         <h1 id="maintitle">What Are You Watching?</h1>
+        
+        {if not $loggedIn}
+            <div id="login" title="Login" class="clearfix module">
+                <h2 class="subtitle">Login To Gawp</h2>
+                <a href="/login/twitter?continueTo=/watch"><img src="/images/sign-in-with-twitter-d.png" /></a>
+            </div>
+        {/if}
+        
         <div id="channels" title="Channel" class="clearfix module">
             <h2 class="subtitle">Channels</h2>
             <ul>
@@ -430,10 +438,6 @@
             <div id="logout" title="Logout" class="clearfix module">
                 <a href="/logout?continueTo=/watch">Logout</a>
             </div>
-        {else}
-            <div id="login" title="Login" class="clearfix module">
-                <a href="/login/twitter?continueTo=/watch"><img src="/images/sign-in-with-twitter-d.png" /></a>
-            </div>
         {/if}
         
         <div class="clearfix">
@@ -441,13 +445,14 @@
         </div>
         <div class="footer">
         <ul class="tabbar">
+             {if not $loggedIn}
+                <li><a class="iicon" href="#login" title="Login"><em class="ii-cloud"></em>Login</a></li>
+             {/if}
              <li><a class="iicon" href="#channels" title="Channels"><em class="ii-tv"></em>Channels</a></li>
              <li><a class="iicon" href="#shows" title="Shows"><em class="ii-movie1"></em>Shows</a></li>
              <li><a class="iicon" href="#search" title="Search"><em class="ii-magnify"></em>Search</a></li>
              {if $loggedIn}
                 <li><a class="iicon" href="#logout" title="Logout"><em class="ii-cloud"></em>Logout</a></li>
-             {else}
-                <li><a class="iicon" href="#login" title="Login"><em class="ii-cloud"></em>Login</a></li>
              {/if}
         </ul>
         </div>
