@@ -460,8 +460,12 @@ public class ConsumptionController {
     public SimpleModel userDetailsModel(TwitterUserDetails userDetails) {
         SimpleModel model = new SimpleModel();
         if (userDetails != null) {
+            String targetName = userDetails.getFullName() != null ? userDetails.getFullName() : userDetails.getScreenName();
+            String possessivePostfix = targetName.endsWith("s") ? "'" : "'s";
+            
             model.put("screenName", userDetails.getScreenName());
             model.put("fullName", userDetails.getFullName());
+            model.put("possessivePostfix", possessivePostfix);
             model.put("followers", userDetails.getFollowerCount());
             model.put("profileImage", userDetails.getProfileImage());
             model.put("profileUrl", userDetails.getProfileUrl());

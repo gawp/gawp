@@ -208,7 +208,7 @@ input.submit:hover { background-position: -450px 50%; }
     padding: 5px;
     position: relative;
     width: 75px;
-    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
 .consumption {

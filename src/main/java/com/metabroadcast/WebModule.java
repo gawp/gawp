@@ -103,20 +103,23 @@ public class WebModule {
 		return new CookieAuthenticator();
     }
 
-    public @Bean
-    ViewResolver resolver() {
+    public @Bean ViewResolver resolver() {
         ContentNegotiatingViewResolver resolver = new ContentNegotiatingViewResolver();
 
-        resolver.setMediaTypes(ImmutableMap.of("json", MimeType.APPLICATION_JSON.toString()));
+        resolver.setMediaTypes(ImmutableMap.of("json", MimeType.APPLICATION_JSON.toString(), "js", "text/javascript"));
 
         resolver.setFavorPathExtension(true);
         resolver.setIgnoreAcceptHeader(true);
         resolver.setDefaultContentType(MediaType.TEXT_HTML);
         resolver.setDefaultViews(ImmutableList.<View> of(new JsonView()));
 
-        SoyTemplateViewResolver soyResolver = new SoyTemplateViewResolver(soyRenderer());
-        soyResolver.setNamespace("beige.templates");
-        resolver.setViewResolvers(ImmutableList.<ViewResolver> of(soyResolver));
+        SoyTemplateViewResolver htmlResolver = new SoyTemplateViewResolver(soyRenderer());
+        htmlResolver.setNamespace("beige.templates");
+        
+        SoyTemplateViewResolver jsResolver = new SoyTemplateViewResolver(soyRenderer(), "text/javascript");
+        jsResolver.setNamespace("beige.templates");
+        
+        resolver.setViewResolvers(Lists.<ViewResolver>newArrayList(htmlResolver, jsResolver));
         return resolver;
     }
 
