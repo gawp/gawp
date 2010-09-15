@@ -174,8 +174,7 @@
 <p id="overview">
     {if $overview.userDetails.screenName}
     <a href="{if $overview.userDetails.profileUrl}{$overview.userDetails.profileUrl}{else}http://twitter.com/{$overview.userDetails.screenName}{/if}">
-        {if $overview.userDetails.screenName == $currentUserDetails.screenName}You've{else}{if $overview.userDetails.fullName}{$overview.userDetails.fullName}{else}{$overview.userDetails.screenName}{/if}{/if}
-    </a> has
+        {if $overview.userDetails.screenName == $currentUserDetails.screenName}You've</a>{else}{if $overview.userDetails.fullName}{$overview.userDetails.fullName}{else}{$overview.userDetails.screenName}{/if}</a> has{/if}
     {else}
     You've 
     {/if}
