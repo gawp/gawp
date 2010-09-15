@@ -14,9 +14,10 @@
         <link rel="stylesheet" type="text/css" href="/css/css.css" />
         {include('/includes/javascript') |noAutoescape}
     </head>
+    
     <body style="padding: 10px">
-         <div style="background-color: white; border: 1px solid darkGray; position: relative; padding: 10px;">
-        <p id="overview">Did you watch this?</p>
+       <div style="background-color: white; border: 1px solid darkGray; position: relative; padding: 10px;">
+       <p id="overview">Did you watch this?</p>
        <div curie="{$item.curie}" class="item">
             <div class="thumbnail">
             {if $item.thumbnail}
@@ -33,6 +34,7 @@
             </div>
         <div class="clearfix"></div>
         <a href="#yes" class="yes">Yes</a><a href="#no">No</a> {if $item.brand}<a href="#another">A different episode of {$item.brand.title}{/if}</a>
+       {call beige.templates.decor.footer /}
     </body> 
 </html>
 {/template}
@@ -55,6 +57,7 @@
         <p id="overview">Sorry, nothing to see here</p>
         <p>Try searching for it</p>
        </div>
+       {call beige.templates.decor.footer /}
     </body> 
 </html>
 {/template}
@@ -117,7 +120,7 @@
             </li>
             {/foreach}
         </ol>
-        
+        {call beige.templates.decor.footer /}
     </body> 
 </html>
 {/template}
