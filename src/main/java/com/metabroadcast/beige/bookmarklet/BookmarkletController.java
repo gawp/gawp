@@ -58,12 +58,12 @@ public class BookmarkletController {
 		Description content = contentFor(uri);
 
 		if (content == null) {
-			model.put("frameHeight", 210);
+			model.put("frameHeight", 330);
 		} else if (content instanceof Playlist) {
 			Playlist playlist = (Playlist) content;
 			model.put("frameHeight", 210 + playlist.getItems().size() * 53);
 		} else {
-			model.put("frameHeight", 275);
+			model.put("frameHeight", 330);
 		}
 		model.put("frameSrc", host  + "/bookmark/iframe?uri=" + UrlEncoding.encode(uri));
 		return "bookmarklet/bootstrap";

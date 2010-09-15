@@ -48,7 +48,7 @@ public class TwitterAuthController {
 		authControllerHelper = new AuthControllerHelper(cookieTranslator, accessTokenProcessor);
 	}
 	
-    @RequestMapping(value = "/login/twitter", method = RequestMethod.GET)
+    @RequestMapping(value = { "/login/twitter", "/login"}, method = RequestMethod.GET)
     public View sendToTwitter(@RequestParam(required=true) String continueTo, HttpServletRequest request) {
     	return authControllerHelper.redirectToThirdPartyLogin(continueTo, request, authUrl(continueTo));
     }
