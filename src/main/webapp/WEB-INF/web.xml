@@ -49,7 +49,18 @@
         <url-pattern>*.css</url-pattern>
         <url-pattern>*.ico</url-pattern>
         <url-pattern>*.crx</url-pattern>
+        <url-pattern>*.html</url-pattern>
     </servlet-mapping>
+
+ 
+    <error-page>
+            <error-code>500</error-code>
+            <location>/WEB-INF/errors/500.html</location>
+    </error-page>
+    <error-page>
+            <error-code>400</error-code>
+            <location>/WEB-INF/errors/500.html</location>
+    </error-page>
 
     <servlet-mapping>
         <servlet-name>beige</servlet-name>
