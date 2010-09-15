@@ -178,14 +178,14 @@
     {else}
     You've 
     {/if}
-    {if $overview.channel and $overview.channel.uri and $overview.channel.title and $overview.genre.title}
+    {if $overview.channel and $overview.channel.uri and $overview.channel.title or $overview.genre.title}
         {if $overview.channel and $overview.channel.uri and $overview.channel.title}
             &nbsp;mostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
             {if $overview.target and $overview.target.uri}
                 , particularly <a href="{$overview.target.uri}">{$overview.target.title}</a>
             {/if}
         {/if}
-        {if $overview.channel and $overview.target and $overview.genre and $overview.genre.title}, and has {/if}
+        {if $overview.channel and $overview.target and $overview.genre and $overview.genre.title}, and {if $currentUserDetails and $overview.userDetails.screenName == $currentUserDetails.screenName}have{else}has{/if} {/if}
         {if $overview.genre and $overview.genre.title} 
             a penchant for {$overview.genre.title} programs
         {/if}
