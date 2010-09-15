@@ -27,9 +27,11 @@ public class BookmarkletController {
 	private final ModelListBuilder<Item> itemsModelBuilder = DelegatingModelListBuilder.delegateTo(itemModelBuilder); 
 
 	private final ContentStore contentStore;
+	private final String host;
 
-	public BookmarkletController(ContentStore contentStore) {
+	public BookmarkletController(ContentStore contentStore, String host) {
 		this.contentStore = contentStore;
+		this.host = host;
 	}
 	
 	@RequestMapping("/bookmark/iframe")
@@ -63,18 +65,8 @@ public class BookmarkletController {
 		} else {
 			model.put("frameHeight", 275);
 		}
-		model.put("frameSrc", hostFrom(request.getRequestURL())  + "/bookmark/iframe?uri=" + UrlEncoding.encode(uri));
+		model.put("frameSrc", host  + "/bookmark/iframe?uri=" + UrlEncoding.encode(uri));
 		return "bookmarklet/bootstrap";
-	}
-	
-	private String hostFrom(StringBuffer requestURL) {
-		String s = requestURL.toString();
-		int protocolSlashes = s.indexOf("//");
-		int idx = s.indexOf('/', protocolSlashes + 2);
-		if (idx > 0) {
-			return s.substring(0, idx); 
-		}
-		return s;
 	}
 
 	private Description contentFor(String uri) {

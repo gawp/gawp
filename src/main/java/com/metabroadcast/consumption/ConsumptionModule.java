@@ -32,6 +32,7 @@ public class ConsumptionModule {
     private @Value("${twitter.accessToken}") String twitterAccessToken;
     private @Value("${twitter.tokenSecret}") String twitterTokenSecret;
     private @Value("${accounts.refreshPeriodInMinutes}") int refreshPeriod;
+	private @Value("${host}") String host;
     
     public @Bean ConsumptionStore consumptionStore() {
         return new MongoConsumptionStore(db);
@@ -58,6 +59,6 @@ public class ConsumptionModule {
     }
     
 	public @Bean BookmarkletController bookmarkletController() {
-		return new BookmarkletController(contentStore());
+		return new BookmarkletController(contentStore(), host);
 	}
 }
