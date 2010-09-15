@@ -18,7 +18,7 @@ public class AtlasContentStoreTest {
     
     @Test
     public void shouldRetrieveItemsOnNow() {
-        List<Item> items = store.getItemsOnNow("http://www.bbc.co.uk/services/bbcnews");
+        List<Item> items = store.getItemsOnNow("http://www.bbc.co.uk/services/bbcone/london");
         assertFalse(items.isEmpty());
     }
 }

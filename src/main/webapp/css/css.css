@@ -453,13 +453,14 @@ h3{
 	margin-left: 10px;
 }
 #login {
-    overflow: hidden;
-    position: absolute;
-    top: 276px;
-    left: 1130px;
-    background-color: lightgrey;
-    border: 1px solid darkgrey;
-    padding: 5px;
+    background-color: #EEE;
+	border: 1px solid darkGray;
+	left: 1085px;
+	overflow: hidden;
+	padding: 5px;
+	position: relative;
+	top: 45px;
+	width: 40px;
 }
 
 .module {
