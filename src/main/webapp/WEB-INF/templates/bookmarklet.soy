@@ -15,9 +15,10 @@
         {include('/includes/javascript') |noAutoescape}
     </head>
     
-    <body style="padding: 10px">
+    <body style="padding: 10px; background-color: transparent;">
        <div style="background-color: white; border: 1px solid darkGray; position: relative; padding: 10px;">
-       <p id="overview">Did you watch this?</p>
+       <p id="overview">Gawp this?</p>
+       
        <div curie="{$item.curie}" class="item">
             <div class="thumbnail">
             {if $item.thumbnail}
@@ -33,7 +34,24 @@
                 </p>
             </div>
         <div class="clearfix"></div>
-        <a href="#yes" class="yes">Yes</a><a href="#no">No</a> {if $item.brand}<a href="#another">A different episode of {$item.brand.title}{/if}</a>
+        <a href="#yes" style="font-size: 50px; background-color: #eee; display: block; text-align: center; margin: 10px;" class="yes">YES</a>
+    <script>
+        $("a.yes").click(function() {lb}
+            var $loader = $('<img src="/images/ajax-loader.gif"/>');
+            $('.thumbnail').html($loader);
+            var curie = '{$item.curie}';
+            $.ajax({lb}
+                type: 'POST',
+                url: '/watch',
+                data: {lb}'uri': curie{rb},
+                success: function(data) {lb}
+                    $loader.attr('src', '/images/tick.png');
+                 {rb}
+            {rb});
+            return false;
+        {rb});
+    </script>
+        
        {call beige.templates.decor.footer /}
     </body> 
 </html>
@@ -46,7 +64,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>Not found | Title Goes Here</title>
+        <title>Not found | gawp.tv</title>
         <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
         <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
         <link rel="stylesheet" type="text/css" href="/css/css.css" />
@@ -71,7 +89,7 @@
     var iframe=document.createElement('iframe');
     iframe.width=480;
     iframe.height={$frameHeight};
-    iframe.style.cssText="position:absolute; z-index: 1000; top: 0; right: 0; border: 10px 0 0 0 solid #aaa;";
+    iframe.style.cssText="position:absolute; z-index: 1000; top: 0; right: 0; border: 0;";
     iframe.src='{$frameSrc}';
     var closeButton=document.createElement('a');
     closeButton.href="#";
