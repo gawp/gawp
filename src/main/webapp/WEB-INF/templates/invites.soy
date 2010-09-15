@@ -1,0 +1,51 @@
+{namespace beige.templates.invites}
+
+/**
+ * @param showError (optional boolean)
+ */
+{template .form}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>You Have Been Watching</title>
+        
+        <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
+        <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
+        <link rel="stylesheet" type="text/css" href="/css/css.css" />
+        
+        {include('/includes/javascript') |noAutoescape}
+    </head>
+    <body id="buzz">
+    <div class="container">
+     <p id="overview">Get invited!</p>
+        {if $showError}<p style="color: red;">Sorry, you invite has not been saved, please enter your Twitter username below to try again</p>{/if}
+        <form method="post">
+            Enter you Twitter username: <input type="text" value="" name="screenName"/>
+            <input type="submit" value="Request Invite"/>
+        </form>
+    </body> 
+</html>
+{/template}
+
+/**
+*/
+{template .thanks}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>You Have Been Watching</title>
+        
+        <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
+        <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
+        <link rel="stylesheet" type="text/css" href="/css/css.css" />
+        
+        {include('/includes/javascript') |noAutoescape}
+    </head>
+    <body id="buzz">
+    <div class="container">
+     <p id="overview">Thanks!</p>
+       <p>We'll be in touch</p>
+    </body> 
+</html>
+{/template}
+
