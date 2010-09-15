@@ -201,6 +201,16 @@ input.submit:hover { background-position: -450px 50%; }
 	width: 132px;
 }
 
+.tool {
+	background-color: #EEE;
+    border: 1px solid darkGray;
+    overflow: hidden;
+    padding: 5px;
+    position: relative;
+    width: 75px;
+    margin-bottom: 5px;
+}
+
 .consumption {
     position:               relative;
     list-style-type:        none;
@@ -412,6 +422,9 @@ h3{
 	background:             #71B7E6;
 	border-top-right-radius: 8px;
 	border-bottom-right-radius:  8px;
+    -webkit-border-top-right-radius: 8px;
+    -webkit-border-bottom-right-radius:  8px;
+    -moz-border-radius: 0 8px 8px 0;
 	height: 42px;
 }
 .actualCount {

@@ -56,6 +56,7 @@
         
         <div class="clearfix"></div>
     </div>
+    {call beige.templates.decor.footer /}
     </body>
 </html>
 {/template}
@@ -110,7 +111,10 @@
             
             <div id="tools">
                 <h2>Tools</h2>
-                {literal}<a style="background-color: #eee; padding: 5px;" onClick="alert('drag me onto your bookmarks bar'); return false;" href="javascript:(function(){bootstrap=document.createElement('script');bootstrap.src='http://dev.mbst.tv:8080/js/bookmarklet.js';document.getElementsByTagName('head')[0].appendChild(bootstrap);})();">Bookmarklet</a>{/literal}
+                <ul>
+                    <li class="tool">{literal}<a onClick="alert('Drag me onto your bookmarks bar'); return false;" href="javascript:(function(){bootstrap=document.createElement('script');bootstrap.src='http://dev.mbst.tv:8080/js/bookmarklet.js';document.getElementsByTagName('head')[0].appendChild(bootstrap);})();">Bookmarklet</a>{/literal}</li>
+                    <li class="tool"><a href="/watch">Log watches</a></li>
+                </ul>
             </div>
 
             {call .neighbours}
@@ -137,6 +141,7 @@
         
         <div class="clearfix"></div>
     </div>
+    {call beige.templates.decor.footer /}
     </body>
 </html>
 {/template}
@@ -372,6 +377,7 @@
  * @param channels
  * @param brands
  * @param loggedIn
+ * @param userDetails
 **/
 {template .watch}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -434,9 +440,9 @@
                 </ul>
         </div>
         
-        {if $loggedIn}
+        {if $loggedIn and $userDetails and $userDetails.screenName}
             <div id="logout" title="Logout" class="clearfix module">
-                <a href="/logout?continueTo=/watch">Logout</a>
+                Go to your <a href="/{$userDetails.screenName}" class="tool">Profile</a> or <a href="/logout?continueTo=/watch" class="tool">Logout</a>
             </div>
         {/if}
         
@@ -452,11 +458,12 @@
              <li><a class="iicon" href="#shows" title="Shows"><em class="ii-movie1"></em>Shows</a></li>
              <li><a class="iicon" href="#search" title="Search"><em class="ii-magnify"></em>Search</a></li>
              {if $loggedIn}
-                <li><a class="iicon" href="#logout" title="Logout"><em class="ii-cloud"></em>Logout</a></li>
+                <li><a class="iicon" href="#logout" title="Logout"><em class="ii-cloud"></em>Profile</a></li>
              {/if}
         </ul>
         </div>
     </div>
+    {call beige.templates.decor.footer /}
     </body>
 </html>
 {/template}

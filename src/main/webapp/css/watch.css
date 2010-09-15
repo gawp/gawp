@@ -51,7 +51,7 @@ blockquote, q {
 }
 
 html, body {
-   height:100%;
+   height:90%;
 }
 
 input { border-bottom-left-radius: 5px 5px; border-bottom-right-radius: 5px 5px; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; border: 1px solid rgb(143, 143, 143); font-size: 1.3em; padding: 5px; width: 250px; }

@@ -7,6 +7,14 @@
 	}
 }
 
+.tool {
+    background-color: #EEE;
+    border: 1px solid darkGray;
+    overflow: hidden;
+    padding: 5px;
+    position: relative;
+}
+
 code {
 	font: 120% "Courier New", Courier, monospace;
 	white-space: nowrap;
