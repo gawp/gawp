@@ -18,10 +18,10 @@
     <body id="buzz">
     <div class="container">
      <p id="overview">Get invited!</p>
-        {if $showError}<p style="color: red;">Sorry, you invite has not been saved, please enter your Twitter username below to try again</p>{/if}
+        {if $showError}<p style="color: red;">Sorry, your invite has not been saved, please enter your Twitter username below to try again</p>{/if}
         <form method="post">
             Enter you Twitter username: <input type="text" value="" name="screenName"/>
-            <input type="submit" value="Request Invite"/>
+            <input type="submit" value="Request Invite" class="submit" style="width: 150px; margin-left: 10px;" />
         </form>
         {call beige.templates.decor.footer /}
     </body> 

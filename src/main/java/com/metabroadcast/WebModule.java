@@ -19,6 +19,7 @@ import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.metabroadcast.common.media.MimeType;
 import com.metabroadcast.common.social.auth.AuthenticationInterceptor;
@@ -76,7 +77,7 @@ public class WebModule {
         return controllerClassNameHandlerMapping;
     }
 
-    private final static Set<String> exceptions = ImmutableSet.of("/login", "/includes/javascript", "/invites", "/goodbye", "/logout");
+    private final static Set<String> exceptions = ImmutableSet.of("/login", "/includes/javascript", "/invites", "/goodbye", "/logout", "/system");
     
     @Bean WhitelistInterceptor whitelistInterceptor() {
 		return new WhitelistInterceptor(whitelist, cookieAuthenticator(), userDetailsProvider, exceptions);
@@ -93,7 +94,7 @@ public class WebModule {
         authenticationInterceptor.setLoginView(loginView);
         authenticationInterceptor.setAuthService(cookieAuthenticator());
         authenticationInterceptor.setAuthenticationRequiredByMethod(methodToPath);
-        authenticationInterceptor.setExceptions(exceptions);
+        authenticationInterceptor.setExceptions(Lists.newArrayList(exceptions));
         return authenticationInterceptor;
     }
     
