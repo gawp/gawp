@@ -53,7 +53,7 @@ public class BookmarkletController {
 		return "bookmarklet/item";
 	}
 	
-	@RequestMapping("/bookmark/bootstrap.js")
+	@RequestMapping("/bookmark/bootstrap")
 	public String showBootrap(Map<String, Object> model, @RequestParam("uri") String uri, HttpServletRequest request) {
 		Description content = contentFor(uri);
 
