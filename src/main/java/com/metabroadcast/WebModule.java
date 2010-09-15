@@ -99,7 +99,8 @@ public class WebModule {
 			
 			@Override
 			public boolean userNotAuthenticated(HttpServletRequest request, HttpServletResponse response) throws Exception {
-				response.sendRedirect(host + "/login?continueTo=" + UrlEncoding.encode(request.getRequestURI()));
+				String queryString = request.getQueryString() == null ? "" : "?" + request.getQueryString();
+				response.sendRedirect(host + "/login?continueTo=" + UrlEncoding.encode(request.getRequestURI() + queryString));
 				return false;
 			}
 		});
