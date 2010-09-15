@@ -220,7 +220,10 @@ public class ConsumptionController {
     	Channel channel = channelUri == null ? null : Channel.fromUri(channelUri);
     	
     	UserRef userRef = userProvider.existingUser();
-        Preconditions.checkNotNull(userRef);
+    	if (! userRef.isInNamespace(UserNamespace.TWITTER)) {
+    	    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+    	    return;
+    	}
 
         Item item = null;
 
@@ -267,7 +270,7 @@ public class ConsumptionController {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             model.put("error", "Unfortunately, there's nothing on that channel");
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
     }
     
@@ -455,6 +458,7 @@ public class ConsumptionController {
             model.put("profileUrl", userDetails.getProfileUrl());
             model.put("bio", userDetails.getBio());
             model.put("location", userDetails.getLocation());
+            model.put("id", userDetails.getUserRef().getUserId());
         }
         return model;
     }
