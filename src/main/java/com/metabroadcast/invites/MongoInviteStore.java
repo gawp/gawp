@@ -31,13 +31,14 @@ public class MongoInviteStore implements InviteRequestStore, Whitelist, InviteAc
 	}
 
 	public boolean isWhitelisted(String trimmedScreenName) {
-		Iterable<DBObject> found = where().idEquals(trimmedScreenName).find(whitelist);
+	    Preconditions.checkNotNull(trimmedScreenName);
+		Iterable<DBObject> found = where().idEquals(trimmedScreenName.toLowerCase()).find(whitelist);
 		return !Iterables.isEmpty(found);
 	}
 
 	private static String trimAndCheckScreenName(String screenName) {
 		Preconditions.checkNotNull(screenName);
-		String trimmedScreenName = screenName.trim();
+		String trimmedScreenName = screenName.trim().toLowerCase();
 		Preconditions.checkArgument(!trimmedScreenName.isEmpty());
 		return trimmedScreenName;
 	}
