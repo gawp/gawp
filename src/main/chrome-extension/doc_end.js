@@ -4,7 +4,7 @@ commElement.style = 'display:none';
 document.head.appendChild(commElement);
 
 $('#mb_beige_comm').bind('play', function() {
-    console.log('received play event!');
+    console.log('gawp: received play event from player hook');
     chrome.extension.sendRequest({msg: 'consumeItem'}, function(failed) {
         if (failed) {
             var iframeHtml = '<iframe src="http://gawp.metabroadcast.com/bookmark?uri=' + encodeURIComponent(failed.itemUrl) + '" width="100%" height="100%" frameborder="0"></iframe>';

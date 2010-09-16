@@ -13,11 +13,10 @@ $.ajax({
     type: 'GET',
     dataType: 'json',
     success: function(data) {
-        console.log("got whitelist");
         whitelist = data;
     },
     error: function(requestObject, textStatus, errorThrown) {
-        console.log("error fetching whitelist");
+        console.log("error fetching gawp whitelist, gawping will not work until extension / browser is restarted");
         console.log(textStatus);
         console.log(errorThrown);
     }
@@ -41,16 +40,17 @@ function receiveMessage(request, sender, callback) {
 	    }
 	}
 	else if(request.msg == "consumeItem") {
+	    console.log('gawping item: ' + sender.tab.url);
 	    $.ajax({
 	        url: consumeUrl,
 	        data: {'uri': sender.tab.url},
 	        type: 'POST',
 	        success: function(data) {
-	            console.log("consume item success");
+	            console.log("successfully gawped item: " + sender.tab.url);
 	            chrome.pageAction.hide(sender.tab.id);
 	        },
 	        error: function(requestObject, textStatus, errorThrown) {
-	            console.log("consume item error");
+	            console.log("error when trying to gawp item: " + sender.tab.url);
 	            chrome.pageAction.show(sender.tab.id);
 	            
 	            /*callback({'consumeUrl': consumeUrl,
@@ -73,11 +73,7 @@ function isWhitelisted(url) {
 
 function checkLoginStatus(tab) {
     chrome.cookies.get({'url': beigeCookieUrl, 'name': beigeCookieName}, function(cookie) {
-        if (cookie && cookie.value.substring(0, 2) != "an") {
-            console.log('found beige cookie');
-        }
-        else {
-            console.log('could not find beige cookie');
+        if (!cookie || cookie.value.substring(0, 2) == "an") {
             chrome.pageAction.setIcon({'tabId': tab.id, 'path': loggedOutIcon});
             chrome.pageAction.show(tab.id);
         }
@@ -95,15 +91,14 @@ function getPageHook(url) {
 }
 
 function checkForItemThenBrand (tab) {
+    console.log('sending query to atlas for page: ' + tab.url);
+    
     var itemReqUrl = atlasUrl + "items.json?uri=" + tab.url;
-    console.log("Requesting items: " + itemReqUrl);
     
     $.ajax({url: itemReqUrl,
         dataType: 'json',
         success: function(data) {
             if (data) {
-                console.log("Found " + data.items.length + " items");
-                
                 if (data.items.length > 0) {
                     chrome.pageAction.show(tab.id);
                 }
@@ -117,7 +112,7 @@ function checkForItemThenBrand (tab) {
             
         },
         error: function(requestObject, textStatus, errorThrown) {
-            console.log('error getting item');
+            console.log('error when querying atlas for item: ' + tab.url);
             checkForBrand(tab);
         }
     });
@@ -125,21 +120,18 @@ function checkForItemThenBrand (tab) {
 
 function checkForBrand (tab) {
 	var brandReqUrl = atlasUrl + "brands.json?uri=" + tab.url;
-	console.log("Requesting brand: " + brandReqUrl);
 	
 	$.ajax({url: brandReqUrl,
 		dataType: 'json',
 		success: function(data) {
 			if (data) {
-				console.log("Found " + data.playlists.length + " brands");
-				
 				if (data.playlists.length > 0) {
 				    chrome.pageAction.show(tab.id);
 				}
 			}
 		},
 		error: function(requestObject, textStatus, errorThrown) {
-			console.log('error checking for brand');
+			console.log('error when querying atlas for brand: ' + tab.url);
 		}
 	});
 }

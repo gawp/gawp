@@ -1,6 +1,6 @@
 {
   "name": "gawp.tv",
-  "version": "0.1",
+  "version": "0.1.1",
   "description": "Records your Gawping habits. When on iPlayer or 4oD your watches will automatically be recorded (as long as you are logged in!), otherwise an action will appear in the URL bar for you to manually Gawp the show.",
   "background_page": "background.html",
   
