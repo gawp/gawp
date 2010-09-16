@@ -1,7 +1,7 @@
 var atlasUrl = "http://atlasapi.org/2.0/";
-var playerHookUrl = "http://beige.mbst.tv/js/browser-hooks/";
-var consumeUrl = "http://beige.mbst.tv/watch";
-var beigeCookieUrl = 'http://beige.mbst.tv/';
+var playerHookUrl = "http://gawp.metabroadcast.com/js/browser-hooks/";
+var consumeUrl = "http://gawp.metabroadcast.com/watch";
+var beigeCookieUrl = 'http://gawp.metabroadcast.com/';
 var beigeCookieName = 'beige';
 var loggedOutIcon = 'chrome-ext-play-button-logged-out.png';
 
