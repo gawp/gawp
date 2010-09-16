@@ -14,6 +14,7 @@ public enum Channel {
 
     BBC_IPLAYER("iPlayer", "http://www.bbc.co.uk/iplayer", "/images/bbc_iplayer.png"), 
     HULU("Hulu", "http://www.hulu.com", "/images/hulu.png"), 
+    YOUTUBE("YouTube", "http://www.youtube.com", "/images/youtube.png"), 
     C4_4OD("4oD", "http://www.channel4.com", "/images/c4_4od.png"), 
     BBC_ONE("BBC One", "http://www.bbc.co.uk/services/bbcone/london", "/images/bbc_one.png"), 
     BBC_TWO("BBC Two", "http://www.bbc.co.uk/services/bbctwo/england", "/images/bbc_two.png"),

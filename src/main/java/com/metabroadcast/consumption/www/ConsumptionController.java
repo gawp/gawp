@@ -448,7 +448,7 @@ public class ConsumptionController {
             countMap.put("width", Float.valueOf((float) countVal / (float) max * 100).intValue());
 
             Map<String, Object> targetMap = Maps.newHashMap();
-            targetMap.put("title", count.getTarget().replace("http://ref.atlasapi.org/genres/atlas/", ""));
+            targetMap.put("title", ConsumedContentProvider.GENRE.apply(count.getTarget()));
             targetMap.put("uri", count.getTarget());
 
             countMap.put("target", targetMap);
