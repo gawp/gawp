@@ -499,3 +499,7 @@ h3{
 .about {
 	margin-bottom: 10px;
 }
+
+.about a {
+	color: red;
+}
