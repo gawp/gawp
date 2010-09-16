@@ -114,7 +114,7 @@
                 <ul>
                     <li class="tool">{literal}<a class="bookmark" style="display:block;" onClick="alert('Drag me onto your bookmarks bar'); return false;" href="javascript:(function(){bootstrap=document.createElement('script');bootstrap.src='http://gawp.tv/bookmark/bootstrap?uri='+encodeURIComponent(document.location);document.getElementsByTagName('head')[0].appendChild(bootstrap);})();">Bookmark</a>{/literal}<span class="explain">Gawp across the internet.</span></li>
                     <li class="tool"><a href="/watch">iPhone Page</a><br /><span class="explain">Gawp what's on the BBC right now, or the latest episode from top shows.</span></li>
-                    <li class="tool"><a href="/downloads/chrome-extension.crx">Chrome Extension</a><br /><span class="explain">Automatically Gawp from iPlayer and 4oD, and manually from other sites.</span></li>
+                    <li class="tool"><a href="/downloads/chrome-extension.crx">Chrome Extension</a><br /><span class="explain">Automatically gawp from iPlayer and 4oD, and manually from other sites.</span></li>
                 </ul>
             </div>
 
@@ -180,7 +180,7 @@
     {/if}
     {if $overview.channel and $overview.channel.uri and $overview.channel.title or $overview.genre.title}
         {if $overview.channel and $overview.channel.uri and $overview.channel.title}
-            &nbsp;mostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
+            &nbsp;mostly been gawping at <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
             {if $overview.target and $overview.target.uri}
                 , particularly <a href="{$overview.target.uri}">{$overview.target.title}</a>
             {/if}
@@ -264,7 +264,7 @@
 {if $currentUserDetails and $currentUserDetails.screenName}
     <div id="login"><a href="/logout">Logout</a></div>
 {else}
-    <div id="login" style="width: 152px; left: 970px; top: 50px;"><a href="/login/twitter?continueTo=/"><img src="/images/sign-in-with-twitter-d.png" /></a></div>
+    <div style="width: 152px; left: 960px; top: 45px; position: relative;"><a href="/login/twitter?continueTo=/"><img src="/images/sign-in-with-twitter-d.png" /></a></div>
 {/if}
 {/template}
 
@@ -273,7 +273,7 @@
 **/
 {template .content}
 <div id="recentContent" class="module">
-    <h2>Recently Watched</h2>
+    <h2>Recently Gawped</h2>
     <ul class="consumptions">
         {foreach $item in $items}
             <li class="consumption">
