@@ -4,13 +4,33 @@ var consumeUrl = "http://gawp.metabroadcast.com/watch";
 var beigeCookieUrl = 'http://gawp.metabroadcast.com/';
 var beigeCookieName = 'beige';
 var loggedOutIcon = 'chrome-ext-play-button-logged-out.png';
+var errorIcon = 'chrome-ext-play-button-logged-out.png';
+var whitelistUrl = 'http://gawp.metabroadcast.com/extension-data/whitelist.json';
+var whitelist = {};
+
+$.ajax({
+    url: whitelistUrl,
+    type: 'GET',
+    dataType: 'json',
+    success: function(data) {
+        console.log("got whitelist");
+        whitelist = data;
+    },
+    error: function(requestObject, textStatus, errorThrown) {
+        console.log("error fetching whitelist");
+        console.log(textStatus);
+        console.log(errorThrown);
+    }
+});
 
 chrome.extension.onRequest.addListener(receiveMessage);
 
 function receiveMessage(request, sender, callback) {
 	if (request.msg == "checkNewLocation") {
 	    if (!getPageHook(sender.tab.url)) {
-	        checkForItemThenBrand(sender.tab);
+	        if (isWhitelisted(sender.tab.url)) {
+	            checkForItemThenBrand(sender.tab);
+	        }
 	    }
 	}
 	else if (request.msg == "getPlayerHook") {
@@ -38,6 +58,17 @@ function receiveMessage(request, sender, callback) {
 	        }
 	    });
     }
+}
+
+function isWhitelisted(url) {
+    for (var i in whitelist) {
+        var whitelistedUrl = whitelist[i];
+        if (url.indexOf(whitelistedUrl) != -1) {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 function checkLoginStatus(tab) {
