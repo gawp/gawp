@@ -12,7 +12,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>You Have Been Watching</title>
+        <title>Everyone's Gawps</title>
         
         <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
         <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
@@ -75,7 +75,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>You Have Been Watching</title>
+        <title>{if $userDetails.fullName}{$userDetails.fullName}{else}{$userDetails.screenName}{/if}{$userDetails.possessivePostfix} Gawps</title>
         
         <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
         <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
@@ -115,6 +115,7 @@
                     <li class="tool">{literal}<p>Bookmarklet</p><span class="explain">Drag this link to your bookmarks bar: <a style="color: #0000FF;" onClick="alert('Drag me onto your bookmarks bar'); return false;" href="javascript:(function(){bootstrap=document.createElement('script');bootstrap.src='http://gawp.tv/bookmark/bootstrap?uri='+encodeURIComponent(document.location);document.getElementsByTagName('head')[0].appendChild(bootstrap);})();">Gawp this</a></span></li>{/literal}
                     <li class="tool"><a href="/watch">iPhone Page</a><br /><span class="explain">Gawp what's on the BBC right now, or the latest episode from top shows.</span></li>
                     <li class="tool"><a href="/downloads/chrome-extension.crx">Chrome Extension</a><br /><span class="explain">Automatically gawp from iPlayer and 4oD, and manually from other sites.</span></li>
+                    <li class="tool">Read more on the <a href="/about">About</a> page</li>
                 </ul>
             </div>
 
@@ -211,6 +212,8 @@
     {else}
         <p class="joinus"><a href="/login/twitter?continueTo=/" class="biglink">Login</a><span class="or clearfix">or</span><a href="/invites" class="biglink">Request An Invite</a></p>
     {/if}
+    <div class="clearfix"></div>
+    <p class="joinus" style="margin-top: 50px;"><a href="/about" class="biglink">About Gawp</a></p>
 </div>
 {/template}
 
@@ -383,7 +386,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>What Are You Watching?</title>
+        <title>Gawp</title>
         
         <link href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
         <link href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >

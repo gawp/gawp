@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>You Have Been Watching</title>
+        <title>Gawp</title>
         
         <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
         <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
@@ -23,6 +23,7 @@
             Enter you Twitter username: <input type="text" value="" name="screenName"/>
             <input type="submit" value="Request Invite" class="submit" style="width: 150px; margin-left: 10px;" />
         </form>
+        {call .aboutMessage/}
         {call beige.templates.decor.footer /}
     </body> 
 </html>
@@ -34,7 +35,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>You Have Been Watching</title>
+        <title>Gawp</title>
         
         <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
         <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
@@ -50,5 +51,54 @@
       {call beige.templates.decor.footer /}
     </body> 
 </html>
+{/template}
+
+/**
+ * 
+**/
+{template .about}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>About Gawp</title>
+        
+        <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
+        <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
+        <link rel="stylesheet" type="text/css" href="/css/css.css" />
+        
+        {include('/includes/javascript') |noAutoescape}
+    </head>
+    <body id="buzz">
+    <div class="container">
+        {call .aboutMessage/}
+    </div>
+    {call beige.templates.decor.footer /}
+    </body>
+</html>
+{/template}
+
+/**
+ *
+ */
+{template .aboutMessage}
+<h1 id="overview">About <a href="/">Gawp</a></h1>
+<p class="about"><a href="/">Gawp</a> is a wee hack knocked up by the team at <a href="http://metabroadcast.com">MetaBroadcast</a>. <a href="/">Gawp</a> is the antithesis of recommendation engines and social discovery. By recording what you watch (or gawp, slack-jawed) at, it builds a page that represents your gawping habits.</p>
+<p><a href="/">Gawp</a> shows how you've been spending your spare time, it's not presumptuous enough to suggest how you waste any more.</p>
+<h2>Caveats</h2>
+<p class="about">We're really keen that people try this out and let us know what they think, hence the <a href="/invites">invites</a>. However, this being a hack and all, there are some pretty massive holes and things you should be aware of:</p>
+<p class="about">No HTTPS. This is bad, but we haven't got a cert. We will sort this out shortly, but we need to know that <a href="/">Gawp</a> is worth continuing development of before we spend the money. The attack vector isn't terribly large, as the actual logging in is done over HTTPS at <a href="http://twitter.com">Twitter</a> but they will redirect you back to us over HTTP during which time the access token is exposed. If you're not on a trusted network, don't use login. This is actually pretty common for sites, we just wanted to be up-front about it.</p>
+<p class="about">This hasn't been tested in many browsers. Let us know if you have a disastrous experience.</p>
+<p class="about">We can only record gawps of shows that we can get data for. <a href="/">Gawp</a> uses <a href="http://docs.atlasapi.org">Atlas</a>, another fine <a href="http://metabroadcast.com">MetaBroadcast</a> production, to resolve the program data, so all the main content producers are covered (<a href="http://bbc.co.uk">BBC</a>, <a href="http://channel4.com">C4</a>, <a href="http://hulu.com">Hulu</a>, <a href="http://youtube.com">YouTube</a>, <a href="http://itv.com">ITV</a>, the list goes on. Unfortunately the schedule information is sketchier, so only the BBC channels have been added to the <a href="/watch">iPhone Gawp</a> page.</p>
+<p class="about">The Chrome extension that we've made will try and resolve pages that you're on to see if they're of a show. This means it will make calls to <a href="http://docs.atlasapi.org">Atlas</a> in the background. This is restricted to websites that we think are likely to be about a show but if you're uneasy about this then either monitor its behavior or turn it off when you're on sensitive sites.</p>
+<p class="about">It's a hack. It's going to be pretty sketchy. We're going to be releasing changes all the time, so it will be up and down.</p>
+<h2>Tools</h2>
+<p class="about">{literal}<strong>Bookmarklet</strong> Drag this link to your bookmarks bar: <a style="color: #0000FF;" onClick="alert('Drag me onto your bookmarks bar'); return false;" href="javascript:(function(){bootstrap=document.createElement('script');bootstrap.src='http://gawp.tv/bookmark/bootstrap?uri='+encodeURIComponent(document.location);document.getElementsByTagName('head')[0].appendChild(bootstrap);})();">Gawp this</a></p>{/literal}
+<p class="about">When you're on a show's page (say, for <a href="http://www.bbc.co.uk/programmes/b0094j1x">Mad Men</a>) you can click on the bookmarlet and it will ask you which available episodes you've gawped.</p>
+<p class="about"><a href="/watch"><strong>iPhone Page</strong></a> <a href="/">Gawp</a> what's on the BBC right now, or the latest episode from top shows.</p>
+<p class="about">This will let you jab at your iPhone to say that you're gawping at some BBC program that's on TV. Otherwise it will show you some other shows that you might be on other channels, or search for them.</p>
+<p class="about"><a href="/downloads/chrome-extension.crx"><strong>Chrome Extension</strong></a> Automatically gawp from iPlayer and 4oD, and manually from other sites.</p>
+<p class="about">This Chrome extension does a similar job to the Bookmarklet but will automatically log when you're gawping at the <a href="http://bbc.co.uk/iplayer">iPlayer</a> or <a href="http://www.channel4.com/programmes/4od">4oD</a> through JavaScript magic. It will also check with <a href="http://docs.atlasapi.org">Atlas</a> as you navigate relevant sites, to see whether it should give you the option to gawp at the current page.</p>
+<h2>Feedback</h2>
+<p class="about">We'd really love to hear what you think about <a href="/">Gawp</a>, be it good or bad. The best route is probably to hit us up at <a href="http://twitter.com/gawptv">@gawptv</a> or pester one of the <a href="http://metabroadcast.com">MetaBroadcast</a> team personally.</p>
 {/template}
 
