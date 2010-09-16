@@ -51,6 +51,7 @@
         <url-pattern>*.crx</url-pattern>
         <url-pattern>*.html</url-pattern>
         <url-pattern>*.txt</url-pattern>
+        <url-pattern>/extension-data/whitelist.json</url-pattern>
     </servlet-mapping>
 
  
