@@ -27,7 +27,7 @@ body {
     line-height: 1;
     color: black;
     background: #E6E6E6;
-    font-family: 'Lucida Grande', Arial, Helvetica, Verdana, sans-serif;
+    font-family: 'Lucida Grande', Arial, sans-serif;
     font-size: 12px;
 }
 ol, ul {
