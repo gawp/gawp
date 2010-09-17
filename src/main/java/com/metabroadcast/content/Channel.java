@@ -27,7 +27,7 @@ public enum Channel {
     private final String uri;
     private final String name;
 
-    private final static List<Channel> VOD_SERVICES = ImmutableList.of(BBC_IPLAYER, HULU, C4_4OD);
+    private final static List<Channel> VOD_SERVICES = ImmutableList.of(BBC_IPLAYER, HULU, C4_4OD, YOUTUBE);
 
     Channel(String name, String uri, String logo) {
         this.name = name;
