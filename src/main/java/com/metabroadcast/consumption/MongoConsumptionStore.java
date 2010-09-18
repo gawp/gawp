@@ -37,11 +37,16 @@ public class MongoConsumptionStore implements ConsumptionStore {
 
     private static final String REDUCE = "function(key , values ){ sum = 0;" + "for(var i in values) { sum += values[i];" + "}" + "return sum;" + "};";
     private static final String MAP = "function() { emit(this.brand, 1); }";
-
+    
     private DBCollection table;
 
     public MongoConsumptionStore(DatabasedMongo db) {
         table = db.collection(TABLE_NAME);
+        table.ensureIndex(new BasicDBObject("user.userId", 1)
+                .append("user.userNamespace", 1)
+                .append("user.appId", 1)
+                .append("timestamp", -1), 
+                new BasicDBObject("background", true));
     }
     
     public List<Consumption> find(UserRef userRef, int limit) {

@@ -100,7 +100,7 @@ public enum Channel {
         if (publisher.equals(Publisher.C4)) {
             return Channel.C4_4OD;
         }
-        if (publisher.equals(publisher.YOUTUBE)) {
+        if (publisher.equals(Publisher.YOUTUBE)) {
             return Channel.YOUTUBE;
         }
         return null;
