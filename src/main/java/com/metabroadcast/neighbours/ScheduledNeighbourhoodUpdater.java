@@ -64,7 +64,7 @@ public class ScheduledNeighbourhoodUpdater {
 
         @Override
         public void run() {
-            MapReduceOutput output = db.mapReduce(IDENTITY_MAP, COUNT_REDUCE, null, new BasicDBObject("user.userNamespace", UserNamespace.TWITTER.prefix()));
+            MapReduceOutput output = db.mapReduce(IDENTITY_MAP, COUNT_REDUCE, "neighbourhood_identity_map", new BasicDBObject("user.userNamespace", UserNamespace.TWITTER.prefix()));
 
             if (log.isInfoEnabled()) {
                 log.info("Running identity map reduce");
@@ -73,7 +73,7 @@ public class ScheduledNeighbourhoodUpdater {
                 }
             }
 
-            output = output.getOutputCollection().mapReduce(SWAP_MAP, ID_REDUCE, null, null);
+            output = output.getOutputCollection().mapReduce(SWAP_MAP, ID_REDUCE, "neighbourhood_swap_map", null);
 
             if (log.isInfoEnabled()) {
                 log.info("Running swap map reduce");
@@ -83,7 +83,7 @@ public class ScheduledNeighbourhoodUpdater {
             }
 
             BasicDBObjectBuilder b = BasicDBObjectBuilder.start().add("mapreduce", output.getOutputCollection().getName()).add("map", COMBINE_MAP).add("reduce", SIMILARITY_REDUCE).add("finalize",
-                    FINALIZE);
+                    FINALIZE).add("out", "neighbourhood_combine_map");
             output = output.getOutputCollection().mapReduce(b.get());
 
             if (log.isInfoEnabled()) {
