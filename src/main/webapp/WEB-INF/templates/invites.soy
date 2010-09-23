@@ -104,3 +104,49 @@
 <p class="about">We'd really love to hear what you think about <a href="/">Gawp</a>, be it good or bad. The best route is probably to hit us up at <a href="http://twitter.com/gawptv">@gawptv</a> or pester one of the <a href="http://metabroadcast.com">MetaBroadcast</a> team personally.</p>
 {/template}
 
+/**
+* @param outstandingRequests
+*/
+{template .list}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Gawp</title>
+        
+        <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
+        <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
+        <link rel="stylesheet" type="text/css" href="/css/css.css" />
+        {include('/includes/javascript') |noAutoescape}
+	    {literal}
+	    <script>
+	        $("li").live('click', function() {
+	            var $loader = $('<img src="/images/ajax-loader.gif"/>');
+	            var screename = $(this).html();
+	        	$(this).html($loader);
+	            $.ajax({
+	                type: 'POST',
+	                url: '/admin/invites',
+	                data: {'screename': screename},
+	                success: function(data) {
+	                    $loader.attr('src', '/images/tick.png');
+	                 }
+	            });
+	            return false;
+	        });
+	    </script>
+	    {/literal}
+    </head>
+    <body id="buzz">
+    	<div class="container">
+    	<h1 id="overview">Invite Requests</h1>
+			<ul>
+				{foreach $outstandingRequest in $outstandingRequests}
+					<li style="cursor: pointer;">{$outstandingRequest}</li>
+				{ifempty}
+					<li>No outstanding invite requests :-(</li>
+				{/foreach}
+			</ul>
+		</div>
+	</body>
+</html>
+{/template}
