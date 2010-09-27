@@ -28,6 +28,7 @@
         
         {call .content}
             {param items: $items/}
+            {param currentUserDetails: $currentUserDetails/}
         {/call}
         
         {call .topBrands}
@@ -96,6 +97,7 @@
         
         {call .content}
             {param items: $items/}
+            {param currentUserDetails: $currentUserDetails/}
         {/call}
         
         {call .topBrands}
@@ -273,6 +275,7 @@
 
 /**
  * @param items
+ * @param currentUserDetails
 **/
 {template .content}
 <div id="recentContent" class="module">
@@ -295,6 +298,9 @@
                         </p>
                         <p class="actions">
                             <span class="ago">{$item.ago}</span>
+                            {if $currentUserDetails and $item.userId and $currentUserDetails.id and $currentUserDetails.id == $item.userId}
+                                <span class="remove"><a href="#" uri="{$item.content.uri}" class="remove_item"><img src="/images/remove.png" class="remove_button" /></a></span>
+                            {/if}
                         </p>
                         {if $item.channel}
                             <div class="channelPromo"><a href="{$item.channel.uri}"><img src="{$item.channel.logo}" /></a></div>

@@ -4,6 +4,8 @@ $(document).ready(function() {
     registerConsumptionHovers();
     registerSearchAutocomplete();
     registerOverviewLinks();
+    registerRemoveLinks();
+    
     if((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) { 
     	$(".subtitle").remove();
         $(".tabbar").iTabs();
@@ -111,7 +113,34 @@ var watchResponse = function (target, image, success) {
 
 var registerConsumptionHovers = function() {
 	$(".consumption").hover(
-	   function() { $(this).css('background', '#EBEBEB'); },
-	   function() { $(this).css('background', 'white'); }
+	   function() {
+	   	 var $current = $(this);
+	   	 $current.css('background', '#EBEBEB');
+	   	 $current.find('.ago').hide();
+	   	 $current.find('.remove').show();
+	   },
+	   function() {
+	   	 var $current = $(this);
+	   	 $current.css('background', 'white'); 
+	   	 $current.find('.ago').show();
+         $current.find('.remove').hide();
+	   }
     );
 };
+
+var registerRemoveLinks = function() {
+	$('.remove_item').click(function() {
+		var $target = $(this);
+		
+		$target.ajaxError(function() {
+            alert('error removing item');
+        });
+		
+		$.post('/remove', { uri: $target.attr('uri') },
+		  function() {
+		  	$target.parents('.consumption').remove();
+		  }
+		);
+	});
+	return false;
+}

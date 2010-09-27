@@ -281,22 +281,14 @@ public class ConsumptionController {
         }
     }
     
-//    @RequestMapping(value = { "/watch" }, method = { RequestMethod.DELETE })
-//    public void unwatch(HttpServletResponse response, @RequestParam(required = true) String uri) {
-//        UserRef userRef = userProvider.existingUser();
-//        Preconditions.checkNotNull(userRef);
-//
-//        Consumption consumption = consumptionStore.find(userRef, from);
-//
-//        if (item != null) {
-//            TargetRef targetRef = new TargetRef(item.getUri(), ContentRefs.ITEM_DOMAIN);
-//
-//            consumptionStore.store(new Consumption(userRef, targetRef, new DateTime(DateTimeZones.UTC), null, null, null));
-//            response.setStatus(HttpServletResponse.SC_OK);
-//        } else {
-//            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//        }
-//    }
+    @RequestMapping(value = { "/remove" }, method = { RequestMethod.POST })
+    public void unwatch(HttpServletResponse response, @RequestParam(required = true) String uri) {
+        UserRef userRef = userProvider.existingUser();
+        Preconditions.checkNotNull(userRef);
+        
+        consumptionStore.remove(userRef, new TargetRef(uri, ContentRefs.ITEM_DOMAIN));
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
 
     private Set<String> genres(Item item) {
         Set<String> genres = Sets.newHashSet();
@@ -521,7 +513,7 @@ public class ConsumptionController {
         
         targetMap = Maps.newHashMap();
         if (topGenre != null) {
-            targetMap.put("title", topGenre.replace("http://ref.atlasapi.org/genres/atlas/", ""));
+            targetMap.put("title", ConsumedContentProvider.GENRE.apply(topGenre));
             targetMap.put("uri", topGenre);
         }
         overview.put("genre", targetMap);

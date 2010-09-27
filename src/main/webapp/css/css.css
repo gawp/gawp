@@ -264,6 +264,12 @@ a:hover {
     width:                  200px;
     text-align:             right;
 }
+.remove {
+    display: none;
+}
+.ago {
+	display: block;
+}
 .channelPromo img{
 	height: 21px;
 	width: 37px;

@@ -60,7 +60,7 @@ public class MongoConsumptionStoreTest {
         List<Consumption> consumptions = store.find(alice, 10);
         assertFalse(consumptions.isEmpty());
         
-        store.remove(consumption1);
+        store.remove(consumption1.userRef(), consumption1.targetRef());
         
         consumptions = store.find(alice, 10);
         assertTrue(consumptions.isEmpty());

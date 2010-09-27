@@ -47,6 +47,9 @@ public class ConsumedContentModelBuilder implements ModelBuilder<ConsumedContent
             model.put("channel", channel.toModel());
         }
         model.put("ago", ago(target.getConsumption().timestamp()));
+        if (target.getConsumption() != null && target.getConsumption().userRef() != null) {
+            model.put("userId", target.getConsumption().userRef().getUserId());
+        }
 
         return model;
     }

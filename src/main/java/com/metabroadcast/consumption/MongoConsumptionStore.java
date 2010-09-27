@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.MapMaker;
 import com.google.common.collect.Ordering;
@@ -100,7 +101,12 @@ public class MongoConsumptionStore implements ConsumptionStore {
     }
 
     @Override
-    public void remove(Consumption consumption) {
-        table.remove(translator.toDBObject(consumption));
+    public void remove(UserRef userRef, TargetRef targetRef) {
+        Preconditions.checkNotNull(userRef);
+        Preconditions.checkNotNull(targetRef);
+        
+        MongoQueryBuilder query = userRefTranslator.toQuery(userRef);
+        query.fieldEquals("target.domain", targetRef.domain()).fieldEquals("target.ref", targetRef.ref());
+        table.remove(query.build());
     }
 }
