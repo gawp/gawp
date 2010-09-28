@@ -31,7 +31,7 @@ public class ConsumedContentProvider {
 
     public List<ConsumedContent> find(UserRef userRef, int limit) {
         Map<String, ConsumedContent> consumedContent = Maps.newHashMap();
-        for (Consumption consumption: consumptionStore.find(userRef, limit)) {
+        for (Consumption consumption: consumptionStore.find(userRef, limit+5)) {
             if (consumedContent.containsKey(consumption.targetRef().toKey())) {
                 ConsumedContent current = consumedContent.get(consumption.targetRef().toKey());
                 Consumption latestConsumption = consumption.timestamp().isAfter(current.getConsumption().timestamp()) ? consumption : current.getConsumption();
@@ -48,6 +48,9 @@ public class ConsumedContentProvider {
         
         List<ConsumedContent> results = Lists.newArrayList(consumedContent.values());
         Collections.sort(results);
+        if (results.size() > limit) {
+            results = results.subList(0, limit);
+        }
         return results;
     }
     
