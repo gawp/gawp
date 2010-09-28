@@ -174,7 +174,7 @@ input.submit:hover { background-position: -450px 50%; }
 .topBrand {
 	display: inline;
 	float: left;
-	height: 122px;
+	height: 133px;
 	overflow: hidden;
 	width: 170px;
 }
@@ -480,7 +480,7 @@ h3{
 #login {
     background-color: #EEE;
 	border: 1px solid darkGray;
-	left: 1085px;
+	left: 1058px;
 	overflow: hidden;
 	padding: 5px;
 	position: relative;

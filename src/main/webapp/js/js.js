@@ -138,9 +138,9 @@ var registerRemoveLinks = function() {
 		
 		$.post('/remove', { uri: $target.attr('uri') },
 		  function() {
-		  	$target.parents('.consumption').remove();
+		  	$target.parents('.consumption').slideUp(200, this.remove);
 		  }
 		);
+    	return false;
 	});
-	return false;
 }

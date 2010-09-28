@@ -60,6 +60,8 @@ import com.metabroadcast.user.twitter.TwitterUserRefProvider;
 public class ConsumptionController {
 
     private final static int MAX_RECENT_ITEMS = 10;
+    private final static int MAX_TOP_BRANDS = 8;
+    private final static int MAX_GRAPH_ROWS = 6;
 
     private final ConsumptionStore consumptionStore;
     private final ConsumedContentProvider consumedContentProvider;
@@ -142,8 +144,8 @@ public class ConsumptionController {
         List<Consumption> consumptions = consumptionStore.find(null, new DateTime(DateTimeZones.UTC).minusWeeks(4));
         
         List<Count<String>> brands = consumedContentProvider.findBrandCounts(consumptions);
-        if (brands.size() > 6) {
-            brands = brands.subList(0, 6);
+        if (brands.size() > MAX_TOP_BRANDS) {
+            brands = brands.subList(0, MAX_TOP_BRANDS);
         }
         addBrandCountsModel(model, brands);
         
@@ -178,8 +180,8 @@ public class ConsumptionController {
         long getConsumptions = System.currentTimeMillis();
 
         List<Count<String>> brands = consumedContentProvider.findBrandCounts(consumptions);
-        if (brands.size() > 6) {
-            brands = brands.subList(0, 6);
+        if (brands.size() > MAX_TOP_BRANDS) {
+            brands = brands.subList(0, MAX_TOP_BRANDS);
         }
         addBrandCountsModel(model, brands);
 
@@ -407,7 +409,7 @@ public class ConsumptionController {
         int max = max(channels);
         model.put("max", max);
 
-        for (Count<String> count : channels) {
+        for (Count<String> count : Iterables.limit(channels, MAX_GRAPH_ROWS)) {
             Map<String, Object> countMap = Maps.newHashMap();
             int countVal = Long.valueOf(count.getCount()).intValue();
             countMap.put("count", Long.valueOf(count.getCount()).intValue());
@@ -433,7 +435,7 @@ public class ConsumptionController {
         int max = max(genres);
         model.put("max", max);
 
-        for (Count<String> count : genres) {
+        for (Count<String> count : Iterables.limit(genres, MAX_GRAPH_ROWS)) {
             Map<String, Object> countMap = Maps.newHashMap();
             int countVal = Long.valueOf(count.getCount()).intValue();
             countMap.put("count", Long.valueOf(count.getCount()).intValue());
