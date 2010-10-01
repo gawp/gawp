@@ -334,7 +334,7 @@
     <tbody>
     {foreach $count in $counts}
         <tr class="count">
-        {if $count.target.uri and $count.target.logo}
+        {if $count.target and $count.target.uri and $count.target.logo}
             <td class="iconCell"><a href="{$count.target.uri}"><img src="{$count.target.logo}" class="thumbnailImage" /></a></td>
         {else}
             <td class="titleCell">{$count.target.title}</td>
@@ -362,6 +362,7 @@
 <ul class="topBrands">
 <h2>Favorite Shows</h2>
 {foreach $count in $counts}
+    {if $count.target and $count.target.uri and $count.target.logo}
     <li class="topBrand">
         <span class="picture">
             <a href="{$count.target.uri}">
@@ -371,6 +372,7 @@
         </span>
         <p class="brandTitle"><a href="{$count.target.uri}">{$count.target.title}</a><span class="watches">({$count.count} watches)</span></p>
     </li>
+    {/if}
 {ifempty}
     {for $i in range(0, 4)}
         <li class="topBrand">
@@ -440,7 +442,7 @@
             <h2 class="subtitle">Shows</h2>
             <ul class="topBrands">
                 {foreach $count in $brands}
-                    {if $count.target.uri and $count.target.logo}
+                    {if $count.target and $count.target.uri and $count.target.logo}
                     <li class="channel">
                         <a href="#" class="brandLink" uri="{$count.target.uri}"><img src="{$count.target.logo}" class="icon" /></a>
                     </li>
