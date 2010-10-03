@@ -15,6 +15,7 @@ public enum Channel {
     BBC_IPLAYER("iPlayer", "http://www.bbc.co.uk/iplayer", "/images/bbc_iplayer.png"), 
     HULU("Hulu", "http://www.hulu.com", "/images/hulu.png"), 
     YOUTUBE("YouTube", "http://www.youtube.com", "/images/youtube.png"), 
+    SEESAW("Seesaw", "http://www.seesaw.com", "/images/seesaw.png"), 
     C4_4OD("4oD", "http://www.channel4.com", "/images/c4_4od.png"), 
     BBC_ONE("BBC One", "http://www.bbc.co.uk/services/bbcone/london", "/images/bbc_one.png"), 
     BBC_TWO("BBC Two", "http://www.bbc.co.uk/services/bbctwo/england", "/images/bbc_two.png"),
@@ -27,7 +28,7 @@ public enum Channel {
     private final String uri;
     private final String name;
 
-    private final static List<Channel> VOD_SERVICES = ImmutableList.of(BBC_IPLAYER, HULU, C4_4OD, YOUTUBE);
+    private final static List<Channel> VOD_SERVICES = ImmutableList.of(BBC_IPLAYER, HULU, C4_4OD, YOUTUBE, SEESAW);
 
     Channel(String name, String uri, String logo) {
         this.name = name;
@@ -102,6 +103,9 @@ public enum Channel {
         }
         if (publisher.equals(Publisher.YOUTUBE)) {
             return Channel.YOUTUBE;
+        }
+        if (publisher.equals(Publisher.SEESAW)) {
+            return Channel.SEESAW;
         }
         return null;
     }
