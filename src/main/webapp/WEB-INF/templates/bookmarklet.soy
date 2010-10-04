@@ -150,6 +150,8 @@
                     <div class="thumbnail">
                     {if $item.thumbnail}
                         <img src="{$item.thumbnail}" class="thumbnailImage"/>
+                    {elseif $item.image}
+                        <img src="{$item.image}" class="thumbnailImage"/>
                     {/if}
                     </div>
                     <div>

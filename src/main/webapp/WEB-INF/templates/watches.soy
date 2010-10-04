@@ -287,8 +287,8 @@
                     <div class="thumbnail">
                     {if $item.content.thumbnail}
                         <a href="{$item.content.uri}"><img src="{$item.content.thumbnail}" class="thumbnailImage"/></a>
-                    {elseif $item.image}
-                        <a href="{$item.uri}"><img src="{$item.image}" class="thumbnailImage"/></a>
+                    {elseif $item.content.image}
+                        <a href="{$item.content.uri}"><img src="{$item.content.image}" class="thumbnailImage"/></a>
                     {/if}
                     </div>
                     <div class="info">
