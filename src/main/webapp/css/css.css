@@ -286,8 +286,6 @@ a:hover {
 .desc {
     font-size:              0.8em;
     margin-top:             5px;
-    height:                 21px;
-    overflow: hidden;
 }
 .clearfix {
 	display:                block;
