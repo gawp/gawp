@@ -28,7 +28,7 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
 @Configuration
-@Import({WebModule.class, ConsumptionModule.class, InvitesModule.class, NeighbourhoodModule.class})
+@Import({WebModule.class, ConsumptionModule.class, InvitesModule.class, NeighbourhoodModule.class, PipeModule.class})
 public class CoreModule {
 
     private @Autowired RequestScopedAuthenticationProvider authenticationProvider;

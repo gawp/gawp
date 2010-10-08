@@ -2,31 +2,40 @@ package com.metabroadcast.consumption;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PreDestroy;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.ImmutableMap.Builder;
+import com.metabroadcast.common.caching.BackgroundComputingValue;
+import com.metabroadcast.common.caching.ComputedValueListener;
 import com.metabroadcast.common.persistence.mongo.DatabasedMongo;
 import com.metabroadcast.common.persistence.mongo.MongoConstants;
 import com.metabroadcast.common.persistence.mongo.MongoQueryBuilder;
 import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.UserRef;
+import com.metabroadcast.common.social.model.UserRef.UserNamespace;
 import com.metabroadcast.common.social.model.translator.UserRefTranslator;
 import com.metabroadcast.common.stats.Count;
+import com.metabroadcast.user.Users;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MapReduceOutput;
 
-public class MongoConsumptionStore implements ConsumptionStore {
+public class MongoConsumptionStore implements ConsumptionStore, Users {
 
     public static final String TABLE_NAME = "consumption";
 
@@ -35,6 +44,7 @@ public class MongoConsumptionStore implements ConsumptionStore {
     private final UserRefTranslator userRefTranslator = new UserRefTranslator();
     private final MapMaker mapMaker = new MapMaker().expiration(5, TimeUnit.MINUTES);
     private Map<String, Count<String>> topBrands = mapMaker.makeMap();
+    private final BackgroundComputingValue<List<UserRef>> users;
 
     private static final String REDUCE = "function(key , values ){ sum = 0;" + "for(var i in values) { sum += values[i];" + "}" + "return sum;" + "};";
     private static final String MAP = "function() { emit(this.brand, 1); }";
@@ -48,6 +58,13 @@ public class MongoConsumptionStore implements ConsumptionStore {
                 .append("user.appId", 1)
                 .append("timestamp", -1), 
                 new BasicDBObject("background", true));
+        users = new BackgroundComputingValue<List<UserRef>>(Duration.standardMinutes(30), new UpdateUsers());
+        users.start();
+    }
+    
+    @PreDestroy
+    public void shutdown() {
+        users.shutdown();
     }
     
     public List<Consumption> find(UserRef userRef, int limit) {
@@ -108,5 +125,32 @@ public class MongoConsumptionStore implements ConsumptionStore {
         MongoQueryBuilder query = userRefTranslator.toQuery(userRef);
         query.fieldEquals("target.domain", targetRef.domain()).fieldEquals("target.ref", targetRef.ref());
         table.remove(query.build());
+    }
+    
+    private final class UpdateUsers implements Callable<List<UserRef>> {
+
+        @Override
+        public List<UserRef> call() throws Exception {
+            List<UserRef> users = Lists.newArrayList();
+            
+            for (Object dbObject: table.distinct("user")) {
+                UserRef userRef = userRefTranslator.fromDBObject((DBObject) dbObject);
+                if (userRef.isInNamespace(UserNamespace.TWITTER)) {
+                    users.add(userRef);
+                }
+            }
+            
+            return users;
+        }
+    }
+
+    @Override
+    public List<UserRef> users() {
+        return users.get();
+    }
+
+    @Override
+    public void addListener(ComputedValueListener<List<UserRef>> listener) {
+        users.addListener(listener);
     }
 }
