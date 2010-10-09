@@ -12,7 +12,10 @@ import com.metabroadcast.common.caching.ComputedValueListener;
 import com.metabroadcast.common.social.model.UserRef;
 import com.metabroadcast.common.social.twitter.stream.TweetProcessor;
 import com.metabroadcast.common.social.twitter.stream.TwitterFilteredPipe;
+import com.metabroadcast.common.social.user.ApplicationIdAwareUserRefBuilder;
+import com.metabroadcast.consumption.ConsumptionStore;
 import com.metabroadcast.consumption.StatusToConsumptionAdapter;
+import com.metabroadcast.content.ContentStore;
 import com.metabroadcast.user.Users;
 
 @Configuration
@@ -20,6 +23,10 @@ public class PipeModule {
     private @Value("${twitter.follow.username}") String followUsername;
     private @Value("${twitter.follow.password}") String followPassword;
     private @Autowired Users users;
+    
+    private @Autowired ConsumptionStore consumptionStore;
+    private @Autowired ContentStore contentStore;
+    private @Autowired ApplicationIdAwareUserRefBuilder userRefBuilder;
     
     @Bean TwitterFilteredPipe trackingTwitterPipe() {
         final TwitterFilteredPipe pipe = new TwitterFilteredPipe(statusAdaptor(), followUsername, followPassword);
@@ -41,6 +48,6 @@ public class PipeModule {
     }
     
     @Bean TweetProcessor statusAdaptor() {
-        return new StatusToConsumptionAdapter();
+        return new StatusToConsumptionAdapter(consumptionStore, contentStore, userRefBuilder);
     }
 }

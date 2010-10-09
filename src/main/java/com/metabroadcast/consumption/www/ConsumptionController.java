@@ -1,9 +1,7 @@
 package com.metabroadcast.consumption.www;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,11 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.atlasapi.media.entity.Publisher;
-import org.atlasapi.media.entity.simple.BrandSummary;
 import org.atlasapi.media.entity.simple.Description;
 import org.atlasapi.media.entity.simple.Item;
-import org.atlasapi.media.entity.simple.Playlist;
-import org.atlasapi.media.entity.simple.PublisherDetails;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +23,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.model.DelegatingModelListBuilder;
 import com.metabroadcast.common.model.ModelListBuilder;
@@ -46,10 +40,10 @@ import com.metabroadcast.consumption.ConsumedContent;
 import com.metabroadcast.consumption.ConsumedContentProvider;
 import com.metabroadcast.consumption.Consumption;
 import com.metabroadcast.consumption.ConsumptionStore;
+import com.metabroadcast.consumption.ToConsumption;
 import com.metabroadcast.content.Channel;
 import com.metabroadcast.content.ContentRefs;
 import com.metabroadcast.content.ContentStore;
-import com.metabroadcast.content.SeriesOrder;
 import com.metabroadcast.content.SimpleItemAttributesModelBuilder;
 import com.metabroadcast.content.SimplePlaylistAttributesModelBuilder;
 import com.metabroadcast.neighbours.Neighbour;
@@ -238,20 +232,8 @@ public class ConsumptionController {
 
         if (uri != null) {
             Maybe<Description> description = contentStore.resolve(uri);
-            if (description.hasValue()) {
-                if (description.requireValue() instanceof Playlist) {
-                    Playlist playlist = (Playlist) description.requireValue();
-                    List<Item> items = playlist.getItems();
-
-                    if (!items.isEmpty()) {
-                        Collections.sort(items, new SeriesOrder());
-                        Collections.reverse(items);
-                        item = items.get(0);
-                    }
-                } else if (description.requireValue() instanceof Item) {
-                    item = (Item) description.requireValue();
-                }
-            }
+            item = ToConsumption.fromDescription(description.requireValue()).requireValue();
+            
             if (channel == null && item != null && item.getPublisher() != null) {
                 Maybe<Publisher> publisher = Publisher.fromKey(item.getPublisher().getKey());
                 if (publisher.hasValue()) {
@@ -269,13 +251,8 @@ public class ConsumptionController {
         }
 
         if (item != null) {
-            BrandSummary brand = item.getBrandSummary();
-            PublisherDetails publisher = item.getPublisher();
-            TargetRef targetRef = new TargetRef(item.getUri(), ContentRefs.ITEM_DOMAIN);
-            Set<String> genres = genres(item);
-
-            consumptionStore.store(new Consumption(userRef, targetRef, new DateTime(DateTimeZones.UTC), channel, publisher != null ? publisher.getKey() : null, brand != null ? brand.getUri() : null,
-                    genres));
+            Maybe<Consumption> consumption = ToConsumption.fromItem(userRef, item);
+            consumptionStore.store(consumption.requireValue());
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             model.put("error", "Unfortunately, there's nothing on that channel");
@@ -290,16 +267,6 @@ public class ConsumptionController {
         
         consumptionStore.remove(userRef, new TargetRef(uri, ContentRefs.ITEM_DOMAIN));
         response.setStatus(HttpServletResponse.SC_OK);
-    }
-
-    private Set<String> genres(Item item) {
-        Set<String> genres = Sets.newHashSet();
-        for (String genre : item.getGenres()) {
-            if (genre.startsWith("http://ref.atlasapi.org")) {
-                genres.add(genre);
-            }
-        }
-        return genres;
     }
 
     @RequestMapping(value = { "/watch" }, method = { RequestMethod.GET })
