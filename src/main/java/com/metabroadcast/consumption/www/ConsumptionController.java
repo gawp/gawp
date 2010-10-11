@@ -40,7 +40,7 @@ import com.metabroadcast.consumption.ConsumedContent;
 import com.metabroadcast.consumption.ConsumedContentProvider;
 import com.metabroadcast.consumption.Consumption;
 import com.metabroadcast.consumption.ConsumptionStore;
-import com.metabroadcast.consumption.ToConsumption;
+import com.metabroadcast.consumption.Converters;
 import com.metabroadcast.content.Channel;
 import com.metabroadcast.content.ContentRefs;
 import com.metabroadcast.content.ContentStore;
@@ -232,7 +232,7 @@ public class ConsumptionController {
 
         if (uri != null) {
             Maybe<Description> description = contentStore.resolve(uri);
-            item = ToConsumption.fromDescription(description.requireValue()).requireValue();
+            item = Converters.fromDescription(description.requireValue()).requireValue();
             
             if (channel == null && item != null && item.getPublisher() != null) {
                 Maybe<Publisher> publisher = Publisher.fromKey(item.getPublisher().getKey());
@@ -251,7 +251,7 @@ public class ConsumptionController {
         }
 
         if (item != null) {
-            Maybe<Consumption> consumption = ToConsumption.fromItem(userRef, item);
+            Maybe<Consumption> consumption = Converters.fromItem(userRef, item, channel);
             consumptionStore.store(consumption.requireValue());
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
