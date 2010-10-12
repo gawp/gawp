@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 
+import com.metabroadcast.beige.brands.BrandsModule;
 import com.metabroadcast.common.persistence.mongo.DatabasedMongo;
 import com.metabroadcast.common.social.anonymous.AnonymousUserProvider;
 import com.metabroadcast.common.social.anonymous.CookieBasedAnonymousUserProvider;
@@ -28,7 +29,7 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
 @Configuration
-@Import({WebModule.class, ConsumptionModule.class, InvitesModule.class, NeighbourhoodModule.class, PipeModule.class})
+@Import({WebModule.class, ConsumptionModule.class, InvitesModule.class, NeighbourhoodModule.class, PipeModule.class, BrandsModule.class})
 public class CoreModule {
 
     private @Autowired RequestScopedAuthenticationProvider authenticationProvider;

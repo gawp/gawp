@@ -49,6 +49,7 @@ import com.metabroadcast.content.SimplePlaylistAttributesModelBuilder;
 import com.metabroadcast.neighbours.Neighbour;
 import com.metabroadcast.neighbours.NeighboursProvider;
 import com.metabroadcast.user.twitter.TwitterUserRefProvider;
+import com.metabroadcast.user.www.UserModelHelper;
 
 @Controller
 public class ConsumptionController {
@@ -71,14 +72,17 @@ public class ConsumptionController {
     
     private final Log log = LogFactory.getLog(getClass());
 
+    private final UserModelHelper userHelper;
+
     public ConsumptionController(ConsumptionStore consumptionStore, ContentStore contentStore, UserProvider userProvider, UserDetailsProvider userDetailsProvider,
-            TwitterUserRefProvider userRefProvider, NeighboursProvider neighboursProvider) {
+            TwitterUserRefProvider userRefProvider, NeighboursProvider neighboursProvider, UserModelHelper userHelper, ConsumedContentProvider consumedContentProvider) {
         this.consumptionStore = consumptionStore;
         this.contentStore = contentStore;
         this.userDetailsProvider = userDetailsProvider;
         this.userRefProvider = userRefProvider;
         this.neighboursProvider = neighboursProvider;
-        this.consumedContentProvider = new ConsumedContentProvider(consumptionStore, contentStore);
+        this.userHelper = userHelper;
+        this.consumedContentProvider = consumedContentProvider;
         this.userProvider = userProvider;
     }
 
@@ -88,8 +92,8 @@ public class ConsumptionController {
         Maybe<UserRef> userRef = userRefProvider.ref(user);
         UserRef currentUserRef = userProvider.existingUser();
 
-        Maybe<UserDetails> userDetails = getUserDetails(currentUserRef);
-        model.put("currentUserDetails", userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
+        Maybe<UserDetails> userDetails = userHelper.getUserDetails(currentUserRef);
+        model.put("currentUserDetails", userHelper.userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
 
         return watches(model, userRef.requireValue());
     }
@@ -105,7 +109,7 @@ public class ConsumptionController {
         UserRef userRef = userProvider.existingUser();
 
         if (userRef.isInNamespace(UserNamespace.TWITTER)) {
-            Maybe<UserDetails> userDetails = getUserDetails(userRef);
+            Maybe<UserDetails> userDetails = userHelper.getUserDetails(userRef);
 
             if (userDetails.hasValue()) {
                 return "redirect:/" + userDetails.requireValue().getScreenName();
@@ -129,8 +133,8 @@ public class ConsumptionController {
     private String allWatches(Map<String, Object> model) {
         UserRef currentUserRef = userProvider.existingUser();
 
-        Maybe<UserDetails> userDetails = getUserDetails(currentUserRef);
-        model.put("currentUserDetails", userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
+        Maybe<UserDetails> userDetails = userHelper.getUserDetails(currentUserRef);
+        model.put("currentUserDetails", userHelper.userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
         
         List<ConsumedContent> consumedContent = consumedContentProvider.find(null, MAX_RECENT_ITEMS);
         model.put("items", consumedContentModelListBuilder.build(consumedContent));
@@ -157,8 +161,8 @@ public class ConsumptionController {
     private String watches(Map<String, Object> model, UserRef userRef) {
         long getUser = System.currentTimeMillis();
 
-        Maybe<UserDetails> userDetails = getUserDetails(userRef);
-        model.put("userDetails", userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
+        Maybe<UserDetails> userDetails = userHelper.getUserDetails(userRef);
+        model.put("userDetails", userHelper.userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
 
         long getUserDetails = System.currentTimeMillis();
 
@@ -205,17 +209,7 @@ public class ConsumptionController {
         return "watches/list";
     }
 
-    private Maybe<UserDetails> getUserDetails(UserRef userRef) {
-        try {
-            Map<UserRef, UserDetails> userDetailsMap = userDetailsProvider.detailsFor(userRef, Lists.newArrayList(userRef));
-            if (userDetailsMap.containsKey(userRef)) {
-                return Maybe.fromPossibleNullValue(userDetailsMap.get(userRef));
-            }
-        } catch (Exception e) {
-            log.warn("unable to get user details", e);
-        }
-        return Maybe.nothing();
-    }
+    
 
     @RequestMapping(value = { "/watch" }, method = { RequestMethod.POST })
     public void watch(HttpServletResponse response, @RequestParam(required = false, value="channel") String channelUri, @RequestParam(required = false) String uri, Map<String, Object> model) {
@@ -278,8 +272,8 @@ public class ConsumptionController {
         long getUser = System.currentTimeMillis();
 
         UserRef userRef = userProvider.existingUser();
-        Maybe<UserDetails> userDetails = getUserDetails(userRef);
-        model.put("userDetails", userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
+        Maybe<UserDetails> userDetails = userHelper.getUserDetails(userRef);
+        model.put("userDetails", userHelper.userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
         model.put("loggedIn", !userRef.getNamespace().equals(UserNamespace.ANONYMOUS));
 
         long getBrands = System.currentTimeMillis();
@@ -331,7 +325,7 @@ public class ConsumptionController {
         Map<UserRef, UserDetails> userDetails = userDetailsProvider.detailsFor(null, userRefs);
         
         for (UserDetails details: userDetails.values()) {
-            users.add(this.userDetailsModel((TwitterUserDetails) details).asMap()); 
+            users.add(userHelper.userDetailsModel((TwitterUserDetails) details).asMap()); 
         }
         
         model.put("neighbours", users);
@@ -418,25 +412,6 @@ public class ConsumptionController {
         model.put("genres", counts);
     }
 
-    public SimpleModel userDetailsModel(TwitterUserDetails userDetails) {
-        SimpleModel model = new SimpleModel();
-        if (userDetails != null) {
-            String targetName = userDetails.getFullName() != null ? userDetails.getFullName() : userDetails.getScreenName();
-            String possessivePostfix = targetName.endsWith("s") ? "'" : "'s";
-            
-            model.put("screenName", userDetails.getScreenName());
-            model.put("fullName", userDetails.getFullName());
-            model.put("possessivePostfix", possessivePostfix);
-            model.put("followers", userDetails.getFollowerCount());
-            model.put("profileImage", userDetails.getProfileImage());
-            model.put("profileUrl", userDetails.getProfileUrl());
-            model.put("bio", userDetails.getBio());
-            model.put("location", userDetails.getLocation());
-            model.put("id", userDetails.getUserRef().getUserId());
-        }
-        return model;
-    }
-
     private void addOverviewModel(Map<String, Object> model, List<Count<String>> channels, List<Count<String>> genres, List<Consumption> consumptions, TwitterUserDetails userDetails) {
         Map<String, Object> overview = Maps.newHashMap();
 
@@ -487,7 +462,7 @@ public class ConsumptionController {
         }
         overview.put("genre", targetMap);
         
-        overview.put("userDetails", userDetailsModel(userDetails).asMap());
+        overview.put("userDetails", userHelper.userDetailsModel(userDetails).asMap());
         
         model.put("overview", overview);
     }

@@ -1,6 +1,7 @@
 package com.metabroadcast.consumption;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,10 +13,12 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.UserRef;
+import com.metabroadcast.common.social.user.UserRefHelper;
 import com.metabroadcast.common.stats.Count;
 import com.metabroadcast.content.ContentStore;
 
@@ -80,6 +83,14 @@ public class ConsumedContentProvider {
     
     public List<Count<String>> findGenreCounts(List<Consumption> consumptions) {
         return findCounts(consumptions, GENRE_KEY);
+    }
+    
+    public List<Count<UserRef>> findUserCounts(List<Consumption> consumptions) {
+        List<Count<UserRef>> userCounts = Lists.newArrayList();
+        for (Count<String> count : findCounts(consumptions, USER_KEY)) {
+            userCounts.add(Count.of(UserRef.fromUrlSafeString(count.getTarget(), null), Ordering.arbitrary(), count.getCount()));
+        }
+        return userCounts;
     }
 
     @SuppressWarnings("unchecked")
@@ -146,6 +157,13 @@ public class ConsumedContentProvider {
         @Override
         public Set<String> apply(Consumption consumption) {
             return Sets.newHashSet(consumption.targetRef().domain() + ":" + consumption.targetRef().ref());
+        }
+    };
+    
+    protected static Function<Consumption, Set<String>> USER_KEY = new Function<Consumption, Set<String>>() {
+        @Override
+        public Set<String> apply(Consumption consumption) {
+            return Sets.newHashSet(consumption.userRef().toUrlSafeString());
         }
     };
 }

@@ -153,4 +153,10 @@ public class MongoConsumptionStore implements ConsumptionStore, Users {
     public void addListener(ComputedValueListener<List<UserRef>> listener) {
         users.addListener(listener);
     }
+
+    @Override
+    public List<Consumption> recentConsumesOfBrand(String brand) {
+        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals(ConsumptionTranslator.BRAND_KEY, brand);
+        return translator.fromDBObjects(table.find(query.build()).sort(new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)));
+    }
 }
