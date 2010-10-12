@@ -71,6 +71,7 @@
  * @param genres
  * @param overview
  * @param neighbours
+ * @param punchcard
 **/
 {template .list}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -144,6 +145,12 @@
         {/call}
         
         <div class="clearfix"></div>
+        {if $punchcard.image}
+        <div id="punchcard">
+            <h2>Gawps by Day and Hour</h2>
+            <img src="{$punchcard.image}" />
+        </div>
+        {/if}
     </div>
     {call beige.templates.decor.footer /}
     </body>
