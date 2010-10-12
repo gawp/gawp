@@ -19,6 +19,7 @@ import com.metabroadcast.content.AtlasContentStore;
 import com.metabroadcast.content.ContentStore;
 import com.metabroadcast.neighbours.NeighboursProvider;
 import com.metabroadcast.user.twitter.TwitterUserRefProvider;
+import com.metabroadcast.user.www.UserModelHelper;
 
 @Configuration
 public class ConsumptionModule {
@@ -39,11 +40,19 @@ public class ConsumptionModule {
     }
     
     public @Bean ConsumptionController consumptionController() {
-        return new ConsumptionController(consumptionStore(), contentStore(), userProvider, userDetailsProvider(), userRefProvider(), neighboursProvider);
+        return new ConsumptionController(consumptionStore(), contentStore(), userProvider, userDetailsProvider(), userRefProvider(), neighboursProvider, userHelper(), consumedContentProvider());
     }
     
-    @Bean TwitterUserRefProvider userRefProvider() {
+    public @Bean ConsumedContentProvider consumedContentProvider() {
+        return new ConsumedContentProvider(consumptionStore(), contentStore());
+    }
+    
+    public @Bean TwitterUserRefProvider userRefProvider() {
         return new TwitterUserRefProvider(userRefBuilder);
+    }
+    
+    public @Bean UserModelHelper userHelper() {
+        return new UserModelHelper(userDetailsProvider());
     }
     
     public @Bean ContentStore contentStore() {

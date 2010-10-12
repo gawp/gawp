@@ -1,0 +1,22 @@
+{namespace beige.templates.brands}
+
+/**
+ * @param brand
+ * @param consumers
+**/
+{template .brand}
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Brand: {$brand.title}</title>
+        
+        {include('/includes/javascript') |noAutoescape}
+    </head>
+    <body>
+    	<p>Title: {$brand.title}</p>
+    	<ul>
+    		{foreach $consumer in $consumers}
+    			<li>{$consumer.id}
+    		{/foreach}
+    	</ul>
+    </body>
+{/template}

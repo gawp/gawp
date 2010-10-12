@@ -98,4 +98,10 @@ public class MongoConsumptionStore implements ConsumptionStore {
     public void remove(Consumption consumption) {
         table.remove(translator.toDBObject(consumption));
     }
+
+    @Override
+    public List<Consumption> recentConsumesOfBrand(String brand) {
+        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals(ConsumptionTranslator.BRAND_KEY, brand);
+        return translator.fromDBObjects(table.find(query.build()).sort(new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)));
+    }
 }

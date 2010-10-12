@@ -16,6 +16,8 @@ public interface ConsumptionStore {
     public Consumption findLatest(UserRef userRef, TargetRef targetRef);
     
     public Map<String, Count<String>> topBrands(int limit);
+    
+    public List<Consumption> recentConsumesOfBrand(String brand);
 
     public void store(Consumption consumption);
     
