@@ -1,7 +1,6 @@
 package com.metabroadcast.consumption;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +17,6 @@ import com.google.common.collect.Sets;
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.UserRef;
-import com.metabroadcast.common.social.user.UserRefHelper;
 import com.metabroadcast.common.stats.Count;
 import com.metabroadcast.content.ContentStore;
 
@@ -93,7 +91,6 @@ public class ConsumedContentProvider {
         return userCounts;
     }
 
-    @SuppressWarnings("unchecked")
     protected List<Count<String>> findCounts(List<Consumption> consumptions, Function<Consumption, Set<String>> keyFunction) {
         Map<String, Count<String>> counts = Maps.newHashMap();
 
@@ -101,7 +98,7 @@ public class ConsumedContentProvider {
             for (String key: keyFunction.apply(consumption)) {
                 if (key != null) {
                     if (!counts.containsKey(key)) {
-                        counts.put(key, new Count(key, 1L));
+                        counts.put(key, new Count<String>(key, 1L));
                     } else {
                         counts.put(key, counts.get(key).plus(1L));
                     }
@@ -156,7 +153,7 @@ public class ConsumedContentProvider {
     protected static Function<Consumption, Set<String>> TARGET_KEY = new Function<Consumption, Set<String>>() {
         @Override
         public Set<String> apply(Consumption consumption) {
-            return Sets.newHashSet(consumption.targetRef().domain() + ":" + consumption.targetRef().ref());
+            return Sets.newHashSet(consumption.targetRef().toKey());
         }
     };
     

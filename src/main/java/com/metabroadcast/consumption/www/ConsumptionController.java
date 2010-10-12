@@ -26,7 +26,6 @@ import com.google.common.collect.Maps;
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.model.DelegatingModelListBuilder;
 import com.metabroadcast.common.model.ModelListBuilder;
-import com.metabroadcast.common.model.SimpleModel;
 import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.TwitterUserDetails;
 import com.metabroadcast.common.social.model.UserDetails;
