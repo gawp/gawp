@@ -35,7 +35,7 @@ public class Punchcard implements SelfModelling {
     		"7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7," +
     		"8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8|" +
     		"%s&" +
-    		"chxt=x,y&chm=o,333333,1,1.0,25.0&chxl=0:||1am|2|3|4|5|6|7|8|9|10|11|12|1pm|2|3|4|5|6|7|8|9|10|11|12||1:||Mon|Tue|Wed|Thr|Fri|Sat|Sun|&cht=s";
+    		"chxt=x,y&chm=o,71B7E6,1,2.0,50.0&chxl=0:||1am|2|3|4|5|6|7|8|9|10|11|12|1pm|2|3|4|5|6|7|8|9|10|11|12||1:||Mon|Tue|Wed|Thr|Fri|Sat|Sun|&cht=s";
 
     Map<Integer, PunchcardDay> dailyScore = Maps.newHashMapWithExpectedSize(7);
     
