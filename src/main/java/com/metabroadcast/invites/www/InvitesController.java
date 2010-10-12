@@ -38,4 +38,9 @@ public class InvitesController {
 	public String thanks() {
 		return "invites/thanks";
 	}
+	
+	@RequestMapping(value="/about", method=RequestMethod.GET)
+    public String about() {
+        return "invites/about";
+    }
 }

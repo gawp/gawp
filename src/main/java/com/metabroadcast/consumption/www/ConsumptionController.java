@@ -1,9 +1,7 @@
 package com.metabroadcast.consumption.www;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,11 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.atlasapi.media.entity.Publisher;
-import org.atlasapi.media.entity.simple.BrandSummary;
 import org.atlasapi.media.entity.simple.Description;
 import org.atlasapi.media.entity.simple.Item;
-import org.atlasapi.media.entity.simple.Playlist;
-import org.atlasapi.media.entity.simple.PublisherDetails;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +23,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.model.DelegatingModelListBuilder;
 import com.metabroadcast.common.model.ModelListBuilder;
@@ -46,10 +40,10 @@ import com.metabroadcast.consumption.ConsumedContent;
 import com.metabroadcast.consumption.ConsumedContentProvider;
 import com.metabroadcast.consumption.Consumption;
 import com.metabroadcast.consumption.ConsumptionStore;
+import com.metabroadcast.consumption.Converters;
 import com.metabroadcast.content.Channel;
 import com.metabroadcast.content.ContentRefs;
 import com.metabroadcast.content.ContentStore;
-import com.metabroadcast.content.SeriesOrder;
 import com.metabroadcast.content.SimpleItemAttributesModelBuilder;
 import com.metabroadcast.content.SimplePlaylistAttributesModelBuilder;
 import com.metabroadcast.neighbours.Neighbour;
@@ -61,6 +55,8 @@ import com.metabroadcast.user.www.UserModelHelper;
 public class ConsumptionController {
 
     private final static int MAX_RECENT_ITEMS = 10;
+    private final static int MAX_TOP_BRANDS = 8;
+    private final static int MAX_GRAPH_ROWS = 6;
 
     private final ConsumptionStore consumptionStore;
     private final ConsumedContentProvider consumedContentProvider;
@@ -146,8 +142,8 @@ public class ConsumptionController {
         List<Consumption> consumptions = consumptionStore.find(null, new DateTime(DateTimeZones.UTC).minusWeeks(4));
         
         List<Count<String>> brands = consumedContentProvider.findBrandCounts(consumptions);
-        if (brands.size() > 6) {
-            brands = brands.subList(0, 6);
+        if (brands.size() > MAX_TOP_BRANDS) {
+            brands = brands.subList(0, MAX_TOP_BRANDS);
         }
         addBrandCountsModel(model, brands);
         
@@ -182,8 +178,8 @@ public class ConsumptionController {
         long getConsumptions = System.currentTimeMillis();
 
         List<Count<String>> brands = consumedContentProvider.findBrandCounts(consumptions);
-        if (brands.size() > 6) {
-            brands = brands.subList(0, 6);
+        if (brands.size() > MAX_TOP_BRANDS) {
+            brands = brands.subList(0, MAX_TOP_BRANDS);
         }
         addBrandCountsModel(model, brands);
 
@@ -230,20 +226,8 @@ public class ConsumptionController {
 
         if (uri != null) {
             Maybe<Description> description = contentStore.resolve(uri);
-            if (description.hasValue()) {
-                if (description.requireValue() instanceof Playlist) {
-                    Playlist playlist = (Playlist) description.requireValue();
-                    List<Item> items = playlist.getItems();
-
-                    if (!items.isEmpty()) {
-                        Collections.sort(items, new SeriesOrder());
-                        Collections.reverse(items);
-                        item = items.get(0);
-                    }
-                } else if (description.requireValue() instanceof Item) {
-                    item = (Item) description.requireValue();
-                }
-            }
+            item = Converters.fromDescription(description.requireValue()).requireValue();
+            
             if (channel == null && item != null && item.getPublisher() != null) {
                 Maybe<Publisher> publisher = Publisher.fromKey(item.getPublisher().getKey());
                 if (publisher.hasValue()) {
@@ -261,13 +245,8 @@ public class ConsumptionController {
         }
 
         if (item != null) {
-            BrandSummary brand = item.getBrandSummary();
-            PublisherDetails publisher = item.getPublisher();
-            TargetRef targetRef = new TargetRef(item.getUri(), ContentRefs.ITEM_DOMAIN);
-            Set<String> genres = genres(item);
-
-            consumptionStore.store(new Consumption(userRef, targetRef, new DateTime(DateTimeZones.UTC), channel, publisher != null ? publisher.getKey() : null, brand != null ? brand.getUri() : null,
-                    genres));
+            Maybe<Consumption> consumption = Converters.fromItem(userRef, item, channel);
+            consumptionStore.store(consumption.requireValue());
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             model.put("error", "Unfortunately, there's nothing on that channel");
@@ -275,31 +254,13 @@ public class ConsumptionController {
         }
     }
     
-//    @RequestMapping(value = { "/watch" }, method = { RequestMethod.DELETE })
-//    public void unwatch(HttpServletResponse response, @RequestParam(required = true) String uri) {
-//        UserRef userRef = userProvider.existingUser();
-//        Preconditions.checkNotNull(userRef);
-//
-//        Consumption consumption = consumptionStore.find(userRef, from);
-//
-//        if (item != null) {
-//            TargetRef targetRef = new TargetRef(item.getUri(), ContentRefs.ITEM_DOMAIN);
-//
-//            consumptionStore.store(new Consumption(userRef, targetRef, new DateTime(DateTimeZones.UTC), null, null, null));
-//            response.setStatus(HttpServletResponse.SC_OK);
-//        } else {
-//            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//        }
-//    }
-
-    private Set<String> genres(Item item) {
-        Set<String> genres = Sets.newHashSet();
-        for (String genre : item.getGenres()) {
-            if (genre.startsWith("http://ref.atlasapi.org")) {
-                genres.add(genre);
-            }
-        }
-        return genres;
+    @RequestMapping(value = { "/remove" }, method = { RequestMethod.POST })
+    public void unwatch(HttpServletResponse response, @RequestParam(required = true) String uri) {
+        UserRef userRef = userProvider.existingUser();
+        Preconditions.checkNotNull(userRef);
+        
+        consumptionStore.remove(userRef, new TargetRef(uri, ContentRefs.ITEM_DOMAIN));
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     @RequestMapping(value = { "/watch" }, method = { RequestMethod.GET })
@@ -409,7 +370,7 @@ public class ConsumptionController {
         int max = max(channels);
         model.put("max", max);
 
-        for (Count<String> count : channels) {
+        for (Count<String> count : Iterables.limit(channels, MAX_GRAPH_ROWS)) {
             Map<String, Object> countMap = Maps.newHashMap();
             int countVal = Long.valueOf(count.getCount()).intValue();
             countMap.put("count", Long.valueOf(count.getCount()).intValue());
@@ -435,14 +396,14 @@ public class ConsumptionController {
         int max = max(genres);
         model.put("max", max);
 
-        for (Count<String> count : genres) {
+        for (Count<String> count : Iterables.limit(genres, MAX_GRAPH_ROWS)) {
             Map<String, Object> countMap = Maps.newHashMap();
             int countVal = Long.valueOf(count.getCount()).intValue();
             countMap.put("count", Long.valueOf(count.getCount()).intValue());
             countMap.put("width", Float.valueOf((float) countVal / (float) max * 100).intValue());
 
             Map<String, Object> targetMap = Maps.newHashMap();
-            targetMap.put("title", count.getTarget().replace("http://ref.atlasapi.org/genres/atlas/", ""));
+            targetMap.put("title", ConsumedContentProvider.GENRE.apply(count.getTarget()));
             targetMap.put("uri", count.getTarget());
 
             countMap.put("target", targetMap);
@@ -496,7 +457,7 @@ public class ConsumptionController {
         
         targetMap = Maps.newHashMap();
         if (topGenre != null) {
-            targetMap.put("title", topGenre.replace("http://ref.atlasapi.org/genres/atlas/", ""));
+            targetMap.put("title", ConsumedContentProvider.GENRE.apply(topGenre));
             targetMap.put("uri", topGenre);
         }
         overview.put("genre", targetMap);

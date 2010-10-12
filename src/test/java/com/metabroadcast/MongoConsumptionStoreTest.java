@@ -18,12 +18,11 @@ import com.metabroadcast.common.social.model.UserRef;
 import com.metabroadcast.common.social.model.UserRef.UserNamespace;
 import com.metabroadcast.common.time.DateTimeZones;
 import com.metabroadcast.consumption.Consumption;
-import com.metabroadcast.consumption.ConsumptionStore;
 import com.metabroadcast.consumption.MongoConsumptionStore;
 
 
 public class MongoConsumptionStoreTest {
-    private UserRef alice = new UserRef("102", UserNamespace.FACEBOOK, null);
+    private UserRef alice = new UserRef("102", UserNamespace.TWITTER, null);
     private TargetRef target1 = new TargetRef("id1", "domain");
     private TargetRef target2 = new TargetRef("id2", "domain");
     private DateTime timestamp1 = new DateTime(DateTimeZones.UTC);
@@ -32,7 +31,7 @@ public class MongoConsumptionStoreTest {
     private Consumption consumption1 = new Consumption(alice, target1, timestamp1, null, null, null, null);
     private Consumption consumption2 = new Consumption(alice, target2, timestamp2, null, null, null, null);
 
-    private ConsumptionStore store;
+    private MongoConsumptionStore store;
     
     @Before
     public void setUp() {
@@ -60,9 +59,21 @@ public class MongoConsumptionStoreTest {
         List<Consumption> consumptions = store.find(alice, 10);
         assertFalse(consumptions.isEmpty());
         
-        store.remove(consumption1);
+        store.remove(consumption1.userRef(), consumption1.targetRef());
         
         consumptions = store.find(alice, 10);
         assertTrue(consumptions.isEmpty());
+    }
+    
+    @Test
+    public void shouldRetrieveDistinctUsers() {
+        store.store(consumption1);
+        store.store(consumption2);
+        
+        List<Consumption> consumptions = store.find(alice, 10);
+        assertFalse(consumptions.isEmpty());
+        
+        List<UserRef> users = store.users();
+        assertEquals(Lists.newArrayList(alice), users);
     }
 }

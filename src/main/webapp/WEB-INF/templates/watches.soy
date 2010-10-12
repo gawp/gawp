@@ -12,7 +12,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>You Have Been Watching</title>
+        <title>Everyone's Gawps</title>
         
         <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
         <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
@@ -28,6 +28,7 @@
         
         {call .content}
             {param items: $items/}
+            {param currentUserDetails: $currentUserDetails/}
         {/call}
         
         {call .topBrands}
@@ -75,7 +76,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>You Have Been Watching</title>
+        <title>{if $userDetails.fullName}{$userDetails.fullName}{else}{$userDetails.screenName}{/if}{$userDetails.possessivePostfix} Gawps</title>
         
         <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
         <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
@@ -96,6 +97,7 @@
         
         {call .content}
             {param items: $items/}
+            {param currentUserDetails: $currentUserDetails/}
         {/call}
         
         {call .topBrands}
@@ -111,10 +113,11 @@
             
             <div id="tools">
                 <h2>Tools</h2>
-                    {literal}<a class="bookmark" style="display:block;" onClick="alert('Drag me onto your bookmarks bar'); return false;" href="javascript:(function(){bootstrap=document.createElement('script');bootstrap.src='http://gawp.tv/bookmark/bootstrap?uri='+encodeURIComponent(document.location);document.getElementsByTagName('head')[0].appendChild(bootstrap);})();"><img alt="gawp this" src="/images/bookmark.png"/></a>{/literal}
                 <ul>
+                    <li class="tool">{literal}<p>Bookmarklet</p><span class="explain">Drag this link to your bookmarks bar: <a style="color: #0000FF;" onClick="alert('Drag me onto your bookmarks bar'); return false;" href="javascript:(function(){bootstrap=document.createElement('script');bootstrap.src='http://gawp.tv/bookmark/bootstrap?uri='+encodeURIComponent(document.location);document.getElementsByTagName('head')[0].appendChild(bootstrap);})();">Gawp this</a></span></li>{/literal}
                     <li class="tool"><a href="/watch">iPhone Page</a><br /><span class="explain">Gawp what's on the BBC right now, or the latest episode from top shows.</span></li>
                     <li class="tool"><a href="/downloads/chrome-extension.crx">Chrome Extension</a><br /><span class="explain">Automatically gawp from iPlayer and 4oD, and manually from other sites.</span></li>
+                    <li class="tool">Read more on the <a href="/about">About</a> page</li>
                 </ul>
             </div>
 
@@ -153,7 +156,7 @@
 {template .homeOverview}
 <p id="overview">
     {if $overview.channel and $overview.channel.uri and $overview.channel.title}
-        Overall, people have mostly been watching shows on <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
+        Overall, people have mostly been gawping at <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
         {if $overview.target and $overview.target.uri}
             , particularly <a href="{$overview.target.uri}">{$overview.target.title}</a>
         {/if}
@@ -190,7 +193,7 @@
             a penchant for {$overview.genre.title} programs
         {/if}
     {else}
-        &nbsp;not watched anything yet..
+        &nbsp;not gawped at anything yet..
     {/if}
     .
 </p>
@@ -211,6 +214,8 @@
     {else}
         <p class="joinus"><a href="/login/twitter?continueTo=/" class="biglink">Login</a><span class="or clearfix">or</span><a href="/invites" class="biglink">Request An Invite</a></p>
     {/if}
+    <div class="clearfix"></div>
+    <p class="joinus" style="margin-top: 50px;"><a href="/about" class="biglink">About Gawp</a></p>
 </div>
 {/template}
 
@@ -270,6 +275,7 @@
 
 /**
  * @param items
+ * @param currentUserDetails
 **/
 {template .content}
 <div id="recentContent" class="module">
@@ -281,6 +287,8 @@
                     <div class="thumbnail">
                     {if $item.content.thumbnail}
                         <a href="{$item.content.uri}"><img src="{$item.content.thumbnail}" class="thumbnailImage"/></a>
+                    {elseif $item.content.image}
+                        <a href="{$item.content.uri}"><img src="{$item.content.image}" class="thumbnailImage"/></a>
                     {/if}
                     </div>
                     <div class="info">
@@ -292,6 +300,9 @@
                         </p>
                         <p class="actions">
                             <span class="ago">{$item.ago}</span>
+                            {if $currentUserDetails and $item.userId and $currentUserDetails.id and $currentUserDetails.id == $item.userId}
+                                <span class="remove"><a href="#" uri="{$item.content.uri}" class="remove_item"><img src="/images/remove.png" class="remove_button" /></a></span>
+                            {/if}
                         </p>
                         {if $item.channel}
                             <div class="channelPromo"><a href="{$item.channel.uri}"><img src="{$item.channel.logo}" /></a></div>
@@ -325,7 +336,7 @@
     <tbody>
     {foreach $count in $counts}
         <tr class="count">
-        {if $count.target.uri and $count.target.logo}
+        {if $count.target and $count.target.uri and $count.target.logo}
             <td class="iconCell"><a href="{$count.target.uri}"><img src="{$count.target.logo}" class="thumbnailImage" /></a></td>
         {else}
             <td class="titleCell">{$count.target.title}</td>
@@ -353,6 +364,7 @@
 <ul class="topBrands">
 <h2>Favorite Shows</h2>
 {foreach $count in $counts}
+    {if $count.target and $count.target.uri and $count.target.logo}
     <li class="topBrand">
         <span class="picture">
             <a href="{$count.target.uri}">
@@ -362,6 +374,7 @@
         </span>
         <p class="brandTitle"><a href="{$count.target.uri}">{$count.target.title}</a><span class="watches">({$count.count} watches)</span></p>
     </li>
+    {/if}
 {ifempty}
     {for $i in range(0, 4)}
         <li class="topBrand">
@@ -383,7 +396,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>What Are You Watching?</title>
+        <title>Gawp</title>
         
         <link href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
         <link href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
@@ -431,7 +444,7 @@
             <h2 class="subtitle">Shows</h2>
             <ul class="topBrands">
                 {foreach $count in $brands}
-                    {if $count.target.uri and $count.target.logo}
+                    {if $count.target and $count.target.uri and $count.target.logo}
                     <li class="channel">
                         <a href="#" class="brandLink" uri="{$count.target.uri}"><img src="{$count.target.logo}" class="icon" /></a>
                     </li>

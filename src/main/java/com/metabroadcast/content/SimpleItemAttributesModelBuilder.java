@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.metabroadcast.common.model.ModelBuilder;
 import com.metabroadcast.common.model.SimpleModel;
+import com.metabroadcast.common.text.Truncator;
 
 
 /**
@@ -18,8 +19,9 @@ import com.metabroadcast.common.model.SimpleModel;
  */
 public class SimpleItemAttributesModelBuilder implements ModelBuilder<Item> {
 	
-	private static final int TRUNCATE_TITLES_TO = 30;
-
+	private Truncator truncator = new Truncator().withMaxLength(90).withOmissionMarker("...").onlyTruncateAtAWordBoundary().omitTrailingPunctuationWhenTruncated().onlyStartANewSentenceIfTheSentenceIsAtLeastPercentComplete(50);
+    private Truncator titleTruncator = new Truncator().withMaxLength(20).withOmissionMarker("...").onlyTruncateAtAWordBoundary().omitTrailingPunctuationWhenTruncated();
+    
 	private Set<String> allowedGenrePrefixes = Sets.newHashSet("http://ref.atlasapi.org/genres/atlas/");
 	
 	public SimpleModel build(Item item) {
@@ -32,7 +34,7 @@ public class SimpleItemAttributesModelBuilder implements ModelBuilder<Item> {
 		} else if (item.getThumbnail() != null) {
 			model.put("image", item.getThumbnail());
 		}
-		model.put("description", item.getDescription());
+		model.put("description", truncator.truncatePossibleNull(item.getDescription()));
 		model.put("curie", item.getCurie());
 		model.put("externalUrl", item.getUri());
 		addPublisher(model, item);
@@ -88,19 +90,7 @@ public class SimpleItemAttributesModelBuilder implements ModelBuilder<Item> {
 			model.put("secondaryTitle", item.getTitle());
 		}
 		model.put("title", item.getTitle());
-		model.put("titleTruncated", truncate(item.getTitle()));
-	}
-	
-	private String truncate(String title) {
-		if (title == null) {
-			return null;
-		}
-		if (title.length() <= TRUNCATE_TITLES_TO) {
-			return title;
-		} else {
-			String ellipsis = "...";
-			return title.substring(0, TRUNCATE_TITLES_TO - ellipsis.length()) + ellipsis;
-		}
+		model.put("titleTruncated", titleTruncator.truncatePossibleNull(item.getTitle()));
 	}
 
 	public void addPublisher(SimpleModel model, Item item) {

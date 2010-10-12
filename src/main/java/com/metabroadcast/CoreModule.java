@@ -2,7 +2,6 @@ package com.metabroadcast;
 
 import java.net.UnknownHostException;
 
-import org.atlasapi.client.CachingJaxbAtlasClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,15 +23,13 @@ import com.metabroadcast.common.social.user.LoggedInOrAnonymousUserProvider;
 import com.metabroadcast.common.social.user.UserProvider;
 import com.metabroadcast.common.webapp.properties.ContextConfigurer;
 import com.metabroadcast.consumption.ConsumptionModule;
-import com.metabroadcast.content.AtlasContentStore;
-import com.metabroadcast.content.ContentStore;
 import com.metabroadcast.invites.InvitesModule;
 import com.metabroadcast.neighbours.NeighbourhoodModule;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
 @Configuration
-@Import({WebModule.class, ConsumptionModule.class, InvitesModule.class, NeighbourhoodModule.class, BrandsModule.class})
+@Import({WebModule.class, ConsumptionModule.class, InvitesModule.class, NeighbourhoodModule.class, PipeModule.class, BrandsModule.class})
 public class CoreModule {
 
     private @Autowired RequestScopedAuthenticationProvider authenticationProvider;
@@ -74,9 +71,5 @@ public class CoreModule {
         userProvider.setAnonymousUserProvider(anonymousUserProvider());
         userProvider.setLoggedInUserProvider(authenticationProvider);
         return userProvider;
-    }
-
-    public @Bean ContentStore contentStore() {
-        return new AtlasContentStore(new CachingJaxbAtlasClient());
     }
 }

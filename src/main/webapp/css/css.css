@@ -5,7 +5,7 @@ html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, font, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
+small, strike, sub, sup, tt, var,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td {
@@ -27,7 +27,7 @@ body {
     line-height: 1;
     color: black;
     background: #E6E6E6;
-    font-family: 'Lucida Grande', Arial, Helvetica, Verdana, sans-serif;
+    font-family: 'Lucida Grande', sans-serif;
     font-size: 12px;
 }
 ol, ul {
@@ -83,6 +83,7 @@ input.submit:hover { background-position: -450px 50%; }
     margin-top: 10px;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 10px;
 }
 
 .joinus {
@@ -173,7 +174,7 @@ input.submit:hover { background-position: -450px 50%; }
 .topBrand {
 	display: inline;
 	float: left;
-	height: 122px;
+	height: 133px;
 	overflow: hidden;
 	width: 170px;
 }
@@ -263,6 +264,12 @@ a:hover {
     width:                  200px;
     text-align:             right;
 }
+.remove {
+    display: none;
+}
+.ago {
+	display: block;
+}
 .channelPromo img{
 	height: 21px;
 	width: 37px;
@@ -279,8 +286,6 @@ a:hover {
 .desc {
     font-size:              0.8em;
     margin-top:             5px;
-    height:                 21px;
-    overflow: hidden;
 }
 .clearfix {
 	display:                block;
@@ -313,6 +318,7 @@ a:hover {
     line-height:            1em;
     margin-bottom:          20px;
     color: darkgrey;
+    margin-left: 25px;
 }
 
 #overview a {
@@ -472,7 +478,7 @@ h3{
 #login {
     background-color: #EEE;
 	border: 1px solid darkGray;
-	left: 1085px;
+	left: 1058px;
 	overflow: hidden;
 	padding: 5px;
 	position: relative;
@@ -492,4 +498,12 @@ h3{
 }
 
 #neighbours {
+}
+
+.about {
+	margin-bottom: 10px;
+}
+
+.about a {
+	color: red;
 }

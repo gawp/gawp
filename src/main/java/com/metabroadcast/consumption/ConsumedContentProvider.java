@@ -10,6 +10,7 @@ import org.atlasapi.media.entity.Publisher;
 import org.atlasapi.media.entity.simple.Description;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
@@ -33,7 +34,7 @@ public class ConsumedContentProvider {
 
     public List<ConsumedContent> find(UserRef userRef, int limit) {
         Map<String, ConsumedContent> consumedContent = Maps.newHashMap();
-        for (Consumption consumption: consumptionStore.find(userRef, limit)) {
+        for (Consumption consumption: consumptionStore.find(userRef, limit+5)) {
             if (consumedContent.containsKey(consumption.targetRef().toKey())) {
                 ConsumedContent current = consumedContent.get(consumption.targetRef().toKey());
                 Consumption latestConsumption = consumption.timestamp().isAfter(current.getConsumption().timestamp()) ? consumption : current.getConsumption();
@@ -50,6 +51,9 @@ public class ConsumedContentProvider {
         
         List<ConsumedContent> results = Lists.newArrayList(consumedContent.values());
         Collections.sort(results);
+        if (results.size() > limit) {
+            results = results.subList(0, limit);
+        }
         return results;
     }
     
@@ -135,7 +139,17 @@ public class ConsumedContentProvider {
     protected static Function<Consumption, Set<String>> GENRE_KEY = new Function<Consumption, Set<String>>() {
         @Override
         public Set<String> apply(Consumption consumption) {
-            return consumption.getGenres();
+            return Sets.newHashSet(Iterables.transform(consumption.getGenres(), GENRE));
+        }
+    };
+    
+    public static Function<String, String> GENRE = new Function<String, String>() {
+        @Override
+        public String apply(String genreUri) {
+            if (genreUri == null) {
+                return null;
+            }
+            return genreUri.replace("http://ref.atlasapi.org/genres/atlas/", "").replace("http://ref.atlasapi.org/genres/youtube/", "").toLowerCase();
         }
     };
 

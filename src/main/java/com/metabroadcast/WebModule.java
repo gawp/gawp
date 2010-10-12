@@ -91,6 +91,7 @@ public class WebModule {
         
         methodToPath.put("GET", ImmutableList.<String>of("/bookmark/iframe"));
         methodToPath.put("POST", ImmutableList.<String>of());
+        methodToPath.put("DELETE", ImmutableList.<String>of());
         
         
         AuthenticationInterceptor authenticationInterceptor = new AuthenticationInterceptor();

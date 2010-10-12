@@ -56,7 +56,7 @@ public class ConsumptionModule {
     }
     
     public @Bean ContentStore contentStore() {
-        return new AtlasContentStore(new CachingJaxbAtlasClient());
+        return new AtlasContentStore(new CachingJaxbAtlasClient(/*"http://stage.atlasapi.org/2.0"*/));
     }
     
     public @Bean UserDetailsProvider userDetailsProvider() {

@@ -23,6 +23,8 @@
             <div class="thumbnail">
             {if $item.thumbnail}
                 <a href="{$item.uri}"><img src="{$item.thumbnail}" class="thumbnailImage"/></a>
+            {elseif $item.image}
+                <a href="{$item.uri}"><img src="{$item.image}" class="thumbnailImage"/></a>
             {/if}
             </div>
             <div>
@@ -70,7 +72,7 @@
         <link rel="stylesheet" type="text/css" href="/css/css.css" />
         {include('/includes/javascript') |noAutoescape}
     </head>
-    <body style="padding: 10px">
+    <body style="padding: 10px; background-color: transparent;">
     <div style="background-color: white; border: 1px solid darkGray; position: relative; padding: 10px;">
         <p id="overview">Sorry, nothing to see here</p>
        </div>
@@ -87,7 +89,7 @@
 {template .bootstrap}
 (function(){lb}
     var iframe=document.createElement('iframe');
-    iframe.width=500;
+    iframe.width=520;
     iframe.height={$frameHeight};
     iframe.style.cssText="position:absolute; z-index: 1000; top: 0; right: 0; border: 0;";
     iframe.src='{$frameSrc}';
@@ -148,6 +150,8 @@
                     <div class="thumbnail">
                     {if $item.thumbnail}
                         <img src="{$item.thumbnail}" class="thumbnailImage"/>
+                    {elseif $item.image}
+                        <img src="{$item.image}" class="thumbnailImage"/>
                     {/if}
                     </div>
                     <div>

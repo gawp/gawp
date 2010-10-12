@@ -21,5 +21,5 @@ public interface ConsumptionStore {
 
     public void store(Consumption consumption);
     
-    public void remove(Consumption consumption);
+    public void remove(UserRef userRef, TargetRef targetRef);
 }
