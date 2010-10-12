@@ -1,6 +1,6 @@
 package com.metabroadcast.consumption.punchcard;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
@@ -53,5 +53,7 @@ public class MongoConsumptionPunchcardProvider {
         for (Integer score: scores.subList(1, scores.size())) {
             assertEquals(Integer.valueOf(0), score);
         }
+        
+        System.out.println(punchcard.toSimpleModel().asMap().get("image"));
     }
 }

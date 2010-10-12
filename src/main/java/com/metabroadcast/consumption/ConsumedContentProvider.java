@@ -1,7 +1,6 @@
 package com.metabroadcast.consumption;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +17,6 @@ import com.google.common.collect.Sets;
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.UserRef;
-import com.metabroadcast.common.social.user.UserRefHelper;
 import com.metabroadcast.common.stats.Count;
 import com.metabroadcast.content.ContentStore;
 

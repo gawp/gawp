@@ -26,7 +26,6 @@ import com.google.common.collect.Maps;
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.model.DelegatingModelListBuilder;
 import com.metabroadcast.common.model.ModelListBuilder;
-import com.metabroadcast.common.model.SimpleModel;
 import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.TwitterUserDetails;
 import com.metabroadcast.common.social.model.UserDetails;
@@ -41,6 +40,7 @@ import com.metabroadcast.consumption.ConsumedContentProvider;
 import com.metabroadcast.consumption.Consumption;
 import com.metabroadcast.consumption.ConsumptionStore;
 import com.metabroadcast.consumption.Converters;
+import com.metabroadcast.consumption.punchcard.ConsumptionPunchcardProvider;
 import com.metabroadcast.content.Channel;
 import com.metabroadcast.content.ContentRefs;
 import com.metabroadcast.content.ContentStore;
@@ -73,9 +73,10 @@ public class ConsumptionController {
     private final Log log = LogFactory.getLog(getClass());
 
     private final UserModelHelper userHelper;
+    private final ConsumptionPunchcardProvider punchcardProvider;
 
     public ConsumptionController(ConsumptionStore consumptionStore, ContentStore contentStore, UserProvider userProvider, UserDetailsProvider userDetailsProvider,
-            TwitterUserRefProvider userRefProvider, NeighboursProvider neighboursProvider, UserModelHelper userHelper, ConsumedContentProvider consumedContentProvider) {
+            TwitterUserRefProvider userRefProvider, NeighboursProvider neighboursProvider, UserModelHelper userHelper, ConsumedContentProvider consumedContentProvider, ConsumptionPunchcardProvider punchcardProvider) {
         this.consumptionStore = consumptionStore;
         this.contentStore = contentStore;
         this.userDetailsProvider = userDetailsProvider;
@@ -84,6 +85,7 @@ public class ConsumptionController {
         this.userHelper = userHelper;
         this.consumedContentProvider = consumedContentProvider;
         this.userProvider = userProvider;
+        this.punchcardProvider = punchcardProvider;
     }
 
     @RequestMapping(value = { "/{user}" }, method = { RequestMethod.GET })
@@ -94,6 +96,7 @@ public class ConsumptionController {
 
         Maybe<UserDetails> userDetails = userHelper.getUserDetails(currentUserRef);
         model.put("currentUserDetails", userHelper.userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
+        model.put("punchcard", punchcardProvider.punchCard(userRef.requireValue()).toSimpleModel());
 
         return watches(model, userRef.requireValue());
     }

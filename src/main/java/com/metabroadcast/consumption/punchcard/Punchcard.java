@@ -1,5 +1,7 @@
 package com.metabroadcast.consumption.punchcard;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -8,8 +10,32 @@ import org.joda.time.DateTimeConstants;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.metabroadcast.common.model.SelfModelling;
+import com.metabroadcast.common.model.SimpleModel;
 
-public class Punchcard {
+public class Punchcard implements SelfModelling {
+    
+    private static final String IMAGE_URL = "http://chart.apis.google.com/chart?" +
+    		"chs=800x300&chds=-1,24,-1,7,0,10&chf=bg,s,efefef&" +
+    		"chd=t:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23" +
+    		"0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23," +
+    		"0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23," +
+    		"0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23," +
+    		"0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23," +
+    		"0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23," +
+    		"0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23," +
+    		"0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23|" +
+    		"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0," +
+    		"1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1," +
+    		"2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2," +
+    		"3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3," +
+    		"4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4," +
+    		"5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5," +
+    		"6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6," +
+    		"7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7," +
+    		"8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8|" +
+    		"%s&" +
+    		"chxt=x,y&chm=o,333333,1,1.0,25.0&chxl=0:||1am|2|3|4|5|6|7|8|9|10|11|12|1pm|2|3|4|5|6|7|8|9|10|11|12||1:||Mon|Tue|Wed|Thr|Fri|Sat|Sun|&cht=s";
 
     Map<Integer, PunchcardDay> dailyScore = Maps.newHashMapWithExpectedSize(7);
     
@@ -57,5 +83,27 @@ public class Punchcard {
     @Override
     public int hashCode() {
         return dailyScore.hashCode();
+    }
+
+    @Override
+    public SimpleModel toSimpleModel() {
+        SimpleModel model = new SimpleModel();
+        
+        List<Integer> scores = streamOfHourlyScores();
+        model.put("image", String.format(IMAGE_URL, join(scores, ",")));
+        
+        return model;
+    }
+    
+    public static String join(Collection<Integer> s, String delimiter) {
+        StringBuffer buffer = new StringBuffer();
+        Iterator<Integer> iter = s.iterator();
+        while (iter.hasNext()) {
+            buffer.append(iter.next());
+            if (iter.hasNext()) {
+                buffer.append(delimiter);
+            }
+        }
+        return buffer.toString();
     }
 }

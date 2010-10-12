@@ -507,3 +507,9 @@ h3{
 .about a {
 	color: red;
 }
+
+#punchcard {
+	margin-left: auto;
+	margin-right: auto;
+	width: 800px;
+}

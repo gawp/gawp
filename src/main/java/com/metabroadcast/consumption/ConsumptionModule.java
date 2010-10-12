@@ -14,10 +14,14 @@ import com.metabroadcast.common.social.user.UserDetailsProvider;
 import com.metabroadcast.common.social.user.UserProvider;
 import com.metabroadcast.common.social.user.details.UserDetailsCache;
 import com.metabroadcast.common.social.user.details.twitter.TwitterMasterUserDetailsProvider;
+import com.metabroadcast.consumption.punchcard.CachingPunchcardStore;
+import com.metabroadcast.consumption.punchcard.ConsumptionPunchcardProvider;
+import com.metabroadcast.consumption.punchcard.MongoConsumptionPunchcardStore;
 import com.metabroadcast.consumption.www.ConsumptionController;
 import com.metabroadcast.content.AtlasContentStore;
 import com.metabroadcast.content.ContentStore;
 import com.metabroadcast.neighbours.NeighboursProvider;
+import com.metabroadcast.user.Users;
 import com.metabroadcast.user.twitter.TwitterUserRefProvider;
 import com.metabroadcast.user.www.UserModelHelper;
 
@@ -40,7 +44,7 @@ public class ConsumptionModule {
     }
     
     public @Bean ConsumptionController consumptionController() {
-        return new ConsumptionController(consumptionStore(), contentStore(), userProvider, userDetailsProvider(), userRefProvider(), neighboursProvider, userHelper(), consumedContentProvider());
+        return new ConsumptionController(consumptionStore(), contentStore(), userProvider, userDetailsProvider(), userRefProvider(), neighboursProvider, userHelper(), consumedContentProvider(), punchcardProvider());
     }
     
     public @Bean ConsumedContentProvider consumedContentProvider() {
@@ -69,5 +73,10 @@ public class ConsumptionModule {
     
 	public @Bean BookmarkletController bookmarkletController() {
 		return new BookmarkletController(contentStore(), host);
+	}
+	
+	public @Bean ConsumptionPunchcardProvider punchcardProvider() {
+	    ConsumptionPunchcardProvider delegate = new MongoConsumptionPunchcardStore(db);
+	    return new CachingPunchcardStore(delegate, (Users) consumptionStore());
 	}
 }
