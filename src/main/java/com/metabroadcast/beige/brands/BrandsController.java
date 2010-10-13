@@ -70,10 +70,10 @@ public class BrandsController {
         Map<String, Description> itemMap = contentStore.resolveAll(targetUris);
         
         List<Count<UserRef>> usersByConsumes = consumedContentProvider.findUserCounts(consumptions);
-        Collections.sort(usersByConsumes);
+        Collections.sort(usersByConsumes, Collections.reverseOrder());
         
         List<Count<TargetRef>> targetsByConsumes = consumedContentProvider.findTargetCounts(consumptions);
-        Collections.sort(targetsByConsumes);
+        Collections.sort(targetsByConsumes, Collections.reverseOrder());
         
         model.put("recentConsumes", recentConsumersModel(consumptions, itemMap));
         model.put("biggestConsumers", biggestConsumersModel(usersByConsumes));

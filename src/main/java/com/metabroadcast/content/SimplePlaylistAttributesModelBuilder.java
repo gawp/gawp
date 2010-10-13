@@ -8,6 +8,7 @@ import com.metabroadcast.common.model.ModelBuilder;
 import com.metabroadcast.common.model.SimpleModel;
 
 public class SimplePlaylistAttributesModelBuilder implements ModelBuilder<Playlist> {
+    private ContentModelHelper modelHelper = new ContentModelHelper();
 
     @Override
     public SimpleModel build(Playlist list) {
@@ -18,6 +19,8 @@ public class SimplePlaylistAttributesModelBuilder implements ModelBuilder<Playli
         model.put("thumbnail", list.getThumbnail());
         model.put("image", list.getImage());
         model.put("description", list.getDescription());
+        modelHelper.addGenres(model, list);
+        modelHelper.addChannel(model, list);
         return model;
     }
     
