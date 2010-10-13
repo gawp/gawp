@@ -28,6 +28,7 @@ import com.metabroadcast.common.social.model.UserRef;
 import com.metabroadcast.common.social.model.UserRef.UserNamespace;
 import com.metabroadcast.common.social.model.translator.UserRefTranslator;
 import com.metabroadcast.common.stats.Count;
+import com.metabroadcast.content.ContentRefs;
 import com.metabroadcast.user.Users;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -155,8 +156,14 @@ public class MongoConsumptionStore implements ConsumptionStore, Users {
     }
 
     @Override
-    public List<Consumption> recentConsumesOfBrand(String brand) {
-        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals(ConsumptionTranslator.BRAND_KEY, brand).fieldEquals("user.userNamespace", UserNamespace.TWITTER.prefix());
+    public List<Consumption> recentConsumesOfBrand(String brandUri) {
+        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals(ConsumptionTranslator.BRAND_KEY, brandUri).fieldEquals("user.userNamespace", UserNamespace.TWITTER.prefix());
+        return translator.fromDBObjects(table.find(query.build()).sort(new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)));
+    }
+
+    @Override
+    public List<Consumption> recentConsumesOfItem(String itemUri) {
+        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals("target.domain", ContentRefs.ITEM_DOMAIN).fieldEquals("target.ref", itemUri);
         return translator.fromDBObjects(table.find(query.build()).sort(new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)));
     }
 }

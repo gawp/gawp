@@ -1,4 +1,4 @@
-package com.metabroadcast.beige.brands;
+package com.metabroadcast.content.www;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,14 +13,22 @@ import com.metabroadcast.content.SimplePlaylistAttributesModelBuilder;
 import com.metabroadcast.user.www.UserModelHelper;
 
 @Configuration
-public class BrandsModule {
+public class ContentModule {
     private @Autowired ContentStore contentStore;
     private @Autowired ConsumptionStore consumptionStore;
     private @Autowired UserProvider userProvider;
     private @Autowired UserModelHelper userHelper;
     private @Autowired ConsumedContentProvider consumedContentProvider;
     
-    public @Bean BrandsController brandController() {
-        return new BrandsController(contentStore, consumptionStore, userProvider, userHelper, consumedContentProvider, new SimplePlaylistAttributesModelBuilder(), new SimpleItemAttributesModelBuilder());
+    public @Bean BrandsController brandsController() {
+        return new BrandsController(contentStore, consumptionStore, userProvider, userHelper, consumedContentProvider, new SimplePlaylistAttributesModelBuilder(), consumptionsModelHelper());
+    }
+    
+    public @Bean ItemsController itemsController() {
+        return new ItemsController(contentStore, consumptionStore, userProvider, userHelper, consumedContentProvider, new SimpleItemAttributesModelBuilder(), consumptionsModelHelper());
+    }
+    
+    public @Bean ConsumptionsModelHelper consumptionsModelHelper() {
+        return new ConsumptionsModelHelper(new SimpleItemAttributesModelBuilder(), userHelper);
     }
 }

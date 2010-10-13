@@ -141,17 +141,17 @@
  **/
 {template .overview}
 <p id="overview">
-    <a href="{$brand.uri}">{$brand.title}</a>&nbsp;
+    <a href="{$brand.uri}">{$brand.title}</a>{sp}
     {if length($brand.genres) > 0}
-        is a {$brand.genres[0].name} programme&nbsp;
+        is a {$brand.genres[0].name} programme{sp}
     {else}
-        is&nbsp;
+        is{sp}
     {/if}
-    shown on <a href="{$brand.channel.uri}">{$brand.channel.name}</a>.&nbsp;
+    shown on <a href="{$brand.channel.uri}">{$brand.channel.name}</a>.{sp}
     {if length($recentConsumes) > 0}
-        Most recently <a href="/{$recentConsumes[0].user.screenName}">{$recentConsumes[0].user.fullName}</a> watched {$recentConsumes[0].item.title}.
+        Most recently <a href="/{$recentConsumes[0].user.screenName}">{$recentConsumes[0].user.fullName}</a> gawped {$recentConsumes[0].item.title}.
     {else}
-        Nobody has watched it recently.
+        Nobody has gawped it recently.
     {/if}
     
 </p>

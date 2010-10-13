@@ -1,0 +1,101 @@
+{namespace beige.templates.items}
+
+/**
+ * @param item
+ * @param recentConsumes
+**/
+{template .item}
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>{$item.title}</title>
+        
+        <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
+        <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
+        <link rel="stylesheet" type="text/css" href="/css/css.css" />
+        
+        <meta name="description" content="{if $item.description}{$item.description}{else}{$item.title}{/if}" />
+        
+        {include('/includes/javascript') |noAutoescape}
+    </head>
+    <body>
+        <div class="container">
+            {call .overview}
+                {param item: $item /}
+                {param recentConsumes: $recentConsumes /}
+            {/call}
+        	{if $item.description}
+                <p>
+                    {$item.description}
+                </p>
+            {/if}
+            <a href="{$item.uri}">
+                <img src="{$item.image}" alt="Item image"/>
+            </a>
+            <div class="clearFix"></div>
+            {if length($recentConsumes) > 0}
+                {call .recentConsumes}
+                    {param consumes: $recentConsumes /}
+                {/call}
+        	{/if}
+        </div>
+    </body>
+{/template}
+
+
+/**
+ * @param consumes
+**/
+{template .recentConsumes}
+    <div id="recentConsumes" class="module">
+        <h3>Recent consumes</h3>
+        <ol>
+            {foreach $consume in $consumes}
+                <li>
+                    <a href="/{$consume.user.screenName}">
+                        <img src="{$consume.user.profileImage}" />
+                        <p>
+                            {$consume.user.screenName}<br />
+                            {$consume.user.location}
+                        </p>
+                    </a>
+                    <p>
+                        {$consume.time}
+                    </p>
+                </li>
+            {/foreach}
+        </ol>
+    </div>
+{/template}
+
+/**
+ * @param recentConsumes
+ * @param item
+ **/
+{template .overview}
+<p id="overview">
+    {if $item.brand}
+        {if $item.titleIsEpisodeNumber}
+            This
+        {else}
+            {$item.title}
+        {/if}
+        {sp}is{sp}
+        {if $item.episodeNumber}
+            episode {$item.episodeNumber}
+            {if $item.episodeNumber}
+                , series {$item.seriesNumber}
+            {/if}
+        {else}
+            an episode
+        {/if}
+        {sp}of <a href="/shows/{$item.brand.curie}">{$item.brand.title}</a>
+    {else}
+        {$item.title} is an item from <a href="{$item.channel.uri}">{$item.channel.name}</a>
+    {/if}
+    {if length($recentConsumes) > 0}
+        , and was most recently gawped by <a href="/{$recentConsumes[0].user.screenName}">{$recentConsumes[0].user.fullName}</a>.
+    {else}    
+        . Nobody has watched it recently.
+    {/if}
+</p>
+{/template}

@@ -170,7 +170,7 @@
         .
     {/if}
     {if $overview.genre and $overview.genre.title}
-        &nbsp;Across all channels, {$overview.genre.title} programs have been the most popular.
+        {sp}Across all channels, {$overview.genre.title} programs have been the most popular.
     {/if}
 </p>
 {/template}
@@ -190,7 +190,7 @@
     {/if}
     {if $overview.channel and $overview.channel.uri and $overview.channel.title or $overview.genre.title}
         {if $overview.channel and $overview.channel.uri and $overview.channel.title}
-            &nbsp;mostly been gawping at <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
+            {sp}mostly been gawping at <a href="{$overview.channel.uri}">{$overview.channel.title}</a>
             {if $overview.target and $overview.target.uri}
                 , particularly <a href="{$overview.target.uri}">{$overview.target.title}</a>
             {/if}
@@ -200,7 +200,7 @@
             a penchant for {$overview.genre.title} programs
         {/if}
     {else}
-        &nbsp;not gawped at anything yet..
+        {sp}not gawped at anything yet..
     {/if}
     .
 </p>
