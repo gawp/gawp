@@ -156,7 +156,7 @@ public class MongoConsumptionStore implements ConsumptionStore, Users {
 
     @Override
     public List<Consumption> recentConsumesOfBrand(String brand) {
-        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals(ConsumptionTranslator.BRAND_KEY, brand);
+        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals(ConsumptionTranslator.BRAND_KEY, brand).fieldEquals("user.userNamespace", UserNamespace.TWITTER.prefix());
         return translator.fromDBObjects(table.find(query.build()).sort(new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)));
     }
 }

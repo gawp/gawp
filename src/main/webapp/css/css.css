@@ -211,6 +211,14 @@ input.submit:hover { background-position: -450px 50%; }
     margin-top: 5px;
 }
 
+.tool a {
+	color: #0099FF;
+}
+
+.tool a:hover {
+    text-decoration: underline;
+}
+
 .explain {
     font-size: 0.75em;
     
@@ -253,7 +261,7 @@ a {
     color: black;
 }
 a:hover {
-	color: #71B7E6;
+	color: #0099FF;
 }
 .actions {
     position:               absolute;

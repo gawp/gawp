@@ -51,7 +51,7 @@ public class StatusToConsumptionAdapter implements TweetProcessor {
             }
         } else {
             String textLc = text.toLowerCase();
-            if (textLc.contains("watch") || textLc.contains("gawp")) {
+            if (isRelevant(textLc)) {
                 Matcher matcher = TAG.matcher(textLc);
                 while (matcher.find()) {
                     String currentTag = matcher.group(1);
@@ -76,5 +76,9 @@ public class StatusToConsumptionAdapter implements TweetProcessor {
                 consumptionStore.store(consumption.requireValue());
             }
         }
+    }
+    
+    private boolean isRelevant(String text) {
+        return text.contains("watch") || text.contains("gawp") || text.contains("hark") || text.contains("gander") || text.contains("notice") || text.contains("observe") || text.contains("check out") || text.contains("stare");
     }
 }
