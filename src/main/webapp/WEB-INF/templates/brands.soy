@@ -25,11 +25,7 @@
                 {param brand: $brand /}
                 {param recentConsumes: $recentConsumes /}
             {/call}
-        	<h1>{$brand.title}</h1>
-        	{if $brand.publisher}
-        	   <h2>{$brand.publisher}</h2>
-        	{/if}
-            {if $brand.description}
+        	{if $brand.description}
                 <p>
                     {$brand.description}
                 </p>

@@ -51,7 +51,7 @@ public class BrandsController {
         this.itemModelBuilder = itemModelBuilder;
     }
     
-    @RequestMapping(value = { "/brands/{brandCurie}" }, method = { RequestMethod.GET })
+    @RequestMapping(value = { "/shows/{brandCurie}" }, method = { RequestMethod.GET })
     public String getBrandPage(Map<String, Object> model, @PathVariable String brandCurie) {
         UserRef currentUserRef = userProvider.existingUser();
         
