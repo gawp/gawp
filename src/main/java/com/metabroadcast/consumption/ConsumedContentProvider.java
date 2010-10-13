@@ -91,7 +91,6 @@ public class ConsumedContentProvider {
         return userCounts;
     }
 
-    @SuppressWarnings("unchecked")
     protected List<Count<String>> findCounts(List<Consumption> consumptions, Function<Consumption, Set<String>> keyFunction) {
         Map<String, Count<String>> counts = Maps.newHashMap();
 
@@ -99,7 +98,7 @@ public class ConsumedContentProvider {
             for (String key: keyFunction.apply(consumption)) {
                 if (key != null) {
                     if (!counts.containsKey(key)) {
-                        counts.put(key, new Count(key, 1L));
+                        counts.put(key, new Count<String>(key, 1L));
                     } else {
                         counts.put(key, counts.get(key).plus(1L));
                     }
@@ -154,7 +153,7 @@ public class ConsumedContentProvider {
     protected static Function<Consumption, Set<String>> TARGET_KEY = new Function<Consumption, Set<String>>() {
         @Override
         public Set<String> apply(Consumption consumption) {
-            return Sets.newHashSet(consumption.targetRef().domain() + ":" + consumption.targetRef().ref());
+            return Sets.newHashSet(consumption.targetRef().toKey());
         }
     };
     
