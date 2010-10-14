@@ -28,7 +28,11 @@ public class ContentModule {
         return new ItemsController(contentStore, consumptionStore, userProvider, userHelper, consumedContentProvider, new SimpleItemAttributesModelBuilder(), consumptionsModelHelper());
     }
     
+    public @Bean ChannelsController channelsController() {
+        return new ChannelsController(contentStore, consumptionStore, consumptionsModelHelper(), consumedContentProvider);
+    }
+    
     public @Bean ConsumptionsModelHelper consumptionsModelHelper() {
-        return new ConsumptionsModelHelper(new SimpleItemAttributesModelBuilder(), userHelper);
+        return new ConsumptionsModelHelper(new SimpleItemAttributesModelBuilder(), new SimplePlaylistAttributesModelBuilder(), userHelper);
     }
 }

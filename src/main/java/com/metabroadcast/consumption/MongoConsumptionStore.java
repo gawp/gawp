@@ -166,4 +166,10 @@ public class MongoConsumptionStore implements ConsumptionStore, Users {
         MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals("target.domain", ContentRefs.ITEM_DOMAIN).fieldEquals("target.ref", itemUri);
         return translator.fromDBObjects(table.find(query.build()).sort(new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)));
     }
+
+    @Override
+    public List<Consumption> recentConsumesOfChannel(String channelUri) {
+        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals(ConsumptionTranslator.CHANNEL_KEY, channelUri);
+        return translator.fromDBObjects(table.find(query.build()).sort(new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)));
+    }
 }

@@ -33,7 +33,10 @@ public class ContentModelHelper {
     public void addChannel(SimpleModel model, Description item) {
         Maybe<Publisher> publisher = Publisher.fromKey(item.getPublisher().getKey());
         if (publisher.hasValue()) {
-            model.put("channel", Channel.onlineChannelForPublisher(publisher.requireValue()).toModel());
+            Channel channel = Channel.onlineChannelForPublisher(publisher.requireValue());
+            if (channel != null) {
+                model.put("channel", channel.toModel());
+            }
         }
     }
 }

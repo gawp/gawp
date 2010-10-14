@@ -38,6 +38,7 @@ public class ConsumptionModule {
     private @Value("${twitter.tokenSecret}") String twitterTokenSecret;
     private @Value("${accounts.refreshPeriodInMinutes}") int refreshPeriod;
 	private @Value("${host}") String host;
+	private @Value("${atlas}") String atlas;
     
     public @Bean ConsumptionStore consumptionStore() {
         return new MongoConsumptionStore(db);
@@ -60,7 +61,7 @@ public class ConsumptionModule {
     }
     
     public @Bean ContentStore contentStore() {
-        return new AtlasContentStore(new CachingJaxbAtlasClient(/*"http://stage.atlasapi.org/2.0"*/));
+        return new AtlasContentStore(new CachingJaxbAtlasClient(atlas));
     }
     
     public @Bean UserDetailsProvider userDetailsProvider() {

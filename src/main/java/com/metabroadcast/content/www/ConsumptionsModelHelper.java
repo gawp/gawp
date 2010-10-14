@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.atlasapi.media.entity.simple.Description;
 import org.atlasapi.media.entity.simple.Item;
+import org.atlasapi.media.entity.simple.Playlist;
 
 import com.google.common.collect.Sets;
 import com.metabroadcast.common.base.Maybe;
@@ -23,9 +24,11 @@ import com.metabroadcast.user.www.UserModelHelper;
 public class ConsumptionsModelHelper {
     private final ModelBuilder<Item> itemModelBuilder;
     private final UserModelHelper userHelper;
+    private final ModelBuilder<Playlist> playlistModelBuilder;
 
-    public ConsumptionsModelHelper(ModelBuilder<Item> itemModelBuilder, UserModelHelper userHelper) {
+    public ConsumptionsModelHelper(ModelBuilder<Item> itemModelBuilder, ModelBuilder<Playlist> playlistModelBuilder, UserModelHelper userHelper) {
         this.itemModelBuilder = itemModelBuilder;
+        this.playlistModelBuilder = playlistModelBuilder;
         this.userHelper = userHelper;
     }
     
@@ -42,6 +45,21 @@ public class ConsumptionsModelHelper {
         return episodesModel;
     }
     
+    public SimpleModelList popularBrandsModel(List<Count<String>> brandsByConsumes, Map<String, Description> uriToBrandMap) {
+        SimpleModelList brandsModel = new SimpleModelList();
+        
+        for (Count<String> brandCount : brandsByConsumes) {
+            if (uriToBrandMap.containsKey(brandCount.getTarget())) {
+                SimpleModel brandModel = new SimpleModel();
+                brandModel.put("count", brandCount.getCount());
+                brandModel.put("brand", playlistModelBuilder.build((Playlist) uriToBrandMap.get(brandCount.getTarget())));
+                brandsModel.add(brandModel);
+            }
+        }
+        
+        return brandsModel;
+    }
+    
     public SimpleModelList biggestConsumersModel(List<Count<UserRef>> usersByConsumes) {
         SimpleModelList consumersModel = new SimpleModelList();
         
@@ -55,15 +73,15 @@ public class ConsumptionsModelHelper {
         return consumersModel;
     }
     
-    public SimpleModelList buildRecentComsumersModelWithItems(List<Consumption> consumptions, Map<String, Description> itemMap) {
-        return recentConsumersModel(consumptions, itemMap);
+    public SimpleModelList buildRecentComsumersModelWithItems(List<Consumption> consumptions, Map<String, Description> uriToItemMap) {
+        return recentConsumersModel(consumptions, uriToItemMap);
     }
     
     public SimpleModelList buildRecentConsumersModelWithoutItems(List<Consumption> consumptions) {
         return recentConsumersModel(consumptions, null);
     }
     
-    private SimpleModelList recentConsumersModel(List<Consumption> consumptions, Map<String, Description> itemMap) {
+    private SimpleModelList recentConsumersModel(List<Consumption> consumptions, Map<String, Description> uriToItemMap) {
         SimpleModelList consumptionsModel = new SimpleModelList();
         
         Set<UserRef> processedConsumers = Sets.newHashSet();
@@ -71,8 +89,8 @@ public class ConsumptionsModelHelper {
             if (!processedConsumers.contains(consumption.userRef())) {
                 processedConsumers.add(consumption.userRef());
                 Item item = null;
-                if (itemMap != null) {
-                    item = (Item) itemMap.get(consumption.targetRef().ref());
+                if (uriToItemMap != null) {
+                    item = (Item) uriToItemMap.get(consumption.targetRef().ref());
                 }
                 SimpleModel consumptionModel = buildConsumptionModel(consumption, item);
                 consumptionsModel.add(consumptionModel);
