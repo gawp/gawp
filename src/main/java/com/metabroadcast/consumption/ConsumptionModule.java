@@ -52,6 +52,10 @@ public class ConsumptionModule {
         return new ConsumedContentProvider(consumptionStore(), contentStore());
     }
     
+    public @Bean ConsumptionUpdater consumptionUpdater() {
+        return new ConsumptionUpdater(db, contentStore());
+    }
+    
     public @Bean TwitterUserRefProvider userRefProvider() {
         return new TwitterUserRefProvider(userRefBuilder);
     }

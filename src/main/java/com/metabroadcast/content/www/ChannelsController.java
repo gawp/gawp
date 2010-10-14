@@ -41,10 +41,6 @@ public class ChannelsController {
         
         Set<String> itemUris = Sets.newHashSet();
         for (Consumption consumption : recentConsumptions) {
-            if (consumption.getBrandUri() != null && consumption.getBrandUri().startsWith("http://en.wikipedia.org")) {
-                System.out.println("Consume " + consumption.getBrandUri() + " / " + consumption.getChannel() + " / " + consumption.targetRef().ref());
-            }
-            
             itemUris.add(consumption.targetRef().ref());
         }
         

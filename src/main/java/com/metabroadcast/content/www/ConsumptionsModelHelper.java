@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.atlasapi.media.entity.simple.Description;
 import org.atlasapi.media.entity.simple.Item;
 import org.atlasapi.media.entity.simple.Playlist;
@@ -25,6 +27,7 @@ public class ConsumptionsModelHelper {
     private final ModelBuilder<Item> itemModelBuilder;
     private final UserModelHelper userHelper;
     private final ModelBuilder<Playlist> playlistModelBuilder;
+    private final Log log = LogFactory.getLog(ConsumptionsModelHelper.class);
 
     public ConsumptionsModelHelper(ModelBuilder<Item> itemModelBuilder, ModelBuilder<Playlist> playlistModelBuilder, UserModelHelper userHelper) {
         this.itemModelBuilder = itemModelBuilder;
@@ -54,6 +57,9 @@ public class ConsumptionsModelHelper {
                 brandModel.put("count", brandCount.getCount());
                 brandModel.put("brand", playlistModelBuilder.build((Playlist) uriToBrandMap.get(brandCount.getTarget())));
                 brandsModel.add(brandModel);
+            }
+            else {
+                log.warn("Found consumption with brand not in content store: " + brandCount.getTarget());
             }
         }
         
