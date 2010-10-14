@@ -1,34 +1,31 @@
-{namespace beige.templates.channels}
+{namespace beige.templates.genres}
 
 /**
- * @param channel
+ * @param genre
  * @param recentConsumes
  * @param popularBrands
 **/
-{template .channel}
+{template .genre}
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>{$channel.name}</title>
+        <title>{$genre.name}</title>
         
         <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
         <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
         <link rel="stylesheet" type="text/css" href="/css/css.css" />
         
-        <meta name="description" content="{$channel.name}" />
+        <meta name="description" content="{$genre.name}" />
         
         {include('/includes/javascript') |noAutoescape}
     </head>
     <body>
         <div class="container">
             {call .overview}
-                {param channel: $channel /}
+                {param genre: $genre /}
                 {param recentConsumes: $recentConsumes /}
                 {param popularBrands: $popularBrands /}
             {/call}
-        	<a href="{$channel.uri}">
-                <img src="{$channel.logo}" alt="Channel logo"/>
-            </a>
-            <div class="clearFix"></div>
+        	<div class="clearFix"></div>
             {if length($recentConsumes) > 0}
                 {call .recentConsumes}
                     {param recentConsumes: $recentConsumes /}
@@ -102,14 +99,14 @@
 /**
  * @param recentConsumes
  * @param popularBrands
- * @param channel
+ * @param genre
  **/
 {template .overview}
 <p id="overview">
     {if length($popularBrands) > 0}
-        <a href="{$channel.uri}">{$channel.name}</a> is the home of <a href="/shows/{$popularBrands[0].brand.curie}">{$popularBrands[0].brand.title}</a>. Recently{sp}
+        The {$genre.name} genre's most popular show is <a href="/shows/{$popularBrands[0].brand.curie}">{$popularBrands[0].brand.title}</a>. Recently{sp}
     {else}
-        Recently on <a href="{$channel.uri}">{$channel.name}</a>,{sp}
+        Recently in {$genre.name},{sp}
     {/if}
     {if length($recentConsumes) > 0}
         <a href="/{$recentConsumes[0].user.screenName}">{$recentConsumes[0].user.fullName}</a> gawped at{sp} 
@@ -127,9 +124,7 @@
             <a href="/episodes/{$recentConsumes[0].item.curie}">{$recentConsumes[0].item.title}</a>
         {/if}
     {else}    
-        nobody has gawped at anything from it!.
+        nobody has gawped at anything!
     {/if}
-    
-    
 </p>
 {/template}

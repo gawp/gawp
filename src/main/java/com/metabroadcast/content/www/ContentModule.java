@@ -32,6 +32,10 @@ public class ContentModule {
         return new ChannelsController(contentStore, consumptionStore, consumptionsModelHelper(), consumedContentProvider);
     }
     
+    public @Bean GenreController genresController() {
+        return new GenreController(consumptionStore, contentStore, consumptionsModelHelper(), consumedContentProvider);
+    }
+    
     public @Bean ConsumptionsModelHelper consumptionsModelHelper() {
         return new ConsumptionsModelHelper(new SimpleItemAttributesModelBuilder(), new SimplePlaylistAttributesModelBuilder(), userHelper);
     }

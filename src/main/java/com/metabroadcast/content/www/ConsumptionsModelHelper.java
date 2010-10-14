@@ -93,13 +93,25 @@ public class ConsumptionsModelHelper {
         Set<UserRef> processedConsumers = Sets.newHashSet();
         for (Consumption consumption : consumptions) {
             if (!processedConsumers.contains(consumption.userRef())) {
-                processedConsumers.add(consumption.userRef());
-                Item item = null;
+                SimpleModel consumptionModel = null;
+                
                 if (uriToItemMap != null) {
-                    item = (Item) uriToItemMap.get(consumption.targetRef().ref());
+                    if (uriToItemMap.containsKey(consumption.targetRef().ref())) {
+                        Item item = (Item) uriToItemMap.get(consumption.targetRef().ref());
+                        consumptionModel = buildConsumptionModel(consumption, item);
+                    }
+                    else {
+                        log.debug("found consumption with item which is not in atlas: " + consumption.targetRef().ref());
+                    }
                 }
-                SimpleModel consumptionModel = buildConsumptionModel(consumption, item);
-                consumptionsModel.add(consumptionModel);
+                else {
+                    consumptionModel = buildConsumptionModel(consumption, null);
+                }
+                
+                if (consumptionModel != null) {
+                    consumptionsModel.add(consumptionModel);
+                    processedConsumers.add(consumption.userRef());
+                }
             }
         }
         

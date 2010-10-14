@@ -444,7 +444,7 @@ public class ConsumptionController {
                 targetMap.put("title", brand.getTitle());
                 targetMap.put("uri", brand.getUri());
                 targetMap.put("logo", brand.getThumbnail());
-                targetMap.put("link", brand.getUri());
+                targetMap.put("link", "/shows/" + brand.getCurie());
             }
         }
         overview.put("target", targetMap);
@@ -454,7 +454,7 @@ public class ConsumptionController {
             targetMap.put("title", topChannel.getName());
             targetMap.put("uri", topChannel.getUri());
             targetMap.put("logo", topChannel.getLogo());
-            targetMap.put("link", topChannel.getUri());
+            targetMap.put("link", "/channels/" + topChannel.name());
         }
         overview.put("channel", targetMap);
         
