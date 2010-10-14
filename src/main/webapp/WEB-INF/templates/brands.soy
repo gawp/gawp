@@ -149,9 +149,9 @@
     {/if}
     shown on <a href="{$brand.channel.uri}">{$brand.channel.name}</a>.{sp}
     {if length($recentConsumes) > 0}
-        Most recently <a href="/{$recentConsumes[0].user.screenName}">{$recentConsumes[0].user.fullName}</a> gawped {$recentConsumes[0].item.title}.
+        Most recently <a href="/{$recentConsumes[0].user.screenName}">{$recentConsumes[0].user.fullName}</a> gawped at <a href="/episodes/{$recentConsumes[0].item.curie}">{$recentConsumes[0].item.title}</a>.
     {else}
-        Nobody has gawped it recently.
+        Nobody has gawped at it recently.
     {/if}
     
 </p>

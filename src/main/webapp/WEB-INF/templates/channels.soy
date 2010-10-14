@@ -3,6 +3,7 @@
 /**
  * @param channel
  * @param recentConsumes
+ * @param popularBrands
 **/
 {template .channel}
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -22,6 +23,7 @@
             {call .overview}
                 {param channel: $channel /}
                 {param recentConsumes: $recentConsumes /}
+                {param popularBrands: $popularBrands /}
             {/call}
         	<a href="{$channel.uri}">
                 <img src="{$channel.logo}" alt="Channel logo"/>
@@ -30,6 +32,11 @@
             {if length($recentConsumes) > 0}
                 {call .recentConsumes}
                     {param recentConsumes: $recentConsumes /}
+                {/call}
+        	{/if}
+        	{if length($recentConsumes) > 0}
+                {call .popularBrands}
+                    {param popularBrands: $popularBrands /}
                 {/call}
         	{/if}
         </div>
@@ -69,14 +76,60 @@
 {/template}
 
 /**
+ * @param popularBrands
+**/
+{template .popularBrands}
+    <div id="popularBrands" class="module">
+        <h3>Popular brands</h3>
+        <ol>
+            {foreach $popularBrand in $popularBrands}
+                <li>
+                    <a href="{$popularBrand.brand.uri}">
+                        <img src="{$popularBrand.brand.thumbnail}" />
+                        <p>
+                            {$popularBrand.brand.title}
+                        </p>
+                    </a>
+                    <p>
+                        Watched {$popularBrand.count} times
+                    </p>
+                </li>
+            {/foreach}
+        </ol>
+    </div>
+{/template}
+
+/**
  * @param recentConsumes
+ * @param popularBrands
  * @param channel
  **/
 {template .overview}
 <p id="overview">
-    <a href="{$channel.uri}">{$channel.name}</a>
-    {if length($recentConsumes) > 0}
-        
+    {if length($popularBrands) > 0}
+        <a href="{$channel.uri}">{$channel.name}</a> is the home of <a href="/shows/{$popularBrands[0].brand.curie}">{$popularBrands[0].brand.title}</a>. Recently{sp}
+    {else}
+        Recently on <a href="{$channel.uri}">{$channel.name}</a>,{sp}
     {/if}
+    {if length($recentConsumes) > 0}
+        <a href="/{$recentConsumes[0].user.screenName}">{$recentConsumes[0].user.fullName}</a> gawped at{sp} 
+        {if $recentConsumes[0].item.brand}
+            {if length($popularBrands) > 0 and $recentConsumes[0].item.brand.uri == $popularBrands[0].brand.uri}
+                {if $recentConsumes[0].item.titleIsEpisodeNumber}
+                    <a href="/episodes/{$recentConsumes[0].item.curie}">{$recentConsumes[0].item.title}</a>
+                {else}
+                    the episode <a href="/episodes/{$recentConsumes[0].item.curie}">{$recentConsumes[0].item.title}</a>
+                {/if}
+            {else}
+                an episode of <a href="/shows/{$recentConsumes[0].item.brand.curie}">{$recentConsumes[0].item.brand.title}</a>.
+            {/if}
+        {else}
+            <a href="/episodes/{$recentConsumes[0].item.curie}">{$recentConsumes[0].item.title}</a>
+        {/if}
+    {else}    
+        nobody has gawped at anything from it!.
+    {/if}
+    
+    
 </p>
 {/template}
