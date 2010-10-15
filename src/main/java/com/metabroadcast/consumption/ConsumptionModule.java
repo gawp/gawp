@@ -29,7 +29,6 @@ public class ConsumptionModule {
     private @Autowired ContentStore contentStore;
     private @Autowired UserProvider userProvider;
     private @Autowired NeighboursProvider neighboursProvider;
-    private @Autowired ConsumptionsModelHelper consumptionsModelHelper;
     private @Autowired UserDetailsProvider userDetailsProvider;
     private @Autowired TwitterUserRefProvider userRefProvider;
     private @Autowired UserModelHelper userModelHelper;
@@ -43,7 +42,7 @@ public class ConsumptionModule {
     
     public @Bean ConsumptionController consumptionController() {
         return new ConsumptionController(consumptionStore(), contentStore, userProvider, userDetailsProvider, userRefProvider, neighboursProvider, userModelHelper, 
-                                         consumedContentProvider(), punchcardProvider(), consumptionsModelHelper);
+                                         consumedContentProvider(), punchcardProvider(), consumptionsModelHelper());
     }
     
     public @Bean ConsumedContentProvider consumedContentProvider() {
