@@ -26,12 +26,12 @@
             {param overview: $overview/}
         {/call}
         
-        {call .content}
+        {call beige.templates.widgets.recentConsumptions}
             {param items: $items/}
             {param currentUserDetails: $currentUserDetails/}
         {/call}
         
-        {call .topBrands}
+        {call beige.templates.widgets.topBrands}
             {param counts: $brands/}
         {/call}
         
@@ -96,12 +96,12 @@
             {param currentUserDetails: $currentUserDetails/}
         {/call}
         
-        {call .content}
+        {call beige.templates.widgets.recentConsumptions}
             {param items: $items/}
             {param currentUserDetails: $currentUserDetails/}
         {/call}
         
-        {call .topBrands}
+        {call beige.templates.widgets.topBrands}
             {param counts: $brands/}
         {/call}
         
@@ -280,57 +280,6 @@
 {/if}
 {/template}
 
-/**
- * @param items
- * @param currentUserDetails
-**/
-{template .content}
-<div id="recentContent" class="module">
-    <h2>Recently Gawped</h2>
-    <ul class="consumptions">
-        {foreach $item in $items}
-            <li class="consumption">
-                <div curie="{$item.content.curie}" class="item" >
-                    <div class="thumbnail">
-                    {if $item.content.thumbnail}
-                        <a href="{$item.content.uri}"><img src="{$item.content.thumbnail}" class="thumbnailImage"/></a>
-                    {elseif $item.content.image}
-                        <a href="{$item.content.uri}"><img src="{$item.content.image}" class="thumbnailImage"/></a>
-                    {/if}
-                    </div>
-                    <div class="info">
-                        <p class="title">
-                            <a href="{$item.content.uri}">{$item.content.primaryTitle}{if $item.content.secondaryTitle} - {$item.content.secondaryTitle}{/if}</a>
-                        </p>
-                        <p class="desc">
-                            {if $item.content.description}{$item.content.description}{/if}
-                        </p>
-                        <p class="actions">
-                            <span class="ago">{$item.ago}</span>
-                            {if $currentUserDetails and $item.userId and $currentUserDetails.id and $currentUserDetails.id == $item.userId}
-                                <span class="remove"><a href="#" uri="{$item.content.uri}" class="remove_item"><img src="/images/remove.png" class="remove_button" /></a></span>
-                            {/if}
-                        </p>
-                        {if $item.channel}
-                            <div class="channelPromo"><a href="{$item.channel.uri}"><img src="{$item.channel.logo}" /></a></div>
-                        {/if}
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-            </li>
-        {ifempty}
-            {for $i in range(3)}
-                <li class="consumption">
-                    <div class="item" >
-                            <div class="thumbnail emptyAvatar"></div>
-                    </div>
-                    <div class="clearfix"></div>
-                </li>
-            {/for}
-        {/foreach}
-    </ul>
-</div>
-{/template}
 
 /**
  * @param title
@@ -363,35 +312,6 @@
 </div>
 {/template}
 
-/**
- * @param counts
-**/
-{template .topBrands}
-<div class="topBrands module" style="width:360px;">
-<ul class="topBrands">
-<h2>Favorite Shows</h2>
-{foreach $count in $counts}
-    {if $count.target and $count.target.uri and $count.target.logo}
-    <li class="topBrand">
-        <span class="picture">
-            <a href="{$count.target.uri}">
-                <img src="{$count.target.logo}" class="mainImage" />
-                <!-- <div class="mainGloss"></div> -->
-            </a>
-        </span>
-        <p class="brandTitle"><a href="{$count.target.uri}">{$count.target.title}</a><span class="watches">({$count.count} watches)</span></p>
-    </li>
-    {/if}
-{ifempty}
-    {for $i in range(0, 4)}
-        <li class="topBrand">
-            <div class="picture mainImage emptyAvatar" style="width:150px;height:84px;"></div>
-        </li>
-    {/for}
-{/foreach}
-</ul>
-</div>
-{/template}
 
 /**
  * @param channels

@@ -21,6 +21,7 @@ import com.metabroadcast.common.social.model.UserDetails;
 import com.metabroadcast.common.social.model.UserRef;
 import com.metabroadcast.common.stats.Count;
 import com.metabroadcast.consumption.Consumption;
+import com.metabroadcast.content.ContentStore;
 import com.metabroadcast.user.www.UserModelHelper;
 
 public class ConsumptionsModelHelper {
@@ -28,8 +29,10 @@ public class ConsumptionsModelHelper {
     private final UserModelHelper userHelper;
     private final ModelBuilder<Playlist> playlistModelBuilder;
     private final Log log = LogFactory.getLog(ConsumptionsModelHelper.class);
+    private final ContentStore contentStore;
 
-    public ConsumptionsModelHelper(ModelBuilder<Item> itemModelBuilder, ModelBuilder<Playlist> playlistModelBuilder, UserModelHelper userHelper) {
+    public ConsumptionsModelHelper(ContentStore contentStore, ModelBuilder<Item> itemModelBuilder, ModelBuilder<Playlist> playlistModelBuilder, UserModelHelper userHelper) {
+        this.contentStore = contentStore;
         this.itemModelBuilder = itemModelBuilder;
         this.playlistModelBuilder = playlistModelBuilder;
         this.userHelper = userHelper;
@@ -39,23 +42,27 @@ public class ConsumptionsModelHelper {
         SimpleModelList episodesModel = new SimpleModelList();
         
         for (Count<TargetRef> targetCount : targetsByConsumes) {
-            SimpleModel episodeModel = new SimpleModel();
-            episodeModel.put("count", targetCount.getCount());
-            episodeModel.put("item", itemModelBuilder.build((Item)itemMap.get(targetCount.getTarget().ref())));
-            episodesModel.add(episodeModel);
+            Item item = (Item) itemMap.get(targetCount.getTarget().ref());
+            if (item != null) {
+                SimpleModel episodeModel = new SimpleModel();
+                episodeModel.put("count", targetCount.getCount());
+                episodeModel.put("target", itemModelBuilder.build(item));
+                episodesModel.add(episodeModel);
+            }
         }
         
         return episodesModel;
     }
     
-    public SimpleModelList popularBrandsModel(List<Count<String>> brandsByConsumes, Map<String, Description> uriToBrandMap) {
+    public SimpleModelList popularBrandsModel(List<Count<String>> brandsByConsumes) {
         SimpleModelList brandsModel = new SimpleModelList();
         
         for (Count<String> brandCount : brandsByConsumes) {
-            if (uriToBrandMap.containsKey(brandCount.getTarget())) {
+            Maybe<Description> desc = contentStore.resolve(brandCount.getTarget());
+            if (desc.hasValue()) {
                 SimpleModel brandModel = new SimpleModel();
                 brandModel.put("count", brandCount.getCount());
-                brandModel.put("brand", playlistModelBuilder.build((Playlist) uriToBrandMap.get(brandCount.getTarget())));
+                brandModel.put("brand", playlistModelBuilder.build((Playlist) desc.requireValue()));
                 brandsModel.add(brandModel);
             }
             else {

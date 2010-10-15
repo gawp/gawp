@@ -171,12 +171,24 @@ input.submit:hover { background-position: -450px 50%; }
 	margin-left: 20px;
 }
 
+.topItems ul{
+    margin-left: 20px;    
+}
+
 .topBrand {
 	display: inline;
 	float: left;
 	height: 133px;
 	overflow: hidden;
 	width: 170px;
+}
+
+.topItem {
+    display: inline;
+    float: left;
+    height: 133px;
+    overflow: hidden;
+    width: 170px;
 }
 
 .picture {
@@ -187,6 +199,12 @@ input.submit:hover { background-position: -450px 50%; }
 	padding-top: 3px;
 	width: 150px;
 	clear:both;
+}
+
+.itemTitle {
+    padding-top: 3px;
+    width: 150px;
+    clear:both;
 }
 
 .watches {
@@ -221,7 +239,6 @@ input.submit:hover { background-position: -450px 50%; }
 
 .explain {
     font-size: 0.75em;
-    
 }
 
 .consumption {
@@ -285,6 +302,14 @@ a:hover {
     top:                    23px;
     margin-left:            280px;
     opacity: 0.7;
+}
+.userIcon img{
+    height:                 37px;
+    width:                  37px;
+    position:               absolute;
+    top:                    9px;
+    margin-left:            280px;
+    opacity:                0.7;
 }
 .play {
     display:                block;

@@ -10,19 +10,24 @@ import org.joda.time.Period;
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.model.ModelBuilder;
 import com.metabroadcast.common.model.SimpleModel;
+import com.metabroadcast.common.social.model.TwitterUserDetails;
+import com.metabroadcast.common.social.model.UserDetails;
 import com.metabroadcast.consumption.ConsumedContent;
 import com.metabroadcast.content.Channel;
 import com.metabroadcast.content.SimpleItemAttributesModelBuilder;
 import com.metabroadcast.content.SimplePlaylistAttributesModelBuilder;
+import com.metabroadcast.user.www.UserModelHelper;
 
 public class ConsumedContentModelBuilder implements ModelBuilder<ConsumedContent> {
 
     private final SimpleItemAttributesModelBuilder itemModelBuilder;
     private final SimplePlaylistAttributesModelBuilder playlistModelBuilder;
+    private final UserModelHelper userModelHelper;
 
-    public ConsumedContentModelBuilder(SimplePlaylistAttributesModelBuilder playlistModelBuilder, SimpleItemAttributesModelBuilder itemModelBuilder) {
+    public ConsumedContentModelBuilder(SimplePlaylistAttributesModelBuilder playlistModelBuilder, SimpleItemAttributesModelBuilder itemModelBuilder, UserModelHelper userModelHelper) {
         this.playlistModelBuilder = playlistModelBuilder;
         this.itemModelBuilder = itemModelBuilder;
+        this.userModelHelper = userModelHelper;
     }
 
     @Override
@@ -48,13 +53,14 @@ public class ConsumedContentModelBuilder implements ModelBuilder<ConsumedContent
         }
         model.put("ago", ago(target.getConsumption().timestamp()));
         if (target.getConsumption() != null && target.getConsumption().userRef() != null) {
-            model.put("userId", target.getConsumption().userRef().getUserId());
+            Maybe<UserDetails> userDetails = userModelHelper.getUserDetails(target.getConsumption().userRef());
+            model.put("user", userModelHelper.userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
         }
 
         return model;
     }
 
-    private String ago(DateTime then) {
+    public static String ago(DateTime then) {
         if (null == then)
             return "some time ago";
 
@@ -78,7 +84,7 @@ public class ConsumedContentModelBuilder implements ModelBuilder<ConsumedContent
         return ago.toString();
     }
 
-    private int printPeriod(StringBuffer ago, int printed, int value, String desc) {
+    private static int printPeriod(StringBuffer ago, int printed, int value, String desc) {
         if (printed > 0) {
             return printed;
         }

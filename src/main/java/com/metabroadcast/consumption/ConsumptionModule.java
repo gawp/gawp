@@ -1,7 +1,5 @@
 package com.metabroadcast.consumption;
 
-import org.atlasapi.client.CachingJaxbAtlasClient;
-import org.joda.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,17 +7,16 @@ import org.springframework.context.annotation.Configuration;
 
 import com.metabroadcast.beige.bookmarklet.BookmarkletController;
 import com.metabroadcast.common.persistence.mongo.DatabasedMongo;
-import com.metabroadcast.common.social.user.ApplicationIdAwareUserRefBuilder;
 import com.metabroadcast.common.social.user.UserDetailsProvider;
 import com.metabroadcast.common.social.user.UserProvider;
-import com.metabroadcast.common.social.user.details.UserDetailsCache;
-import com.metabroadcast.common.social.user.details.twitter.TwitterMasterUserDetailsProvider;
 import com.metabroadcast.consumption.punchcard.CachingPunchcardStore;
 import com.metabroadcast.consumption.punchcard.ConsumptionPunchcardProvider;
 import com.metabroadcast.consumption.punchcard.MongoConsumptionPunchcardStore;
 import com.metabroadcast.consumption.www.ConsumptionController;
-import com.metabroadcast.content.AtlasContentStore;
 import com.metabroadcast.content.ContentStore;
+import com.metabroadcast.content.SimpleItemAttributesModelBuilder;
+import com.metabroadcast.content.SimplePlaylistAttributesModelBuilder;
+import com.metabroadcast.content.www.ConsumptionsModelHelper;
 import com.metabroadcast.neighbours.NeighboursProvider;
 import com.metabroadcast.user.Users;
 import com.metabroadcast.user.twitter.TwitterUserRefProvider;
@@ -27,57 +24,42 @@ import com.metabroadcast.user.www.UserModelHelper;
 
 @Configuration
 public class ConsumptionModule {
-    private @Autowired DatabasedMongo db;
-    private @Autowired UserProvider userProvider;
-    private @Autowired ApplicationIdAwareUserRefBuilder userRefBuilder;
-    private @Autowired NeighboursProvider neighboursProvider;
     
-    private @Value("${twitter.consumerKey}") String consumerKey;
-    private @Value("${twitter.consumerSecret}") String consumerSecret;
-    private @Value("${twitter.accessToken}") String twitterAccessToken;
-    private @Value("${twitter.tokenSecret}") String twitterTokenSecret;
-    private @Value("${accounts.refreshPeriodInMinutes}") int refreshPeriod;
-	private @Value("${host}") String host;
-	private @Value("${atlas}") String atlas;
+    private @Autowired DatabasedMongo db;
+    private @Autowired ContentStore contentStore;
+    private @Autowired UserProvider userProvider;
+    private @Autowired NeighboursProvider neighboursProvider;
+    private @Autowired ConsumptionsModelHelper consumptionsModelHelper;
+    private @Autowired UserDetailsProvider userDetailsProvider;
+    private @Autowired TwitterUserRefProvider userRefProvider;
+    private @Autowired UserModelHelper userModelHelper;
+    
+    private @Value("${host}") String host;
+	
     
     public @Bean ConsumptionStore consumptionStore() {
         return new MongoConsumptionStore(db);
     }
     
     public @Bean ConsumptionController consumptionController() {
-        return new ConsumptionController(consumptionStore(), contentStore(), userProvider, userDetailsProvider(), userRefProvider(), neighboursProvider, userHelper(), consumedContentProvider(), punchcardProvider());
+        return new ConsumptionController(consumptionStore(), contentStore, userProvider, userDetailsProvider, userRefProvider, neighboursProvider, userModelHelper, 
+                                         consumedContentProvider(), punchcardProvider(), consumptionsModelHelper);
     }
     
     public @Bean ConsumedContentProvider consumedContentProvider() {
-        return new ConsumedContentProvider(consumptionStore(), contentStore());
+        return new ConsumedContentProvider(consumptionStore(), contentStore);
     }
     
     public @Bean ConsumptionUpdater consumptionUpdater() {
-        return new ConsumptionUpdater(db, contentStore());
+        return new ConsumptionUpdater(db, contentStore);
     }
     
-    public @Bean TwitterUserRefProvider userRefProvider() {
-        return new TwitterUserRefProvider(userRefBuilder);
+    public @Bean ConsumptionsModelHelper consumptionsModelHelper() {
+        return new ConsumptionsModelHelper(contentStore, new SimpleItemAttributesModelBuilder(), new SimplePlaylistAttributesModelBuilder(), userModelHelper);
     }
     
-    public @Bean UserModelHelper userHelper() {
-        return new UserModelHelper(userDetailsProvider());
-    }
-    
-    public @Bean ContentStore contentStore() {
-        return new AtlasContentStore(new CachingJaxbAtlasClient(atlas));
-    }
-    
-    public @Bean UserDetailsProvider userDetailsProvider() {
-        return new UserDetailsCache(new TwitterMasterUserDetailsProvider(consumerKey, consumerSecret, twitterAccessToken, twitterTokenSecret), getCacheDuration());
-    }
-    
-    private Duration getCacheDuration() {
-        return Duration.standardMinutes(refreshPeriod);
-    }
-    
-	public @Bean BookmarkletController bookmarkletController() {
-		return new BookmarkletController(contentStore(), host);
+    public @Bean BookmarkletController bookmarkletController() {
+		return new BookmarkletController(contentStore, host);
 	}
 	
 	public @Bean ConsumptionPunchcardProvider punchcardProvider() {

@@ -17,7 +17,8 @@ public interface ConsumptionStore {
     
     public Map<String, Count<String>> topBrands(int limit);
     
-    public List<Consumption> recentConsumesOfBrand(String brandUri);
+    public List<Consumption> recentConsumesOfBrand(String brandUri, int limit);
+    public List<Consumption> recentConsumesOfBrand(String brandUri, DateTime since);
     
     public List<Consumption> recentConsumesOfItem(String itemUri);
     

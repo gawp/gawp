@@ -93,7 +93,7 @@
         {$item.title} is an item from <a href="{$item.channel.uri}">{$item.channel.name}</a>
     {/if}
     {if length($recentConsumes) > 0}
-        , and was most recently gawped at by <a href="/{$recentConsumes[0].user.screenName}">{$recentConsumes[0].user.fullName}</a>.
+        , most recently gawped at by <a href="/{$recentConsumes[0].user.screenName}">{$recentConsumes[0].user.fullName}</a>.
     {else}    
         . Nobody has gawped at it recently.
     {/if}

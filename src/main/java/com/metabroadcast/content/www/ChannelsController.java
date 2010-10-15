@@ -53,8 +53,7 @@ public class ChannelsController {
             brandUris.add(brandCount.getTarget());
         }
         
-        Map<String, Description> uriToBrandMap = contentStore.resolveAll(brandUris);
-        model.put("popularBrands", consumptionModelHelper.popularBrandsModel(brandCounts, uriToBrandMap));
+        model.put("popularBrands", consumptionModelHelper.popularBrandsModel(brandCounts));
         
         return "channels/channel";
     }

@@ -26,15 +26,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.metabroadcast.common.media.MimeType;
 import com.metabroadcast.common.social.auth.AuthenticationInterceptor;
-import com.metabroadcast.common.social.auth.CookieAuthenticator;
-import com.metabroadcast.common.social.auth.CookieTranslator;
 import com.metabroadcast.common.social.auth.AuthenticationInterceptor.UserNotAuthenticatedHandler;
-import com.metabroadcast.common.social.auth.credentials.CredentialsStore;
-import com.metabroadcast.common.social.user.AccessTokenProcessor;
-import com.metabroadcast.common.social.user.ApplicationIdAwareUserRefBuilder;
-import com.metabroadcast.common.social.user.TwitterAccessTokenChecker;
+import com.metabroadcast.common.social.auth.CookieAuthenticator;
 import com.metabroadcast.common.social.user.UserDetailsProvider;
-import com.metabroadcast.common.social.user.UserRefHelper;
 import com.metabroadcast.common.url.UrlEncoding;
 import com.metabroadcast.common.webapp.json.JsonView;
 import com.metabroadcast.common.webapp.soy.SoyTemplateRenderer;
@@ -42,38 +36,19 @@ import com.metabroadcast.common.webapp.soy.SoyTemplateViewResolver;
 import com.metabroadcast.includes.www.IncludesController;
 import com.metabroadcast.invites.Whitelist;
 import com.metabroadcast.invites.WhitelistInterceptor;
-import com.metabroadcast.user.www.TwitterAuthController;
 
 @Configuration
 public class WebModule {
     
-	private static final String COOKIE_NAME = "beige";
-	
 	private @Value("${host}") String host;
-    private @Value("${twitter.clientId}") String twitterClientId;
-    
-	private @Autowired CookieTranslator cookieTranslator;
-	private @Autowired CredentialsStore credentialsStore;
+	
 	private @Autowired Whitelist whitelist;
 	private @Autowired UserDetailsProvider userDetailsProvider;
-	
-	@Scope(value="request", proxyMode=ScopedProxyMode.TARGET_CLASS)
-    public @Bean ApplicationIdAwareUserRefBuilder userRefHelper() {
-        return new UserRefHelper();
-    }
 	
     public @Bean IncludesController getIncludesController() {
         return new IncludesController();
     }
     
-    public @Bean TwitterAuthController twitterAuthController() {
-        return new TwitterAuthController(cookieTranslator, twitterAccessTokenChecker(), twitterClientId, host, COOKIE_NAME);
-    }
-    
-    public @Bean AccessTokenProcessor twitterAccessTokenChecker() {
-        return new AccessTokenProcessor(new TwitterAccessTokenChecker(userRefHelper()), credentialsStore);
-    }
-
     public @Bean DefaultAnnotationHandlerMapping controllerMappings() {
         DefaultAnnotationHandlerMapping controllerClassNameHandlerMapping = new DefaultAnnotationHandlerMapping();
         Object[] interceptors = { authenticationInterceptor(), whitelistInterceptor() };
@@ -83,9 +58,10 @@ public class WebModule {
 
     private final static Set<String> exceptions = ImmutableSet.of("/login/twitter","/login", "/includes/javascript", "/invites", "/goodbye", "/logout", "/system");
     
-    @Bean WhitelistInterceptor whitelistInterceptor() {
+    public @Bean WhitelistInterceptor whitelistInterceptor() {
 		return new WhitelistInterceptor(whitelist, cookieAuthenticator(), userDetailsProvider, exceptions);
 	}
+    
 	public @Bean AuthenticationInterceptor authenticationInterceptor() {
         Map<String, List<String>> methodToPath = Maps.newHashMap();
         

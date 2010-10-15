@@ -19,24 +19,22 @@ public class ContentModule {
     private @Autowired UserProvider userProvider;
     private @Autowired UserModelHelper userHelper;
     private @Autowired ConsumedContentProvider consumedContentProvider;
+    private @Autowired ConsumptionsModelHelper consumptionsModelHelper;
     
     public @Bean BrandsController brandsController() {
-        return new BrandsController(contentStore, consumptionStore, userProvider, userHelper, consumedContentProvider, new SimplePlaylistAttributesModelBuilder(), consumptionsModelHelper());
+        return new BrandsController(contentStore, consumptionStore, userProvider, userHelper, consumedContentProvider, new SimplePlaylistAttributesModelBuilder(), consumptionsModelHelper);
     }
     
     public @Bean ItemsController itemsController() {
-        return new ItemsController(contentStore, consumptionStore, userProvider, userHelper, consumedContentProvider, new SimpleItemAttributesModelBuilder(), consumptionsModelHelper());
+        return new ItemsController(contentStore, consumptionStore, userProvider, userHelper, consumedContentProvider, new SimpleItemAttributesModelBuilder(), consumptionsModelHelper);
     }
     
     public @Bean ChannelsController channelsController() {
-        return new ChannelsController(contentStore, consumptionStore, consumptionsModelHelper(), consumedContentProvider);
+        return new ChannelsController(contentStore, consumptionStore, consumptionsModelHelper, consumedContentProvider);
     }
     
     public @Bean GenreController genresController() {
-        return new GenreController(consumptionStore, contentStore, consumptionsModelHelper(), consumedContentProvider);
+        return new GenreController(consumptionStore, contentStore, consumptionsModelHelper, consumedContentProvider);
     }
     
-    public @Bean ConsumptionsModelHelper consumptionsModelHelper() {
-        return new ConsumptionsModelHelper(new SimpleItemAttributesModelBuilder(), new SimplePlaylistAttributesModelBuilder(), userHelper);
-    }
 }

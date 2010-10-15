@@ -2,9 +2,10 @@
 
 /**
  * @param brand
- * @param recentConsumes
+ * @param recentConsumptions
  * @param popularItems
  * @param biggestConsumers
+ * @param currentUserDetails
 **/
 {template .brand}
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -23,25 +24,31 @@
         <div class="container">
             {call .overview}
                 {param brand: $brand /}
-                {param recentConsumes: $recentConsumes /}
+                {param recentConsumes: $recentConsumptions /}
             {/call}
-        	{if $brand.description}
-                <p>
-                    {$brand.description}
-                </p>
-            {/if}
-            <a href="{$brand.uri}">
-                <img src="{$brand.image}" alt="Brand image"/>
-            </a>
-            <div class="clearFix"></div>
-            {if length($recentConsumes) > 0}
-                {call .recentConsumes}
-                    {param consumes: $recentConsumes /}
+            <div class="description">    
+                <a href="{$brand.uri}">
+                    <img src="{$brand.image}" alt="Brand image"/>
+                </a>
+            	{if $brand.description}
+                    <p>
+                        {$brand.description}
+                    </p>
+                {/if}
+                <div class="clearFix"></div>
+            </div>
+            
+            {if length($recentConsumptions) > 0}
+                {call beige.templates.widgets.recentConsumptions}
+                    {param items: $recentConsumptions /}
+                    {param currentUserDetails: $currentUserDetails /}
+                    {param showUserNotChannel: true /}
                 {/call}
         	{/if}
         	{if length($popularItems) > 0}
-                {call .popularItems}
-                    {param popularItems: $popularItems /}
+                {call beige.templates.widgets.topBrands}
+                    {param showItems: true /}
+                    {param counts: $popularItems /}
                 {/call}
         	{/if}
         	{if length($biggestConsumers) > 0}
@@ -80,79 +87,26 @@
 
 
 /**
- * @param popularItems
-**/
-{template .popularItems}
-    <div id="popularItems" class="module">
-        <h3>Popular items</h3>
-        <ol>
-            {foreach $popularItem in $popularItems}
-                <li>
-                    <a href="{$popularItem.item.uri}">
-                        <img src="{$popularItem.item.thumbnail}" />
-                        <p>
-                            {$popularItem.item.title}
-                        </p>
-                    </a>
-                    <p>
-                        Watched {$popularItem.count} times
-                    </p>
-                </li>
-            {/foreach}
-        </ol>
-    </div>
-{/template}
-
-
-/**
- * @param consumes
-**/
-{template .recentConsumes}
-    <div id="recentConsumes" class="module">
-        <h3>Recent gawps</h3>
-        <ol>
-            {foreach $consume in $consumes}
-                <li>
-                    <a href="/{$consume.user.screenName}">
-                        <img src="{$consume.user.profileImage}" />
-                        <p>
-                            {$consume.user.screenName}<br />
-                            {$consume.user.location}
-                        </p>
-                    </a>
-                    <a href="{$consume.item.uri}">
-                        <img src="{$consume.item.thumbnail}" />
-                        <p>
-                            {$consume.item.title}
-                        </p>
-                    </a>
-                    <p>
-                        {$consume.time}
-                    </p>
-                </li>
-            {/foreach}
-        </ol>
-    </div>
-{/template}
-
-/**
  * @param recentConsumes
  * @param brand
  **/
 {template .overview}
-<p id="overview">
-    <a href="{$brand.uri}">{$brand.title}</a>{sp}
-    {if length($brand.genres) > 0}
-        is a {$brand.genres[0].name} programme{sp}
-    {else}
-        is{sp}
-    {/if}
-    shown on <a href="{$brand.channel.uri}">{$brand.channel.name}</a>.{sp}
-    {if length($recentConsumes) > 0}
-        Most recently <a href="/{$recentConsumes[0].user.screenName}">{$recentConsumes[0].user.fullName}</a> gawped at <a href="/episodes/{$recentConsumes[0].item.curie}">{$recentConsumes[0].item.title}</a>.
-    {else}
-        Nobody has gawped at it recently.
-    {/if}
-    
-</p>
+<div class="overview">
+    <p id="overview">
+        <a href="{$brand.uri}">{$brand.title}</a>{sp}
+        {if length($brand.genres) > 0}
+            is a {$brand.genres[0].name} programme{sp}
+        {else}
+            is{sp}
+        {/if}
+        shown on <a href="{$brand.channel.uri}">{$brand.channel.name}</a>.{sp}
+        {if length($recentConsumes) > 0}
+            Most recently <a href="/{$recentConsumes[0].user.screenName}">{$recentConsumes[0].user.fullName}</a> gawped at <a href="/episodes/{$recentConsumes[0].content.curie}">{$recentConsumes[0].content.title}</a>.
+        {else}
+            Nobody has gawped at it recently.
+        {/if}
+    </p>
+</div>
 {/template}
+
+
