@@ -3,6 +3,7 @@ package com.metabroadcast;
 import java.net.UnknownHostException;
 
 import org.atlasapi.client.CachingJaxbAtlasClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -18,7 +19,6 @@ import com.metabroadcast.common.social.user.ApplicationIdAwareUserRefBuilder;
 import com.metabroadcast.common.social.user.FixedAppIdUserRefBuilder;
 import com.metabroadcast.common.social.user.LoggedInOrAnonymousUserProvider;
 import com.metabroadcast.common.social.user.UserProvider;
-import com.metabroadcast.common.webapp.properties.ContextConfigurer;
 import com.metabroadcast.content.AtlasContentStore;
 import com.metabroadcast.content.ContentStore;
 import com.mongodb.Mongo;
@@ -26,6 +26,8 @@ import com.mongodb.MongoException;
 
 @Configuration
 public class CoreModule {
+    
+    private @Value("${atlas}") String atlas;
     
     public @Bean CookieTranslator cookieTranslator() {
         return new CookieTranslator("beige", "f8bc218051364f2194f612182fc327c9");
@@ -48,7 +50,7 @@ public class CoreModule {
     }
     
     public @Bean ContentStore contentStore() {
-        return new AtlasContentStore(new CachingJaxbAtlasClient("http://stage.atlasapi.org/2.0"));
+        return new AtlasContentStore(new CachingJaxbAtlasClient(atlas));
     }
     
     @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
