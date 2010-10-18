@@ -1,13 +1,11 @@
 package com.metabroadcast.content;
 
-import java.util.List;
-import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.atlasapi.media.entity.simple.BrandSummary;
 import org.atlasapi.media.entity.simple.Item;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.metabroadcast.common.model.ModelBuilder;
 import com.metabroadcast.common.model.SimpleModel;
 import com.metabroadcast.common.text.Truncator;
@@ -19,11 +17,14 @@ import com.metabroadcast.common.text.Truncator;
  */
 public class SimpleItemAttributesModelBuilder implements ModelBuilder<Item> {
 	
-	private Truncator truncator = new Truncator().withMaxLength(90).withOmissionMarker("...").onlyTruncateAtAWordBoundary().omitTrailingPunctuationWhenTruncated().onlyStartANewSentenceIfTheSentenceIsAtLeastPercentComplete(50);
-    private Truncator titleTruncator = new Truncator().withMaxLength(20).withOmissionMarker("...").onlyTruncateAtAWordBoundary().omitTrailingPunctuationWhenTruncated();
+	private final Truncator truncator = new Truncator().withMaxLength(90).withOmissionMarker("...").onlyTruncateAtAWordBoundary().omitTrailingPunctuationWhenTruncated().onlyStartANewSentenceIfTheSentenceIsAtLeastPercentComplete(50);
+    private final Truncator titleTruncator = new Truncator().withMaxLength(20).withOmissionMarker("...").onlyTruncateAtAWordBoundary().omitTrailingPunctuationWhenTruncated();
+    private final ContentModelHelper modelHelper = new ContentModelHelper();
     
-	private Set<String> allowedGenrePrefixes = Sets.newHashSet("http://ref.atlasapi.org/genres/atlas/");
-	
+    private final Pattern seriesAndEpisodeTitlePattern = Pattern.compile("[Ss]eries \\d+.*[Ee]pisode \\d+");
+    private final Pattern episodeTitlePattern = Pattern.compile("[Ee]pisode \\d+");
+    
+    
 	public SimpleModel build(Item item) {
 		SimpleModel model = new SimpleModel();
 		BrandSummary brand = item.getBrandSummary();
@@ -37,26 +38,26 @@ public class SimpleItemAttributesModelBuilder implements ModelBuilder<Item> {
 		model.put("description", truncator.truncatePossibleNull(item.getDescription()));
 		model.put("curie", item.getCurie());
 		model.put("externalUrl", item.getUri());
+		model.put("seriesNumber", item.getSeriesNumber());
+		model.put("episodeNumber", item.getEpisodeNumber());
 		addPublisher(model, item);
 		addTitles(model, item, brand);
-		addGenres(model, item);
+		addBrandSummary(model, brand);
+		
+		modelHelper.addGenres(model, item);
+		modelHelper.addChannel(model, item);
 		return model;
 	}
 	
-	private void addGenres(SimpleModel model, Item item) {
-		List<SimpleModel> genres = Lists.newArrayList();
-		for (String genreUri : item.getGenres()) {
-			for (String prefix : allowedGenrePrefixes) {
-				if (genreUri.startsWith(prefix)) {
-					SimpleModel genreModel = new SimpleModel();
-					genreModel.put("name", genreUri.substring(prefix.length()));
-					genreModel.put("uri", genreUri);
-					genres.add(genreModel);
-					break;
-				}
-			}
-		}
-		model.put("genres", genres);		
+	public void addBrandSummary(SimpleModel model, BrandSummary brand) {
+	    if (brand != null) {
+	        SimpleModel brandModel = new SimpleModel();
+	        brandModel.put("title", brand.getTitle());
+	        brandModel.put("curie", brand.getCurie());
+	        brandModel.put("uri", brand.getUri());
+	        
+	        model.put("brand", brandModel);
+	    }
 	}
 	
 	public static String displayName(String publisher) {
@@ -91,6 +92,10 @@ public class SimpleItemAttributesModelBuilder implements ModelBuilder<Item> {
 		}
 		model.put("title", item.getTitle());
 		model.put("titleTruncated", titleTruncator.truncatePossibleNull(item.getTitle()));
+		
+		Matcher seriesAndEpisodeMatcher = seriesAndEpisodeTitlePattern.matcher(item.getTitle());
+		Matcher episodeMatcher = episodeTitlePattern.matcher(item.getTitle());
+		model.put("titleIsEpisodeNumber", seriesAndEpisodeMatcher.matches() || episodeMatcher.matches());
 	}
 
 	public void addPublisher(SimpleModel model, Item item) {

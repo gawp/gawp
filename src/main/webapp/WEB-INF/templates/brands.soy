@@ -2,40 +2,53 @@
 
 /**
  * @param brand
- * @param recentConsumes
+ * @param recentConsumptions
  * @param popularItems
  * @param biggestConsumers
+ * @param currentUserDetails
 **/
 {template .brand}
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>{$brand.title}</title>
         
+        <link  href="//fonts.googleapis.com/css?family=Lobster:regular" rel="stylesheet" type="text/css" >
+        <link  href="//fonts.googleapis.com/css?family=Neuton:regular" rel="stylesheet" type="text/css" >
+        <link rel="stylesheet" type="text/css" href="/css/css.css" />
+        
+        <meta name="description" content="{if $brand.description}{$brand.description}{else}{$brand.title}{/if}" />
+        
         {include('/includes/javascript') |noAutoescape}
     </head>
     <body>
-    	<h1>{$brand.title}</h1>
-    	{if $brand.publisher}
-    	   <h2>{$brand.publisher}</h2>
-    	{/if}
-        {if $brand.description}
-            <p>
-                {$brand.description}
-            </p>
-        {/if}
-        <a href="{$brand.uri}">
-            <img src="{$brand.image}" alt="Brand image"/>
-        </a>
-        <img src="{$brand.thumbnail}" alt="Brand thumbnail"/>
-    	<ul>
-            {if length($recentConsumes) > 0}
-                {call .recentConsumes}
-                    {param consumes: $recentConsumes /}
+        <div class="container">
+            {call .overview}
+                {param brand: $brand /}
+                {param recentConsumes: $recentConsumptions /}
+            {/call}
+            <div class="description">    
+                <a href="{$brand.uri}">
+                    <img src="{$brand.image}" alt="Brand image"/>
+                </a>
+            	{if $brand.description}
+                    <p>
+                        {$brand.description}
+                    </p>
+                {/if}
+                <div class="clearFix"></div>
+            </div>
+            
+            {if length($recentConsumptions) > 0}
+                {call beige.templates.widgets.recentConsumptions}
+                    {param items: $recentConsumptions /}
+                    {param currentUserDetails: $currentUserDetails /}
+                    {param showUserNotChannel: true /}
                 {/call}
         	{/if}
         	{if length($popularItems) > 0}
-                {call .popularItems}
-                    {param popularItems: $popularItems /}
+                {call beige.templates.widgets.topBrands}
+                    {param showItems: true /}
+                    {param counts: $popularItems /}
                 {/call}
         	{/if}
         	{if length($biggestConsumers) > 0}
@@ -43,7 +56,7 @@
                     {param biggestConsumers: $biggestConsumers /}
                 {/call}
         	{/if}
-    	</ul>
+    	</div>
     </body>
 {/template}
 
@@ -51,66 +64,49 @@
  * @param biggestConsumers
 **/
 {template .biggestConsumers}
-    <h3>Biggest consumers</h3>
-    {foreach $biggestConsumer in $biggestConsumers}
-        <li>
-            <a href="/{$biggestConsumer.user.screenName}">
-                <img src="{$biggestConsumer.user.profileImage}" />
-                <p>
-                    {$biggestConsumer.user.screenName}<br />
-                    {$biggestConsumer.user.location}
-                </p>
-            </a>
-            <p>
-                Watched {$biggestConsumer.count} episodes
-            </p>
-        </li>
-    {/foreach}
+    <div id="biggestConsumers" class="module">
+        <h3>Biggest consumers</h3>
+        <ol>
+            {foreach $biggestConsumer in $biggestConsumers}
+                <li>
+                    <a href="/{$biggestConsumer.user.screenName}">
+                        <img src="{$biggestConsumer.user.profileImage}" />
+                        <p>
+                            {$biggestConsumer.user.screenName}<br />
+                            {$biggestConsumer.user.location}
+                        </p>
+                    </a>
+                    <p>
+                        Watched {$biggestConsumer.count} episodes
+                    </p>
+                </li>
+            {/foreach}
+        </ol>
+    </div>
 {/template}
 
 
 /**
- * @param popularItems
-**/
-{template .popularItems}
-    <h3>Popular items</h3>
-    {foreach $popularItem in $popularItems}
-        <li>
-            <a href="{$popularItem.item.uri}">
-                <img src="{$popularItem.item.thumbnail}" />
-                <p>
-                    {$popularItem.item.title}
-                </p>
-            </a>
-            <p>
-                Watched {$popularItem.count} times
-            </p>
-        </li>
-    {/foreach}
+ * @param recentConsumes
+ * @param brand
+ **/
+{template .overview}
+<div class="overview">
+    <p id="overview">
+        <a href="{$brand.uri}">{$brand.title}</a>{sp}
+        {if length($brand.genres) > 0}
+            is a {$brand.genres[0].name} programme{sp}
+        {else}
+            is{sp}
+        {/if}
+        shown on <a href="{$brand.channel.uri}">{$brand.channel.name}</a>.{sp}
+        {if length($recentConsumes) > 0}
+            Most recently <a href="/{$recentConsumes[0].user.screenName}">{$recentConsumes[0].user.fullName}</a> gawped at <a href="/episodes/{$recentConsumes[0].content.curie}">{$recentConsumes[0].content.title}</a>.
+        {else}
+            Nobody has gawped at it recently.
+        {/if}
+    </p>
+</div>
 {/template}
 
 
-/**
- * @param consumes
-**/
-{template .recentConsumes}
-    <h3>Recent consumes</h3>
-    {foreach $consume in $consumes}
-        <li>
-            <a href="/{$consume.user.screenName}">
-                <img src="{$consume.user.profileImage}" />
-                <p>
-                    {$consume.user.screenName}<br />
-                    {$consume.user.location}
-                </p>
-            </a>
-            <a href="{$consume.item.uri}">
-                <img src="{$consume.item.thumbnail}" />
-                <p>
-                    {$consume.item.title}<br>
-                    {$consume.time}
-                </p>
-            </a>
-        </li>
-    {/foreach}
-{/template}

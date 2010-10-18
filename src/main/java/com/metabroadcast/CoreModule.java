@@ -2,43 +2,32 @@ package com.metabroadcast;
 
 import java.net.UnknownHostException;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.atlasapi.client.CachingJaxbAtlasClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 
-import com.metabroadcast.beige.brands.BrandsModule;
 import com.metabroadcast.common.persistence.mongo.DatabasedMongo;
 import com.metabroadcast.common.social.anonymous.AnonymousUserProvider;
 import com.metabroadcast.common.social.anonymous.CookieBasedAnonymousUserProvider;
 import com.metabroadcast.common.social.auth.CookieTranslator;
-import com.metabroadcast.common.social.auth.RequestScopedAuthenticationProvider;
 import com.metabroadcast.common.social.auth.credentials.CredentialsStore;
 import com.metabroadcast.common.social.auth.credentials.MongoDBCredentialsStore;
 import com.metabroadcast.common.social.user.ApplicationIdAwareUserRefBuilder;
 import com.metabroadcast.common.social.user.FixedAppIdUserRefBuilder;
 import com.metabroadcast.common.social.user.LoggedInOrAnonymousUserProvider;
 import com.metabroadcast.common.social.user.UserProvider;
-import com.metabroadcast.common.webapp.properties.ContextConfigurer;
-import com.metabroadcast.consumption.ConsumptionModule;
-import com.metabroadcast.invites.InvitesModule;
-import com.metabroadcast.neighbours.NeighbourhoodModule;
+import com.metabroadcast.content.AtlasContentStore;
+import com.metabroadcast.content.ContentStore;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
 @Configuration
-@Import({WebModule.class, ConsumptionModule.class, InvitesModule.class, NeighbourhoodModule.class, PipeModule.class, BrandsModule.class})
 public class CoreModule {
-
-    private @Autowired RequestScopedAuthenticationProvider authenticationProvider;
-
-    public @Bean ContextConfigurer config() {
-        ContextConfigurer c = new ContextConfigurer();
-        c.init();
-        return c;
-    }
+    
+    private @Value("${atlas}") String atlas;
     
     public @Bean CookieTranslator cookieTranslator() {
         return new CookieTranslator("beige", "f8bc218051364f2194f612182fc327c9");
@@ -59,7 +48,11 @@ public class CoreModule {
     @Bean Mongo mongo() throws UnknownHostException, MongoException {
         return new Mongo();
     }
-
+    
+    public @Bean ContentStore contentStore() {
+        return new AtlasContentStore(new CachingJaxbAtlasClient(atlas));
+    }
+    
     @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
     public @Bean AnonymousUserProvider anonymousUserProvider() {
         return new CookieBasedAnonymousUserProvider(cookieTranslator(), userRefBuilder());
@@ -69,7 +62,7 @@ public class CoreModule {
     public @Bean UserProvider userProvider() {
         LoggedInOrAnonymousUserProvider userProvider = new LoggedInOrAnonymousUserProvider();
         userProvider.setAnonymousUserProvider(anonymousUserProvider());
-        userProvider.setLoggedInUserProvider(authenticationProvider);
+        userProvider.setLoggedInUserProvider(null);
         return userProvider;
     }
 }

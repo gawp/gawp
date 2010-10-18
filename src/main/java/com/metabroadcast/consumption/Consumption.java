@@ -104,6 +104,15 @@ public class Consumption implements Comparable<Consumption> {
         
     };
     
+    public static Function<Consumption, String> TO_BRAND_URIS = new Function<Consumption, String>() {
+
+        @Override
+        public String apply(Consumption consumption) {
+            return consumption.targetRef().ref();
+        }
+        
+    };
+    
     public static final Function<Consumption, String> TO_KEY = new Function<Consumption, String>() {
 
         @Override

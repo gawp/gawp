@@ -28,6 +28,7 @@ import com.metabroadcast.common.social.model.UserRef;
 import com.metabroadcast.common.social.model.UserRef.UserNamespace;
 import com.metabroadcast.common.social.model.translator.UserRefTranslator;
 import com.metabroadcast.common.stats.Count;
+import com.metabroadcast.content.ContentRefs;
 import com.metabroadcast.user.Users;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -49,6 +50,8 @@ public class MongoConsumptionStore implements ConsumptionStore, Users {
     private static final String REDUCE = "function(key , values ){ sum = 0;" + "for(var i in values) { sum += values[i];" + "}" + "return sum;" + "};";
     private static final String MAP = "function() { emit(this.brand, 1); }";
     
+    private static final BasicDBObject SORT_BY_TIMESTAMP = new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1);
+    
     private DBCollection table;
 
     public MongoConsumptionStore(DatabasedMongo db) {
@@ -56,6 +59,19 @@ public class MongoConsumptionStore implements ConsumptionStore, Users {
         table.ensureIndex(new BasicDBObject("user.userId", 1)
                 .append("user.userNamespace", 1)
                 .append("user.appId", 1)
+                .append("timestamp", -1), 
+                new BasicDBObject("background", true));
+        table.ensureIndex(new BasicDBObject(ConsumptionTranslator.BRAND_KEY, 1)
+                .append("timestamp", -1), 
+                new BasicDBObject("background", true));
+        table.ensureIndex(new BasicDBObject(ConsumptionTranslator.CHANNEL_KEY, 1)
+                .append("timestamp", -1), 
+                new BasicDBObject("background", true));
+        table.ensureIndex(new BasicDBObject(ConsumptionTranslator.GENRES_KEY, 1)
+                .append("timestamp", -1), 
+                new BasicDBObject("background", true));
+        table.ensureIndex(new BasicDBObject("target.ref", 1)
+                .append("target.domain", 1)
                 .append("timestamp", -1), 
                 new BasicDBObject("background", true));
         users = new BackgroundComputingValue<List<UserRef>>(Duration.standardMinutes(30), new UpdateUsers());
@@ -69,21 +85,19 @@ public class MongoConsumptionStore implements ConsumptionStore, Users {
     
     public List<Consumption> find(UserRef userRef, int limit) {
         MongoQueryBuilder query = userRef != null ? userRefTranslator.toQuery(userRef) : new MongoQueryBuilder();
-        return translator.fromDBObjects(table.find(query.build()).sort(
-                        new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)).limit(limit));
+        return translator.fromDBObjects(table.find(query.build()).sort(SORT_BY_TIMESTAMP).limit(limit));
     }
 
     public List<Consumption> find(UserRef userRef, DateTime from) {
         MongoQueryBuilder query = userRef != null ? userRefTranslator.toQuery(userRef) : new MongoQueryBuilder();
         query.fieldAfterOrAt(ConsumptionTranslator.TIMESTAMP_KEY, from);
-        return translator.fromDBObjects(table.find(query.build()).sort(
-                        new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)));
+        return translator.fromDBObjects(table.find(query.build()).sort(SORT_BY_TIMESTAMP));
     }
     
     public Consumption findLatest(UserRef userRef, TargetRef targetRef) {
         MongoQueryBuilder query = userRef != null ? userRefTranslator.toQuery(userRef) : new MongoQueryBuilder();
         query.fieldEquals("target.domain", targetRef.domain()).fieldEquals("target.ref", targetRef.ref());
-        List<Consumption> consumptions = translator.fromDBObjects(table.find(query.build()).sort(new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)).limit(1));
+        List<Consumption> consumptions = translator.fromDBObjects(table.find(query.build()).sort(SORT_BY_TIMESTAMP).limit(1));
         if (consumptions.isEmpty()) {
             return null;
         }
@@ -155,8 +169,34 @@ public class MongoConsumptionStore implements ConsumptionStore, Users {
     }
 
     @Override
-    public List<Consumption> recentConsumesOfBrand(String brand) {
-        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals(ConsumptionTranslator.BRAND_KEY, brand).fieldEquals("user.userNamespace", UserNamespace.TWITTER.prefix());
-        return translator.fromDBObjects(table.find(query.build()).sort(new BasicDBObject(ConsumptionTranslator.TIMESTAMP_KEY, -1)));
+    public List<Consumption> recentConsumesOfBrand(String brandUri, int limit) {
+        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals(ConsumptionTranslator.BRAND_KEY, brandUri);
+        return translator.fromDBObjects(table.find(query.build()).sort(SORT_BY_TIMESTAMP).limit(limit));
     }
+    
+    @Override
+    public List<Consumption> recentConsumesOfBrand(String brandUri, DateTime since) {
+        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals(ConsumptionTranslator.BRAND_KEY, brandUri);
+        query.fieldAfterOrAt(ConsumptionTranslator.TIMESTAMP_KEY, since);
+        return translator.fromDBObjects(table.find(query.build()).sort(SORT_BY_TIMESTAMP));
+    }
+
+    @Override
+    public List<Consumption> recentConsumesOfItem(String itemUri) {
+        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals("target.domain", ContentRefs.ITEM_DOMAIN).fieldEquals("target.ref", itemUri);
+        return translator.fromDBObjects(table.find(query.build()).sort(SORT_BY_TIMESTAMP));
+    }
+
+    @Override
+    public List<Consumption> recentConsumesOfChannel(String channelUri) {
+        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals(ConsumptionTranslator.CHANNEL_KEY, channelUri);
+        return translator.fromDBObjects(table.find(query.build()).sort(SORT_BY_TIMESTAMP));
+    }
+
+    @Override
+    public List<Consumption> recentConsumesOfGenre(String genreUri) {
+        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals(ConsumptionTranslator.GENRES_KEY, genreUri);
+        return translator.fromDBObjects(table.find(query.build()).sort(SORT_BY_TIMESTAMP));
+    }
+    
 }

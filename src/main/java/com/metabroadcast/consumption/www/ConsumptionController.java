@@ -46,6 +46,7 @@ import com.metabroadcast.content.ContentRefs;
 import com.metabroadcast.content.ContentStore;
 import com.metabroadcast.content.SimpleItemAttributesModelBuilder;
 import com.metabroadcast.content.SimplePlaylistAttributesModelBuilder;
+import com.metabroadcast.content.www.ConsumptionsModelHelper;
 import com.metabroadcast.neighbours.Neighbour;
 import com.metabroadcast.neighbours.NeighboursProvider;
 import com.metabroadcast.user.twitter.TwitterUserRefProvider;
@@ -61,8 +62,7 @@ public class ConsumptionController {
     private final ConsumptionStore consumptionStore;
     private final ConsumedContentProvider consumedContentProvider;
 
-    private final ModelListBuilder<ConsumedContent> consumedContentModelListBuilder = DelegatingModelListBuilder.delegateTo(new ConsumedContentModelBuilder(new SimplePlaylistAttributesModelBuilder(),
-            new SimpleItemAttributesModelBuilder()));
+    private final ModelListBuilder<ConsumedContent> consumedContentModelListBuilder;
     
     private final ContentStore contentStore;
     private final UserProvider userProvider;
@@ -74,9 +74,11 @@ public class ConsumptionController {
 
     private final UserModelHelper userHelper;
     private final ConsumptionPunchcardProvider punchcardProvider;
+    private final ConsumptionsModelHelper consumptionsModelHelper;
 
     public ConsumptionController(ConsumptionStore consumptionStore, ContentStore contentStore, UserProvider userProvider, UserDetailsProvider userDetailsProvider,
-            TwitterUserRefProvider userRefProvider, NeighboursProvider neighboursProvider, UserModelHelper userHelper, ConsumedContentProvider consumedContentProvider, ConsumptionPunchcardProvider punchcardProvider) {
+            TwitterUserRefProvider userRefProvider, NeighboursProvider neighboursProvider, UserModelHelper userHelper, ConsumedContentProvider consumedContentProvider, 
+            ConsumptionPunchcardProvider punchcardProvider, ConsumptionsModelHelper consumptionsModelHelper) {
         this.consumptionStore = consumptionStore;
         this.contentStore = contentStore;
         this.userDetailsProvider = userDetailsProvider;
@@ -86,6 +88,9 @@ public class ConsumptionController {
         this.consumedContentProvider = consumedContentProvider;
         this.userProvider = userProvider;
         this.punchcardProvider = punchcardProvider;
+        this.consumptionsModelHelper = consumptionsModelHelper;
+        this.consumedContentModelListBuilder = DelegatingModelListBuilder.delegateTo(new ConsumedContentModelBuilder(new SimplePlaylistAttributesModelBuilder(),
+                new SimpleItemAttributesModelBuilder(), userHelper));
     }
 
     @RequestMapping(value = { "/{user}" }, method = { RequestMethod.GET })
@@ -139,7 +144,7 @@ public class ConsumptionController {
         Maybe<UserDetails> userDetails = userHelper.getUserDetails(currentUserRef);
         model.put("currentUserDetails", userHelper.userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
         
-        List<ConsumedContent> consumedContent = consumedContentProvider.find(null, MAX_RECENT_ITEMS);
+        List<ConsumedContent> consumedContent = consumedContentProvider.findAny(MAX_RECENT_ITEMS);
         model.put("items", consumedContentModelListBuilder.build(consumedContent));
         
         List<Consumption> consumptions = consumptionStore.find(null, new DateTime(DateTimeZones.UTC).minusWeeks(4));
@@ -148,7 +153,7 @@ public class ConsumptionController {
         if (brands.size() > MAX_TOP_BRANDS) {
             brands = brands.subList(0, MAX_TOP_BRANDS);
         }
-        addBrandCountsModel(model, brands);
+        model.put("brands", consumptionsModelHelper.popularBrandsModel(brands));
         
         List<Count<String>> channels = consumedContentProvider.findChannelCounts(consumptions);
         addChannelCountsModel(model, channels);
@@ -171,7 +176,7 @@ public class ConsumptionController {
 
         Preconditions.checkNotNull(userRef);
 
-        List<ConsumedContent> consumedContent = consumedContentProvider.find(userRef, MAX_RECENT_ITEMS);
+        List<ConsumedContent> consumedContent = consumedContentProvider.findForUser(userRef, MAX_RECENT_ITEMS);
         model.put("items", consumedContentModelListBuilder.build(consumedContent));
 
         long getContent = System.currentTimeMillis();
@@ -184,7 +189,7 @@ public class ConsumptionController {
         if (brands.size() > MAX_TOP_BRANDS) {
             brands = brands.subList(0, MAX_TOP_BRANDS);
         }
-        addBrandCountsModel(model, brands);
+        model.put("brands", consumptionsModelHelper.popularBrandsModel(brands));
 
         long getBrands = System.currentTimeMillis();
 
@@ -298,7 +303,7 @@ public class ConsumptionController {
         if (brands.size() > 12) {
             brands = brands.subList(0, 12);
         }
-        addBrandCountsModel(model, brands);
+        model.put("brands", consumptionsModelHelper.popularBrandsModel(brands));
 
         long end = System.currentTimeMillis();
 
@@ -340,33 +345,6 @@ public class ConsumptionController {
             return n.neighbour();
         }
     };
-
-    private void addBrandCountsModel(Map<String, Object> model, List<Count<String>> brands) {
-        List<Map<String, Object>> counts = Lists.newArrayList();
-        int max = max(brands);
-        model.put("max", max);
-
-        for (Count<String> count : brands) {
-            Map<String, Object> countMap = Maps.newHashMap();
-            int countVal = Long.valueOf(count.getCount()).intValue();
-            countMap.put("count", Long.valueOf(count.getCount()).intValue());
-            countMap.put("width", Float.valueOf((float) countVal / (float) max * 100).intValue());
-
-            Maybe<Description> desc = contentStore.resolve(count.getTarget());
-            Map<String, Object> targetMap = Maps.newHashMap();
-            if (desc.hasValue()) {
-                Description brand = desc.requireValue();
-                targetMap.put("title", brand.getTitle());
-                targetMap.put("uri", brand.getUri());
-                targetMap.put("logo", brand.getThumbnail());
-                targetMap.put("link", brand.getUri());
-            }
-
-            countMap.put("target", targetMap);
-            counts.add(countMap);
-        }
-        model.put("brands", counts);
-    }
 
     private void addChannelCountsModel(Map<String, Object> model, List<Count<String>> channels) {
         List<Map<String, Object>> counts = Lists.newArrayList();
@@ -444,7 +422,7 @@ public class ConsumptionController {
                 targetMap.put("title", brand.getTitle());
                 targetMap.put("uri", brand.getUri());
                 targetMap.put("logo", brand.getThumbnail());
-                targetMap.put("link", brand.getUri());
+                targetMap.put("link", "/shows/" + brand.getCurie());
             }
         }
         overview.put("target", targetMap);
@@ -454,7 +432,7 @@ public class ConsumptionController {
             targetMap.put("title", topChannel.getName());
             targetMap.put("uri", topChannel.getUri());
             targetMap.put("logo", topChannel.getLogo());
-            targetMap.put("link", topChannel.getUri());
+            targetMap.put("link", "/channels/" + topChannel.name());
         }
         overview.put("channel", targetMap);
         

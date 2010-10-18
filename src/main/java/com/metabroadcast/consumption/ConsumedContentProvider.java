@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.atlasapi.media.entity.Publisher;
 import org.atlasapi.media.entity.simple.Description;
+import org.atlasapi.media.entity.simple.Playlist;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
@@ -30,9 +31,9 @@ public class ConsumedContentProvider {
         this.contentStore = contentStore;
     }
 
-    public List<ConsumedContent> find(UserRef userRef, int limit) {
+    private List<ConsumedContent> find(List<Consumption> consumptions, int limit) {
         Map<String, ConsumedContent> consumedContent = Maps.newHashMap();
-        for (Consumption consumption: consumptionStore.find(userRef, limit+5)) {
+        for (Consumption consumption: consumptions) {
             if (consumedContent.containsKey(consumption.targetRef().toKey())) {
                 ConsumedContent current = consumedContent.get(consumption.targetRef().toKey());
                 Consumption latestConsumption = consumption.timestamp().isAfter(current.getConsumption().timestamp()) ? consumption : current.getConsumption();
@@ -53,6 +54,18 @@ public class ConsumedContentProvider {
             results = results.subList(0, limit);
         }
         return results;
+    }
+    
+    public List<ConsumedContent> findAny(int limit) {
+        return find(consumptionStore.find(null, limit+5), limit);
+    }
+    
+    public List<ConsumedContent> findForUser(UserRef userRef, int limit) {
+        return find(consumptionStore.find(userRef, limit+5), limit);
+    }
+    
+    public List<ConsumedContent> findForBrand(Playlist brand, int limit) {
+        return find(consumptionStore.recentConsumesOfBrand(brand.getUri(), limit + 5), limit);
     }
     
     public List<Count<TargetRef>> findTargetCounts(List<Consumption> consumptions) {

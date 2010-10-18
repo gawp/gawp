@@ -6,6 +6,7 @@ import java.util.Set;
 import org.joda.time.DateTime;
 
 import com.google.common.collect.Lists;
+import com.metabroadcast.common.persistence.mongo.MongoQueryBuilder;
 import com.metabroadcast.common.persistence.translator.TranslatorUtils;
 import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.UserRef;
@@ -61,5 +62,9 @@ public class ConsumptionTranslator {
         TranslatorUtils.fromSet(dbObject, model.getGenres(), GENRES_KEY);
         
         return dbObject;
+    }
+    
+    public MongoQueryBuilder toQuery(Consumption consumption) {
+        return new MongoQueryBuilder().idEquals(consumption.toKey());
     }
 }
