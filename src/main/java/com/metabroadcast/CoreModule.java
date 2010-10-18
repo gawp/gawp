@@ -27,7 +27,8 @@ import com.mongodb.MongoException;
 @Configuration
 public class CoreModule {
     
-    private @Value("${atlas}") String atlas;
+    private @Value("${atlas.uri}") String atlas;
+    private @Value("${atlas.apikey}") String apiKey;
     
     public @Bean CookieTranslator cookieTranslator() {
         return new CookieTranslator("beige", "f8bc218051364f2194f612182fc327c9");
@@ -50,7 +51,7 @@ public class CoreModule {
     }
     
     public @Bean ContentStore contentStore() {
-        return new AtlasContentStore(new CachingJaxbAtlasClient(atlas));
+        return new AtlasContentStore(new CachingJaxbAtlasClient(atlas).withApiKey(apiKey));
     }
     
     @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
