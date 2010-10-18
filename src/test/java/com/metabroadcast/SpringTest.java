@@ -10,7 +10,7 @@ public class SpringTest {
 
 	@Test
 	public void testThatTheContextCanBeBuilt() throws Exception {
-		ApplicationContext context = new AnnotationConfigApplicationContext(CoreModule.class);
+		ApplicationContext context = new AnnotationConfigApplicationContext(BeigeModule.class);
 		context.getBean(IncludesController.class);
 	}
 	
