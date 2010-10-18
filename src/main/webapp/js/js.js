@@ -115,13 +115,17 @@ var registerConsumptionHovers = function() {
 	$(".consumption").hover(
 	   function() {
 	   	 var $current = $(this);
+	   	 var $children = $current.find('.title a');
 	   	 $current.css('background', '#EBEBEB');
+	   	 $children.css('color', '#0099FF');
 	   	 $current.find('.ago').hide();
 	   	 $current.find('.remove').show();
 	   },
 	   function() {
 	   	 var $current = $(this);
+	   	 var $children = $current.find('.title a');
 	   	 $current.css('background', 'white'); 
+	   	 $children.css('color', 'black');
 	   	 $current.find('.ago').show();
          $current.find('.remove').hide();
 	   }

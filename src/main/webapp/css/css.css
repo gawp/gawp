@@ -261,6 +261,7 @@ a {
 }
 a:hover {
 	color: #0099FF;
+	text-decoration: underline;
 }
 .actions {
     position:               absolute;
@@ -474,6 +475,7 @@ h3{
 	float:left;
 	margin-right: 5px;
 	margin-bottom: 10px;
+	margin-left: 3px;
 }
 .emptyAvatar {
     float:left;
