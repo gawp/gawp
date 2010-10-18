@@ -21,6 +21,7 @@ import com.metabroadcast.common.social.model.UserDetails;
 import com.metabroadcast.common.social.model.UserRef;
 import com.metabroadcast.common.social.user.UserProvider;
 import com.metabroadcast.common.stats.Count;
+import com.metabroadcast.consumption.ConsumedContent;
 import com.metabroadcast.consumption.ConsumedContentProvider;
 import com.metabroadcast.consumption.Consumption;
 import com.metabroadcast.consumption.ConsumptionStore;
@@ -59,6 +60,10 @@ public class ItemsController {
         Item item = (Item) description.requireValue();
 
         model.put("item", itemModelBuilder.build(item));
+        
+        /*List<ConsumedContent> recentConsumedContent = consumedContentProvider.findForBrand(playlist, MAX_RECENT_ITEMS);
+        model.put("recentConsumptions", consumedContentModelListBuilder.build(recentConsumedContent));*/
+        
         List<Consumption> consumptions = consumptionStore.recentConsumesOfItem(item.getUri());
         Set<String> targetUris = Sets.newHashSet();
         for (Consumption consumption : consumptions) {

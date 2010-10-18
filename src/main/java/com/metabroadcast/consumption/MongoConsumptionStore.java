@@ -188,8 +188,15 @@ public class MongoConsumptionStore implements ConsumptionStore, Users {
     }
 
     @Override
-    public List<Consumption> recentConsumesOfChannel(String channelUri) {
+    public List<Consumption> recentConsumesOfChannel(String channelUri, int limit) {
         MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals(ConsumptionTranslator.CHANNEL_KEY, channelUri);
+        return translator.fromDBObjects(table.find(query.build()).sort(SORT_BY_TIMESTAMP).limit(limit));
+    }
+    
+    @Override
+    public List<Consumption> recentConsumesOfChannel(String channelUri, DateTime since) {
+        MongoQueryBuilder query = new MongoQueryBuilder().fieldEquals(ConsumptionTranslator.CHANNEL_KEY, channelUri);
+        query.fieldAfterOrAt(ConsumptionTranslator.TIMESTAMP_KEY, since);
         return translator.fromDBObjects(table.find(query.build()).sort(SORT_BY_TIMESTAMP));
     }
 

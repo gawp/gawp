@@ -46,16 +46,17 @@
                 {/call}
         	{/if}
         	{if length($popularItems) > 0}
-                {call beige.templates.widgets.topBrands}
-                    {param showItems: true /}
+                {call beige.templates.widgets.topList}
+                    {param title: 'Top Episodes' /}
                     {param counts: $popularItems /}
                 {/call}
         	{/if}
         	{if length($biggestConsumers) > 0}
-                {call .biggestConsumers}
-                    {param biggestConsumers: $biggestConsumers /}
+                {call beige.templates.widgets.topConsumers}
+                    {param consumers: $biggestConsumers /}
                 {/call}
         	{/if}
+        	<div class="clearFix"></div>
     	</div>
     </body>
 {/template}

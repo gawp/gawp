@@ -62,7 +62,7 @@ public class ConsumptionsModelHelper {
             if (desc.hasValue()) {
                 SimpleModel brandModel = new SimpleModel();
                 brandModel.put("count", brandCount.getCount());
-                brandModel.put("brand", playlistModelBuilder.build((Playlist) desc.requireValue()));
+                brandModel.put("target", playlistModelBuilder.build((Playlist) desc.requireValue()));
                 brandsModel.add(brandModel);
             }
             else {

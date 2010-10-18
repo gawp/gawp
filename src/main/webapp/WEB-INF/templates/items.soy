@@ -23,14 +23,31 @@
                 {param item: $item /}
                 {param recentConsumes: $recentConsumes /}
             {/call}
-        	{if $item.description}
+            <div class="description">    
+                <a href="{$item.uri}">
+                    <img src="{$item.image}" alt="Item image"/>
+                </a>
+                {if $item.seriesNumber or $item.episodeNumber}
+                    <p>
+                    {if $item.seriesNumber}
+                        Series {$item.seriesNumber} -{sp}
+                    {/if}
+                    {if $item.episodeNumber}
+                        Episode {$item.episodeNumber}
+                    {/if}
+                    </p>
+                {/if}
+                {if $item.description}
+                    <p>
+                        {$item.description}
+                    </p>
+                {/if}
                 <p>
-                    {$item.description}
+                    <a href="{$item.uri}">Play episode</a>
                 </p>
-            {/if}
-            <a href="{$item.uri}">
-                <img src="{$item.image}" alt="Item image"/>
-            </a>
+                <div class="clearFix"></div>
+            </div>
+        	
             <div class="clearFix"></div>
             {if length($recentConsumes) > 0}
                 {call .recentConsumes}

@@ -19,6 +19,7 @@ import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.social.model.TargetRef;
 import com.metabroadcast.common.social.model.UserRef;
 import com.metabroadcast.common.stats.Count;
+import com.metabroadcast.content.Channel;
 import com.metabroadcast.content.ContentStore;
 
 public class ConsumedContentProvider {
@@ -66,6 +67,10 @@ public class ConsumedContentProvider {
     
     public List<ConsumedContent> findForBrand(Playlist brand, int limit) {
         return find(consumptionStore.recentConsumesOfBrand(brand.getUri(), limit + 5), limit);
+    }
+    
+    public List<ConsumedContent> findForChannel(Channel channel, int limit) {
+        return find(consumptionStore.recentConsumesOfChannel(channel.getUri(), limit + 5), limit);
     }
     
     public List<Count<TargetRef>> findTargetCounts(List<Consumption> consumptions) {

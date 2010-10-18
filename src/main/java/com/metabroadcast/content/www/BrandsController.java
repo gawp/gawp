@@ -39,6 +39,7 @@ import com.metabroadcast.user.www.UserModelHelper;
 public class BrandsController {
     private final static int MAX_RECENT_ITEMS = 10;
     private final static int MAX_TOP_ITEMS = 8;
+    private final static int MAX_TOP_CONSUMERS = 10;
     
     private final ContentStore contentStore;
     private final ConsumptionStore consumptionStore;
@@ -88,8 +89,16 @@ public class BrandsController {
         List<Count<UserRef>> usersByConsumes = consumedContentProvider.findUserCounts(consumptions);
         Collections.sort(usersByConsumes, Collections.reverseOrder());
         
+        if (usersByConsumes.size() > MAX_TOP_CONSUMERS) {
+            usersByConsumes = usersByConsumes.subList(0, MAX_TOP_CONSUMERS);
+        }
+        
         List<Count<TargetRef>> targetsByConsumes = consumedContentProvider.findTargetCounts(consumptions);
         Collections.sort(targetsByConsumes, Collections.reverseOrder());
+        
+        if (targetsByConsumes.size() > MAX_TOP_ITEMS) {
+            targetsByConsumes = targetsByConsumes.subList(0, MAX_TOP_ITEMS);
+        }
         
         model.put("biggestConsumers", consumptionsModelHelper.biggestConsumersModel(usersByConsumes));
         model.put("popularItems", consumptionsModelHelper.popularItemsModel(targetsByConsumes, itemMap));

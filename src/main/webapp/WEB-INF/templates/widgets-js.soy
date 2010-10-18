@@ -64,31 +64,83 @@
 
 
 /**
- * @param showItems
+ * @param divId
+ * @param title
  * @param counts
 **/
-{template .topBrands}
-<div class="top{if $showItems}Items{else}Brands{/if} module" style="width:360px;">
-    <ul class="top{if $showItems}Items{else}Brands{/if}">
-        <h2>Favorite {if $showItems}Episodes{else}Shows{/if}</h2>
+{template .topList}
+<div {if $divId}id="{$divId}" {/if}class="topList module" style="width:360px;">
+    <ul>
+        <h2>{$title}</h2>
         {foreach $count in $counts}
-            {if $count.target and $count.target.uri and $count.target.logo}
-                <li class="top{if $showItems}Item{else}Brand{/if}">
+            {if $count.target and $count.target.uri and $count.target.thumbnail}
+                <li>
                     <span class="picture">
                         <a href="{$count.target.uri}">
-                            <img src="{$count.target.logo}" class="mainImage" />
+                            <img src="{$count.target.thumbnail}" class="mainImage" />
                             <!-- <div class="mainGloss"></div> -->
                         </a>
                     </span>
-                    <p class="{if $showItems}item{else}brand{/if}Title"><a href="{$count.target.uri}">{$count.target.title}</a><span class="watches">({$count.count} watches)</span></p>
+                    <p class="title"><a href="{$count.target.uri}">{$count.target.title}</a><span class="watches">({$count.count} watches)</span></p>
                 </li>
             {/if}
         {ifempty}
             {for $i in range(0, 4)}
-                <li class="top{if $showItems}Item{else}Brand{/if}">
+                <li>
                     <div class="picture mainImage emptyAvatar" style="width:150px;height:84px;"></div>
                 </li>
             {/for}
+        {/foreach}
+    </ul>
+</div>
+{/template}
+
+/**
+ * @param recentConsumptions
+ * @param currentUserDetails
+**/
+{template .largeConsumes}
+<div class="recentConsumptions module" style="width:360px;">
+    <ul>
+        <h2>Recently gawped</h2>
+        {foreach $consumption in $recentConsumptions}
+            {if $count.target and $count.target.uri and $count.target.thumbnail}
+                <li>
+                    <span class="picture">
+                        <a href="{$count.target.uri}">
+                            <img src="{$count.target.thumbnail}" class="mainImage" />
+                            <!-- <div class="mainGloss"></div> -->
+                        </a>
+                    </span>
+                    <p class="title"><a href="{$count.target.uri}">{$count.target.title}</a><span class="gawpTime">({$consumption.time})</span></p>
+                </li>
+            {/if}
+        {ifempty}
+            {for $i in range(0, 4)}
+                <li>
+                    <div class="picture mainImage emptyAvatar" style="width:150px;height:84px;"></div>
+                </li>
+            {/for}
+        {/foreach}
+    </ul>
+</div>
+{/template}
+
+/**
+ * @param consumers
+**/
+{template .topConsumers}
+<div class="topConsumers module">
+    <ul class="topConsumers">
+        <h2>Top Gawpers</h2>
+        {foreach $consumer in $consumers}
+          <li class="consumer">
+              <div class="avatar"><a href="/{$consumer.user.screenName}"><img src="{$consumer.user.profileImage}" class="icon" /></a><!-- <div class="gloss"></div> --></div>
+          </li>
+        {ifempty}
+          {for $i in range(10)}
+            <li><div class="emptyAvatar"></div></li>
+          {/for}
         {/foreach}
     </ul>
 </div>

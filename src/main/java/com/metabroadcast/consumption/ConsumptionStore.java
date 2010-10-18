@@ -22,7 +22,8 @@ public interface ConsumptionStore {
     
     public List<Consumption> recentConsumesOfItem(String itemUri);
     
-    public List<Consumption> recentConsumesOfChannel(String channelUri);
+    public List<Consumption> recentConsumesOfChannel(String channelUri, int limit);
+    public List<Consumption> recentConsumesOfChannel(String channelUri, DateTime since);
     
     public List<Consumption> recentConsumesOfGenre(String genreUri);
 

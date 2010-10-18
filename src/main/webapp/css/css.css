@@ -167,23 +167,11 @@ input.submit:hover { background-position: -450px 50%; }
 	width: 50px;
 }
 
-.topBrands ul{
+.topList ul{
 	margin-left: 20px;
 }
 
-.topItems ul{
-    margin-left: 20px;    
-}
-
-.topBrand {
-	display: inline;
-	float: left;
-	height: 133px;
-	overflow: hidden;
-	width: 170px;
-}
-
-.topItem {
+.topList li{
     display: inline;
     float: left;
     height: 133px;
@@ -191,20 +179,14 @@ input.submit:hover { background-position: -450px 50%; }
     width: 170px;
 }
 
-.picture {
-	display:block;
-}
-
-.brandTitle {
-	padding-top: 3px;
-	width: 150px;
-	clear:both;
-}
-
-.itemTitle {
+.topList .title {
     padding-top: 3px;
     width: 150px;
     clear:both;
+}
+
+.picture {
+	display:block;
 }
 
 .watches {
@@ -535,6 +517,11 @@ h3{
 	padding: 10px;
 }
 
+.topConsumers.module {
+    width: 300px;
+    float: right;    
+}
+
 #userDetails {
 	overflow: hidden;
 	height: 100px;
@@ -569,3 +556,7 @@ h3{
     width: 200px;
     float: right;
 }
+
+.description {
+    margin: auto;
+}    

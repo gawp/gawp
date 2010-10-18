@@ -31,8 +31,9 @@
             {param currentUserDetails: $currentUserDetails/}
         {/call}
         
-        {call beige.templates.widgets.topBrands}
-            {param counts: $brands/}
+        {call beige.templates.widgets.topList}
+            {param title: 'Favourite Shows' /}
+            {param counts: $brands /}
         {/call}
         
         {call .loginOrSignUp}
@@ -101,8 +102,9 @@
             {param currentUserDetails: $currentUserDetails/}
         {/call}
         
-        {call beige.templates.widgets.topBrands}
-            {param counts: $brands/}
+        {call beige.templates.widgets.topList}
+            {param title: 'Favourite Shows' /}
+            {param counts: $brands /}
         {/call}
         
         <div class="module" style="width: 300px;">
