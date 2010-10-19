@@ -21,6 +21,7 @@ import com.metabroadcast.common.social.model.UserDetails;
 import com.metabroadcast.common.social.model.UserRef;
 import com.metabroadcast.common.stats.Count;
 import com.metabroadcast.consumption.Consumption;
+import com.metabroadcast.consumption.www.ConsumedContentModelBuilder;
 import com.metabroadcast.content.ContentStore;
 import com.metabroadcast.user.www.UserModelHelper;
 
@@ -135,6 +136,7 @@ public class ConsumptionsModelHelper {
             consumptionModel.put("item", itemModelBuilder.build(item));
         }
         consumptionModel.put("time", consumption.timestamp().toString("dd MMMM yy - hh:mm"));
+        consumptionModel.put("ago", ConsumedContentModelBuilder.ago(consumption.timestamp()));
         
         return consumptionModel;
     }

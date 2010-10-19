@@ -129,6 +129,18 @@ input.submit:hover { background-position: -450px 50%; }
     width: 150px;
 }
 
+.largeProfileImage {
+    -webkit-box-shadow: rgba(0, 0, 0, 0.496094) 0px 4px 6px;
+    background: transparent;
+    /*border-bottom-left-radius: 5px 5px;
+    border-bottom-right-radius: 5px 5px;
+    border-top-left-radius: 5px 5px;
+    border-top-right-radius: 5px 5px;*/
+    float: left;
+    height: 100px;
+    width: 100px;
+}
+
 .mainGloss {
     -webkit-box-shadow: rgba(255, 255, 255, 0.597656) 0px 2px 1px inset;
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.699219)), to(rgba(255, 255, 255, 0.199219)));

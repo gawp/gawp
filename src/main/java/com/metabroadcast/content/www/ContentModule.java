@@ -26,7 +26,7 @@ public class ContentModule {
     }
     
     public @Bean ItemsController itemsController() {
-        return new ItemsController(contentStore, consumptionStore, userProvider, userModelHelper, consumedContentProvider, new SimpleItemAttributesModelBuilder(), consumptionsModelHelper);
+        return new ItemsController(contentStore, consumptionStore, userProvider, userModelHelper, new SimpleItemAttributesModelBuilder(), consumptionsModelHelper);
     }
     
     public @Bean ChannelsController channelsController() {

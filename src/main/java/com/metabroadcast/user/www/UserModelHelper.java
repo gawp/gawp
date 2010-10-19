@@ -32,12 +32,20 @@ public class UserModelHelper {
             model.put("possessivePostfix", possessivePostfix);
             model.put("followers", userDetails.getFollowerCount());
             model.put("profileImage", userDetails.getProfileImage());
+            model.put("largerProfileImage", getLargerProfileImageUrl(userDetails.getProfileImage()));
             model.put("profileUrl", userDetails.getProfileUrl());
             model.put("bio", userDetails.getBio());
             model.put("location", userDetails.getLocation());
             model.put("id", userDetails.getUserRef().getUserId());
         }
         return model;
+    }
+    
+    private String getLargerProfileImageUrl(String normalUrl) {
+        String extension = normalUrl.substring(normalUrl.lastIndexOf("_normal.") + "_normal.".length());
+        String filename = normalUrl.substring(0, normalUrl.lastIndexOf("_normal."));
+        
+        return filename + "_reasonably_small." + extension;
     }
     
     public Maybe<UserDetails> getUserDetails(UserRef userRef) {

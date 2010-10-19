@@ -1,6 +1,7 @@
 {namespace beige.templates.items}
 
 /**
+ * @param currentUserDetails
  * @param item
  * @param recentConsumes
 **/
@@ -50,8 +51,10 @@
         	
             <div class="clearFix"></div>
             {if length($recentConsumes) > 0}
-                {call .recentConsumes}
-                    {param consumes: $recentConsumes /}
+                
+                {call beige.templates.widgets.largeConsumes}
+                    {param currentUserDetails: $currentUserDetails /}
+                    {param recentConsumptions: $recentConsumes /}
                 {/call}
         	{/if}
         </div>

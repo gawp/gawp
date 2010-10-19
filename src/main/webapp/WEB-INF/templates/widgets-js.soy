@@ -97,23 +97,21 @@
 
 /**
  * @param recentConsumptions
- * @param currentUserDetails
+**/
 {template .largeConsumes}
-<div class="recentConsumptions module" style="width:360px;">
+<div class="topList module" style="width:360px;">
     <ul>
         <h2>Recently gawped</h2>
         {foreach $consumption in $recentConsumptions}
-            {if $count.target and $count.target.uri and $count.target.thumbnail}
-                <li>
-                    <span class="picture">
-                        <a href="{$count.target.uri}">
-                            <img src="{$count.target.thumbnail}" class="mainImage" />
-                            <!-- <div class="mainGloss"></div> -->
-                        </a>
-                    </span>
-                    <p class="title"><a href="{$count.target.uri}">{$count.target.title}</a><span class="gawpTime">({$consumption.time})</span></p>
-                </li>
-            {/if}
+            <li>
+                <span class="picture">
+                    <a href="/{$consumption.user.screenName}">
+                        <img src="{$consumption.user.largerProfileImage}" class="largeProfileImage" />
+                    </a>
+                </span>
+                <p class="title"><a href="/{$consumption.user.screenName}">{$consumption.user.fullName}</a>
+                <span class="watches">({$consumption.ago})</span></p>
+            </li>
         {ifempty}
             {for $i in range(0, 4)}
                 <li>
@@ -124,7 +122,6 @@
     </ul>
 </div>
 {/template}
-**/
 
 /**
  * @param consumers
