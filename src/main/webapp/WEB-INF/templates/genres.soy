@@ -81,10 +81,10 @@
         <ol>
             {foreach $popularBrand in $popularBrands}
                 <li>
-                    <a href="{$popularBrand.brand.uri}">
-                        <img src="{$popularBrand.brand.thumbnail}" />
+                    <a href="{$popularBrand.target.uri}">
+                        <img src="{$popularBrand.target.thumbnail}" />
                         <p>
-                            {$popularBrand.brand.title}
+                            {$popularBrand.target.title}
                         </p>
                     </a>
                     <p>
@@ -104,14 +104,14 @@
 {template .overview}
 <p id="overview">
     {if length($popularBrands) > 0}
-        The {$genre.name} genre's most popular show is <a href="/shows/{$popularBrands[0].brand.curie}">{$popularBrands[0].brand.title}</a>. Recently{sp}
+        The {$genre.name} genre's most popular show is <a href="/shows/{$popularBrands[0].target.curie}">{$popularBrands[0].target.title}</a>. Recently{sp}
     {else}
         Recently in {$genre.name},{sp}
     {/if}
     {if length($recentConsumes) > 0}
         <a href="/{$recentConsumes[0].user.screenName}">{$recentConsumes[0].user.fullName}</a> gawped at{sp} 
         {if $recentConsumes[0].item.brand}
-            {if length($popularBrands) > 0 and $recentConsumes[0].item.brand.uri == $popularBrands[0].brand.uri}
+            {if length($popularBrands) > 0 and $recentConsumes[0].item.brand.uri == $popularBrands[0].target.uri}
                 {if $recentConsumes[0].item.titleIsEpisodeNumber}
                     <a href="/episodes/{$recentConsumes[0].item.curie}">{$recentConsumes[0].item.title}</a>
                 {else}

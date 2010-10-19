@@ -34,7 +34,7 @@ public class ContentModule {
     }
     
     public @Bean GenreController genresController() {
-        return new GenreController(consumptionStore, contentStore, consumptionsModelHelper, consumedContentProvider);
+        return new GenreController(consumptionStore, contentStore, consumptionsModelHelper, consumedContentProvider, userModelHelper, userProvider);
     }
     
 }

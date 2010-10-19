@@ -11,12 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.common.collect.Sets;
+import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.model.SimpleModel;
+import com.metabroadcast.common.social.model.TwitterUserDetails;
+import com.metabroadcast.common.social.model.UserDetails;
+import com.metabroadcast.common.social.model.UserRef;
+import com.metabroadcast.common.social.user.UserProvider;
 import com.metabroadcast.common.stats.Count;
 import com.metabroadcast.consumption.ConsumedContentProvider;
 import com.metabroadcast.consumption.Consumption;
 import com.metabroadcast.consumption.ConsumptionStore;
 import com.metabroadcast.content.ContentStore;
+import com.metabroadcast.user.www.UserModelHelper;
 
 @Controller
 public class GenreController {
@@ -25,20 +31,27 @@ public class GenreController {
     private final static String GENRE_PREFIX = "http://ref.atlasapi.org/genres/atlas/";
 
     private final ContentStore contentStore;
-
     private final ConsumptionsModelHelper consumptionModelHelper;
-
     private final ConsumedContentProvider consumedContentProvider;
+    private final UserModelHelper userModelHelper;
+    private final UserProvider userProvider;
 
-    public GenreController(ConsumptionStore consumptionStore, ContentStore contentStore, ConsumptionsModelHelper consumptionModelHelper, ConsumedContentProvider consumedContentProvider) {
+    public GenreController(ConsumptionStore consumptionStore, ContentStore contentStore, ConsumptionsModelHelper consumptionModelHelper, ConsumedContentProvider consumedContentProvider, UserModelHelper userModelHelper, UserProvider userProvider) {
         this.consumptionStore = consumptionStore;
         this.contentStore = contentStore;
         this.consumptionModelHelper = consumptionModelHelper;
         this.consumedContentProvider = consumedContentProvider;
+        this.userModelHelper = userModelHelper;
+        this.userProvider = userProvider;
     }
     
     @RequestMapping(value = { "/genres/{genreName}" }, method = { RequestMethod.GET })
     public String getChannelPage(Map<String, Object> model, @PathVariable String genreName) {
+        
+        UserRef currentUserRef = userProvider.existingUser();
+        
+        Maybe<UserDetails> userDetails = userModelHelper.getUserDetails(currentUserRef);
+        model.put("currentUserDetails", userModelHelper.userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
         
         String genreUri = GENRE_PREFIX + genreName;
         

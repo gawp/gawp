@@ -2,7 +2,7 @@
 
 /**
  * @param channel
- * @param recentConsumes
+ * @param recentConsumptions
  * @param popularBrands
 **/
 {template .channel}
@@ -22,19 +22,19 @@
         <div class="container">
             {call .overview}
                 {param channel: $channel /}
-                {param recentConsumes: $recentConsumes /}
+                {param recentConsumptions: $recentConsumptions /}
                 {param popularBrands: $popularBrands /}
             {/call}
         	<a href="{$channel.uri}">
                 <img src="{$channel.logo}" alt="Channel logo"/>
             </a>
             <div class="clearFix"></div>
-            {if length($recentConsumes) > 0}
-                {call .recentConsumes}
-                    {param recentConsumes: $recentConsumes /}
+            {if length($recentConsumptions) > 0}
+                {call .recentConsumptions}
+                    {param recentConsumptions: $recentConsumptions /}
                 {/call}
         	{/if}
-        	{if length($recentConsumes) > 0}
+        	{if length($recentConsumptions) > 0}
                 {call .popularBrands}
                     {param popularBrands: $popularBrands /}
                 {/call}
@@ -45,13 +45,13 @@
 
 
 /**
- * @param recentConsumes
+ * @param recentConsumptions
 **/
-{template .recentConsumes}
-    <div id="recentConsumes" class="module">
+{template .recentConsumptions}
+    <div id="recentConsumptions" class="module">
         <h3>Recent gawps</h3>
         <ol>
-            {foreach $consume in $recentConsumes}
+            {foreach $consume in $recentConsumptions}
                 <li>
                     <a href="/{$consume.user.screenName}">
                         <img src="{$consume.user.profileImage}" />
@@ -60,14 +60,14 @@
                             {$consume.user.location}
                         </p>
                     </a>
-                    <a href="{$consume.item.uri}">
-                        <img src="{$consume.item.thumbnail}" />
+                    <a href="{$consume.content.uri}">
+                        <img src="{$consume.content.thumbnail}" />
                         <p>
-                            {$consume.item.title}
+                            {$consume.content.title}
                         </p>
                     </a>
                     <p>
-                        {$consume.time}
+                        {$consume.ago}
                     </p>
                 </li>
             {/foreach}
@@ -84,10 +84,10 @@
         <ol>
             {foreach $popularBrand in $popularBrands}
                 <li>
-                    <a href="{$popularBrand.brand.uri}">
-                        <img src="{$popularBrand.brand.thumbnail}" />
+                    <a href="{$popularBrand.target.uri}">
+                        <img src="{$popularBrand.target.thumbnail}" />
                         <p>
-                            {$popularBrand.brand.title}
+                            {$popularBrand.target.title}
                         </p>
                     </a>
                     <p>
@@ -100,31 +100,31 @@
 {/template}
 
 /**
- * @param recentConsumes
+ * @param recentConsumptions
  * @param popularBrands
  * @param channel
  **/
 {template .overview}
 <p id="overview">
     {if length($popularBrands) > 0}
-        <a href="{$channel.uri}">{$channel.name}</a> is the home of <a href="/shows/{$popularBrands[0].brand.curie}">{$popularBrands[0].brand.title}</a>. Recently{sp}
+        <a href="{$channel.uri}">{$channel.name}</a> is the home of <a href="/shows/{$popularBrands[0].target.curie}">{$popularBrands[0].target.title}</a>. Recently{sp}
     {else}
         Recently on <a href="{$channel.uri}">{$channel.name}</a>,{sp}
     {/if}
-    {if length($recentConsumes) > 0}
-        <a href="/{$recentConsumes[0].user.screenName}">{$recentConsumes[0].user.fullName}</a> gawped at{sp} 
-        {if $recentConsumes[0].item.brand}
-            {if length($popularBrands) > 0 and $recentConsumes[0].item.brand.uri == $popularBrands[0].brand.uri}
-                {if $recentConsumes[0].item.titleIsEpisodeNumber}
-                    <a href="/episodes/{$recentConsumes[0].item.curie}">{$recentConsumes[0].item.title}</a>
+    {if length($recentConsumptions) > 0}
+        <a href="/{$recentConsumptions[0].user.screenName}">{$recentConsumptions[0].user.fullName}</a> gawped at{sp} 
+        {if $recentConsumptions[0].content.brand}
+            {if length($popularBrands) > 0 and $recentConsumptions[0].content.brand.uri == $popularBrands[0].target.uri}
+                {if $recentConsumptions[0].content.titleIsEpisodeNumber}
+                    <a href="/episodes/{$recentConsumptions[0].content.curie}">{$recentConsumptions[0].content.title}</a>
                 {else}
-                    the episode <a href="/episodes/{$recentConsumes[0].item.curie}">{$recentConsumes[0].item.title}</a>
+                    the episode <a href="/episodes/{$recentConsumptions[0].content.curie}">{$recentConsumptions[0].content.title}</a>
                 {/if}
             {else}
-                an episode of <a href="/shows/{$recentConsumes[0].item.brand.curie}">{$recentConsumes[0].item.brand.title}</a>.
+                an episode of <a href="/shows/{$recentConsumptions[0].content.brand.curie}">{$recentConsumptions[0].content.brand.title}</a>.
             {/if}
         {else}
-            <a href="/episodes/{$recentConsumes[0].item.curie}">{$recentConsumes[0].item.title}</a>
+            <a href="/episodes/{$recentConsumptions[0].content.curie}">{$recentConsumptions[0].content.title}</a>
         {/if}
     {else}    
         nobody has gawped at anything from it!.
