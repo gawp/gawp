@@ -1,7 +1,6 @@
 {namespace beige.templates.items}
 
 /**
- * @param currentUserDetails
  * @param item
  * @param recentConsumes
 **/
@@ -53,7 +52,6 @@
             {if length($recentConsumes) > 0}
                 
                 {call beige.templates.widgets.largeConsumes}
-                    {param currentUserDetails: $currentUserDetails /}
                     {param recentConsumptions: $recentConsumes /}
                 {/call}
         	{/if}
