@@ -41,6 +41,7 @@ import com.metabroadcast.consumption.Consumption;
 import com.metabroadcast.consumption.ConsumptionStore;
 import com.metabroadcast.consumption.Converters;
 import com.metabroadcast.consumption.punchcard.ConsumptionPunchcardProvider;
+import com.metabroadcast.consumption.punchcard.Punchcard;
 import com.metabroadcast.content.Channel;
 import com.metabroadcast.content.ContentRefs;
 import com.metabroadcast.content.ContentStore;
@@ -101,7 +102,10 @@ public class ConsumptionController {
 
         Maybe<UserDetails> userDetails = userHelper.getUserDetails(currentUserRef);
         model.put("currentUserDetails", userHelper.userDetailsModel((TwitterUserDetails) userDetails.valueOrNull()));
-        model.put("punchcard", punchcardProvider.punchCard(userRef.requireValue()).toSimpleModel());
+        Punchcard punchcard = punchcardProvider.punchCard(userRef.requireValue());
+        if (punchcard != null) {
+            model.put("punchcard", punchcard.toSimpleModel());
+        }
 
         return watches(model, userRef.requireValue());
     }
