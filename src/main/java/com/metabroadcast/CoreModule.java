@@ -35,7 +35,7 @@ public class CoreModule {
     }
 
     public @Bean CredentialsStore credentialsStore() throws UnknownHostException, MongoException {
-        return new MongoDBCredentialsStore(mongo(), "credentials");
+        return new MongoDBCredentialsStore(db());
     }
 
     public @Bean ApplicationIdAwareUserRefBuilder userRefBuilder() {
