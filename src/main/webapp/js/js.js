@@ -22,6 +22,12 @@ var registerOverviewLinks = function() {
     );
 }
 
+var triggerBookmarklet = function(url) {
+	var bootstrap=document.createElement('script');
+    bootstrap.src='/bookmark/bootstrap?uri='+encodeURIComponent(url);
+    document.getElementsByTagName('head')[0].appendChild(bootstrap);
+}
+
 var uriLookup = {};
 var registerSearchAutocomplete = function() {
 	$("input#searchBox").autocomplete({

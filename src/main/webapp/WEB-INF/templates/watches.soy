@@ -36,7 +36,7 @@
             {param counts: $brands /}
         {/call}
         
-        {call .loginOrSignUp}
+        {call beige.templates.widgets.loginOrSignUp}
             {param currentUserDetails: $currentUserDetails/}
         {/call}
         
@@ -207,25 +207,6 @@
     .
 </p>
 {/if}
-{/template}
-
-/**
- * @param currentUserDetails
- **/
-{template .loginOrSignUp}
-<div id="loginOrSignUp" class="module" style="width: 300px;">
-    {if $currentUserDetails and $currentUserDetails.screenName}
-        <p class="joinus"><a href="/{$currentUserDetails.screenName}" class="biglink">Your Profile</a>.
-        {if $currentUserDetails.profileImage}
-            <div class="joinusPic"><a href="{$currentUserDetails.screenName}"><img src="{$currentUserDetails.profileImage}" class="icon" /></a></div>
-        {/if}
-        </p>
-    {else}
-        <p class="joinus"><a href="/login/twitter?continueTo=/" class="biglink">Login</a><span class="or clearfix">or</span><a href="/invites" class="biglink">Request An Invite</a></p>
-    {/if}
-    <div class="clearfix"></div>
-    <p class="joinus" style="margin-top: 50px;"><a href="/about" class="biglink">About Gawp</a></p>
-</div>
 {/template}
 
 /**

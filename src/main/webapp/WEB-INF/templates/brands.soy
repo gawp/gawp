@@ -26,15 +26,24 @@
                 {param brand: $brand /}
                 {param recentConsumes: $recentConsumptions /}
             {/call}
-            <div class="description">    
-                <a href="{$brand.uri}">
-                    <img src="{$brand.image}" alt="Brand image"/>
-                </a>
-            	{if $brand.description}
-                    <p>
-                        {$brand.description}
-                    </p>
-                {/if}
+            <div>
+                <div class="description" style="float:left;">
+                    <a href="{$brand.uri}">
+                        <img src="{$brand.image}" alt="Brand image"/>
+                    </a>
+                	{if $brand.description}
+                        <p>
+                            {$brand.description}
+                        </p>
+                    {/if}
+                </div>
+                
+                <div  style="float:left;">
+                {call beige.templates.widgets.loginOrSignUp}
+                    {param currentUserDetails: $currentUserDetails/}
+                    {param currentContent: $brand.uri/}
+                {/call}
+                </div>
                 <div class="clearFix"></div>
             </div>
             

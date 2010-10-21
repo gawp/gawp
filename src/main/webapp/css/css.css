@@ -107,7 +107,7 @@ input.submit:hover { background-position: -450px 50%; }
 	font-size: 1.5em;
 }
 .joinusPic {
-	margin-left: 125px;
+	margin-left: 65px;
 }
 
 /*.mainImage {
@@ -299,12 +299,11 @@ a:hover {
     opacity: 0.7;
 }
 .userIcon img{
-    height:                 37px;
-    width:                  37px;
-    position:               absolute;
-    top:                    9px;
-    margin-left:            280px;
-    opacity:                0.7;
+    height: 30px;
+	left: 287px;
+	position: absolute;
+	top: 14px;
+	width: 30px;
 }
 .play {
     display:                block;
@@ -572,5 +571,12 @@ h3{
 }
 
 .description {
-    margin: auto;
-}    
+    margin-left: 100px;
+    text-align: center;
+}
+
+.description p {
+	width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+}

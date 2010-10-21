@@ -3,6 +3,7 @@
 /**
  * @param item
  * @param recentConsumes
+ * @param currentUserDetails
 **/
 {template .item}
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -23,38 +24,46 @@
                 {param item: $item /}
                 {param recentConsumes: $recentConsumes /}
             {/call}
-            <div class="description">    
-                <a href="{$item.uri}">
-                    <img src="{$item.image}" alt="Item image"/>
-                </a>
-                {if $item.seriesNumber or $item.episodeNumber}
-                    <p>
-                    {if $item.seriesNumber}
-                        Series {$item.seriesNumber} -{sp}
+            <div>
+                <div style="float:left;margin-top: 25px;">
+                    <a href="{$item.uri}">
+                        <img src="{$item.image}" alt="Item image" style="width: 500px;" />
+                    </a>
+                    
+                    {if $item.seriesNumber or $item.episodeNumber}
+                        <p class="title">
+                        {if $item.seriesNumber}
+                            Series {$item.seriesNumber} -{sp}
+                        {/if}
+                        {if $item.episodeNumber}
+                            Episode {$item.episodeNumber}
+                        {/if}
+                        </p>
                     {/if}
-                    {if $item.episodeNumber}
-                        Episode {$item.episodeNumber}
+                    {if $item.description}
+                        <p>
+                            {$item.description}
+                        </p>
                     {/if}
-                    </p>
+                </div>
+                
+                {if length($recentConsumes) > 0}
+                <div style="float:left;">
+                    {call beige.templates.widgets.largeConsumes}
+                        {param recentConsumptions: $recentConsumes /}
+                    {/call}
+                </div>
                 {/if}
-                {if $item.description}
-                    <p>
-                        {$item.description}
-                    </p>
-                {/if}
-                <p>
-                    <a href="{$item.uri}">Play episode</a>
-                </p>
+                
+                <div  style="float:left;">
+                {call beige.templates.widgets.loginOrSignUp}
+                    {param currentUserDetails: $currentUserDetails/}
+                    {param currentContent: $item.uri/}
+                {/call}
+                </div>
+                
                 <div class="clearFix"></div>
             </div>
-        	
-            <div class="clearFix"></div>
-            {if length($recentConsumes) > 0}
-                
-                {call beige.templates.widgets.largeConsumes}
-                    {param recentConsumptions: $recentConsumes /}
-                {/call}
-        	{/if}
         </div>
     </body>
 {/template}
@@ -92,11 +101,13 @@
 {template .overview}
 <p id="overview">
     {if $item.brand}
+        <a href="{$item.uri}">
         {if $item.titleIsEpisodeNumber}
             This
         {else}
             {$item.title}
         {/if}
+        </a>
         {sp}is{sp}
         {if $item.episodeNumber}
             episode {$item.episodeNumber}

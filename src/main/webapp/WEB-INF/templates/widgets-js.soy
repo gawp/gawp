@@ -142,3 +142,37 @@
     </ul>
 </div>
 {/template}
+
+/**
+ * @param currentUserDetails
+ * @param currentContent
+ **/
+{template .loginOrSignUp}
+<div id="loginOrSignUp" class="module" style="width: 180px; margin-top: 50px;">
+    {if $currentUserDetails and $currentUserDetails.screenName}
+        <p class="joinus"><a href="/{$currentUserDetails.screenName}" class="biglink">Your Profile</a>.
+        {if $currentUserDetails.profileImage}
+            <div class="joinusPic"><a href="/{$currentUserDetails.screenName}"><img src="{$currentUserDetails.profileImage}" class="icon" /></a></div>
+        {/if}
+        </p>
+    {else}
+        <p class="joinus"><a href="/login/twitter?continueTo=/" class="biglink">Login</a><span class="or clearfix">or</span><a href="/invites" class="biglink">Request An Invite</a></p>
+    {/if}
+    <div class="clearfix"></div>
+    {if $currentContent}
+        <p class="joinus" style="margin-top: 50px;"><a href="#" class="biglink" id="gawp-this">Gawp This!</a></p>
+        <script type="text/javascript">
+            {literal}
+            $(document).ready(function() {
+                $('#gawp-this').click(function(event) {
+                    triggerBookmarklet('{/literal}{$currentContent}{literal}');
+                    return false;
+                });
+            });
+            {/literal}
+        </script>
+    {else}
+        <p class="joinus" style="margin-top: 50px;"><a href="/about" class="biglink">About Gawp</a></p>
+    {/if}
+</div>
+{/template}
