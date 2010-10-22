@@ -29,7 +29,7 @@
             <div>
                 <div class="description" style="float:left;">
                     <a href="{$brand.uri}">
-                        <img src="{$brand.image}" alt="Brand image"/>
+                        <img src="{$brand.image}" alt="Brand image" width="640" />
                     </a>
                 	{if $brand.description}
                         <p>
@@ -38,7 +38,7 @@
                     {/if}
                 </div>
                 
-                <div  style="float:left;">
+                <div  style="float:left; margin-left:50px;">
                 {call beige.templates.widgets.loginOrSignUp}
                     {param currentUserDetails: $currentUserDetails/}
                     {param currentContent: $brand.uri/}

@@ -14,14 +14,14 @@
                 <div curie="{$item.content.curie}" class="item" >
                     <div class="thumbnail">
                     {if $item.content.thumbnail}
-                        <a href="{$item.content.uri}"><img src="{$item.content.thumbnail}" class="thumbnailImage"/></a>
+                        <a href="/episodes/{$item.content.curie}"><img src="{$item.content.thumbnail}" class="thumbnailImage"/></a>
                     {elseif $item.content.image}
-                        <a href="{$item.content.uri}"><img src="{$item.content.image}" class="thumbnailImage"/></a>
+                        <a href="/episodes/{$item.content.curie}"><img src="{$item.content.image}" class="thumbnailImage"/></a>
                     {/if}
                     </div>
                     <div class="info">
                         <p class="title">
-                            <a href="{$item.content.uri}">{$item.content.primaryTitle}{if $item.content.secondaryTitle} - {$item.content.secondaryTitle}{/if}</a>
+                            <a href="/episodes/{$item.content.curie}">{$item.content.primaryTitle}{if $item.content.secondaryTitle} - {$item.content.secondaryTitle}{/if}</a>
                         </p>
                         <p class="desc">
                             {if $item.content.description}{$item.content.description}{/if}
@@ -32,7 +32,7 @@
                                 <span class="remove"><a href="#" uri="{$item.content.uri}" class="remove_item"><img src="/images/remove.png" class="remove_button" /></a></span>
                             {/if}
                         </p>
-                        {if $showUserNotChannel}
+                        {if $showUserNotChannel and $item.user.screenName}
                             <div class="userIcon">
                                 <a href="/{$item.user.screenName}">
                                     <img src="{$item.user.profileImage}" alt="{$item.user.screenName}" />    
@@ -76,12 +76,12 @@
             {if $count.target and $count.target.uri and $count.target.thumbnail}
                 <li>
                     <span class="picture">
-                        <a href="{$count.target.uri}">
+                        <a href="/shows/{$count.target.curie}">
                             <img src="{$count.target.thumbnail}" class="mainImage" />
                             <!-- <div class="mainGloss"></div> -->
                         </a>
                     </span>
-                    <p class="title"><a href="{$count.target.uri}">{$count.target.title}</a><span class="watches">({$count.count} watches)</span></p>
+                    <p class="title"><a href="/shows/{$count.target.curie}">{$count.target.title}</a><span class="watches">({$count.count} watches)</span></p>
                 </li>
             {/if}
         {ifempty}
