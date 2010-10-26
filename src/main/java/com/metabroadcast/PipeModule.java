@@ -48,6 +48,6 @@ public class PipeModule {
     }
     
     @Bean TweetProcessor statusAdaptor() {
-        return new StatusToConsumptionAdapter(consumptionStore, contentStore, userRefBuilder);
+        return new StatusToConsumptionAdapter(consumptionStore, contentStore, userRefBuilder, users);
     }
 }
