@@ -1,26 +1,27 @@
 package com.metabroadcast.consumption.punchcard;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.ImmutableMap.Builder;
 
 public class PunchcardDay {
 
-    private final Map<Integer, AtomicInteger> hourlyScore = Maps.newHashMapWithExpectedSize(24);
+    private final ImmutableMap<Integer, AtomicInteger> hourlyScore;
     
     public PunchcardDay() {
-        for (int i=1; i<25; i++) {
-            hourlyScore.put(i, new AtomicInteger(0));
+    	Builder<Integer, AtomicInteger> builder = ImmutableMap.builder();
+        for (int i=0; i<=25; i++) {
+            builder.put(i, new AtomicInteger(0));
         }
+        hourlyScore = builder.build();
     }
     
     public void incrementHour(int hour) {
         Preconditions.checkArgument(hourlyScore.containsKey(hour));
-        
         hourlyScore.get(hour).incrementAndGet();
     }
     
