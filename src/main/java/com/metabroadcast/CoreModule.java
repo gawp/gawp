@@ -13,6 +13,7 @@ import com.metabroadcast.common.persistence.mongo.DatabasedMongo;
 import com.metabroadcast.common.social.anonymous.AnonymousUserProvider;
 import com.metabroadcast.common.social.anonymous.CookieBasedAnonymousUserProvider;
 import com.metabroadcast.common.social.auth.CookieTranslator;
+import com.metabroadcast.common.social.auth.DESUserRefKeyEncrypter;
 import com.metabroadcast.common.social.auth.credentials.CredentialsStore;
 import com.metabroadcast.common.social.auth.credentials.MongoDBCredentialsStore;
 import com.metabroadcast.common.social.user.ApplicationIdAwareUserRefBuilder;
@@ -31,7 +32,8 @@ public class CoreModule {
     private @Value("${atlas.apikey}") String apiKey;
     
     public @Bean CookieTranslator cookieTranslator() {
-        return new CookieTranslator("beige", "f8bc218051364f2194f612182fc327c9");
+        String salt = "f8bc218051364f2194f612182fc327c9";
+        return new CookieTranslator(new DESUserRefKeyEncrypter(salt), "beige", salt);
     }
 
     public @Bean CredentialsStore credentialsStore() throws UnknownHostException, MongoException {
