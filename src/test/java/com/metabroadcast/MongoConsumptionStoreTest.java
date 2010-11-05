@@ -22,7 +22,7 @@ import com.metabroadcast.consumption.MongoConsumptionStore;
 
 
 public class MongoConsumptionStoreTest {
-    private UserRef alice = new UserRef("102", UserNamespace.TWITTER, null);
+    private UserRef alice = new UserRef("102", UserNamespace.TWITTER, null, null);
     private TargetRef target1 = new TargetRef("id1", "domain");
     private TargetRef target2 = new TargetRef("id2", "domain");
     private DateTime timestamp1 = new DateTime(DateTimeZones.UTC);

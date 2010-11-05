@@ -104,7 +104,7 @@ public class ConsumedContentProvider {
     public List<Count<UserRef>> findUserCounts(List<Consumption> consumptions) {
         List<Count<UserRef>> userCounts = Lists.newArrayList();
         for (Count<String> count : findCounts(consumptions, USER_KEY)) {
-            userCounts.add(Count.of(UserRef.fromUrlSafeString(count.getTarget(), null), Ordering.arbitrary(), count.getCount()));
+            userCounts.add(Count.of(UserRef.deserialize(count.getTarget()), Ordering.arbitrary(), count.getCount()));
         }
         return userCounts;
     }
@@ -178,7 +178,7 @@ public class ConsumedContentProvider {
     protected static Function<Consumption, Set<String>> USER_KEY = new Function<Consumption, Set<String>>() {
         @Override
         public Set<String> apply(Consumption consumption) {
-            return Sets.newHashSet(consumption.userRef().toUrlSafeString());
+            return Sets.newHashSet(consumption.userRef().serialize());
         }
     };
 }

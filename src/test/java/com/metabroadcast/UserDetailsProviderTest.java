@@ -23,7 +23,7 @@ public class UserDetailsProviderTest {
     
     @Test
     public void shouldRetrieveDetails() {
-        UserRef userRef = new UserRef(788695L, UserNamespace.TWITTER, "beige");
+        UserRef userRef = new UserRef(788695L, UserNamespace.TWITTER, "beige", null);
         
         Map<UserRef, UserDetails> userDetailsMap = provider.detailsFor(userRef, Lists.newArrayList(userRef));
         assertFalse(userDetailsMap.isEmpty());

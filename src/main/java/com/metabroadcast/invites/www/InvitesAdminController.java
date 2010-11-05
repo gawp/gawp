@@ -19,9 +19,9 @@ import com.metabroadcast.invites.InviteAdministrator;
 @Controller
 public class InvitesAdminController {
 
-	private static final UserRef FRED = new UserRef(14426460, UserNamespace.TWITTER, "beige");
-	private static final UserRef JOHN = new UserRef(821541, UserNamespace.TWITTER, "beige");
-	private static final UserRef BEN = new UserRef(788695, UserNamespace.TWITTER, "beige");
+	private static final UserRef FRED = new UserRef(14426460, UserNamespace.TWITTER, "beige", null);
+	private static final UserRef JOHN = new UserRef(821541, UserNamespace.TWITTER, "beige", null);
+	private static final UserRef BEN = new UserRef(788695, UserNamespace.TWITTER, "beige", null);
 	private final Set<UserRef> ADMINS = ImmutableSet.of(FRED, JOHN, BEN);
 	
 	private final InviteAdministrator inviteStore;

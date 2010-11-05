@@ -14,6 +14,7 @@ import com.metabroadcast.common.social.anonymous.AnonymousUserProvider;
 import com.metabroadcast.common.social.anonymous.CookieBasedAnonymousUserProvider;
 import com.metabroadcast.common.social.auth.CookieTranslator;
 import com.metabroadcast.common.social.auth.DESUserRefKeyEncrypter;
+import com.metabroadcast.common.social.auth.UserRefKeyEncrypter;
 import com.metabroadcast.common.social.auth.credentials.CredentialsStore;
 import com.metabroadcast.common.social.auth.credentials.MongoDBCredentialsStore;
 import com.metabroadcast.common.social.user.ApplicationIdAwareUserRefBuilder;
@@ -33,15 +34,19 @@ public class CoreModule {
     
     public @Bean CookieTranslator cookieTranslator() {
         String salt = "f8bc218051364f2194f612182fc327c9";
-        return new CookieTranslator(new DESUserRefKeyEncrypter(salt), "beige", salt);
+        return new CookieTranslator(userRefKeyEncrypter(), "beige", salt);
     }
 
     public @Bean CredentialsStore credentialsStore() throws UnknownHostException, MongoException {
         return new MongoDBCredentialsStore(db());
     }
+    
+    public @Bean UserRefKeyEncrypter userRefKeyEncrypter() {
+        return new DESUserRefKeyEncrypter("f8bc218051364f2194f612182fc327c9");
+    }
 
     public @Bean ApplicationIdAwareUserRefBuilder userRefBuilder() {
-        return new FixedAppIdUserRefBuilder("beige");
+        return new FixedAppIdUserRefBuilder(userRefKeyEncrypter(), "beige");
     }
 
     public @Bean DatabasedMongo db() throws UnknownHostException, MongoException {

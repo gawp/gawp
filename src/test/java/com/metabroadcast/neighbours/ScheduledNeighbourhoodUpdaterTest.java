@@ -24,9 +24,9 @@ public class ScheduledNeighbourhoodUpdaterTest {
     private final DateTime now = new DateTime(DateTimeZones.UTC);
     private final DeterministicScheduler scheduler = new DeterministicScheduler();
     
-    private final UserRef ben = new UserRef("101", UserNamespace.TWITTER, "beige");
-    private final UserRef dan = new UserRef("102", UserNamespace.TWITTER, "beige");
-    private final UserRef john = new UserRef("103", UserNamespace.TWITTER, "beige");
+    private final UserRef ben = new UserRef("101", UserNamespace.TWITTER, "beige", null);
+    private final UserRef dan = new UserRef("102", UserNamespace.TWITTER, "beige", null);
+    private final UserRef john = new UserRef("103", UserNamespace.TWITTER, "beige", null);
     
     private final TargetRef show1 = new TargetRef("101", "domain");
     private final TargetRef show2 = new TargetRef("102", "domain");
