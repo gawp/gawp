@@ -15,7 +15,9 @@
     <body style="background-color: white; padding: 10px;">
         <p id="overview">Parsing credentials <img src="/images/loader-circle.gif"/></p>
         <script>
-            window.location = window.location.href.replace('#', '&') + '&extractedFragment=true';
+            var hash = window.location.hash.substring(1);
+            var token = encodeURIComponent(hash.substring(hash.indexOf("oauth_access_token=")+19, hash.indexOf('&oauth_bridge_code')));
+            window.location = '/oauth-callback/twitter'+window.location.search+'&oauth_access_token='+token+'&extractedFragment=true';
         </script>
     </body> 
 </html>
