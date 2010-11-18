@@ -10,7 +10,7 @@ import com.metabroadcast.common.social.auth.CookieTranslator;
 import com.metabroadcast.common.social.auth.credentials.CredentialsStore;
 import com.metabroadcast.common.social.user.AccessTokenProcessor;
 import com.metabroadcast.common.social.user.ApplicationIdAwareUserRefBuilder;
-import com.metabroadcast.common.social.user.TwitterAccessTokenChecker;
+import com.metabroadcast.common.social.user.TwitterOAuth2AccessTokenChecker;
 import com.metabroadcast.common.social.user.UserDetailsProvider;
 import com.metabroadcast.common.social.user.details.UserDetailsCache;
 import com.metabroadcast.common.social.user.details.twitter.TwitterMasterUserDetailsProvider;
@@ -42,7 +42,7 @@ public class SocialModule {
     }
     
     public @Bean AccessTokenProcessor twitterAccessTokenChecker() {
-        return new AccessTokenProcessor(new TwitterAccessTokenChecker(userRefBuilder), credentialsStore);
+        return new AccessTokenProcessor(new TwitterOAuth2AccessTokenChecker(userRefBuilder), credentialsStore);
     }
     
     public @Bean TwitterUserRefProvider userRefProvider() {
