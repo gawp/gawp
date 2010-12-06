@@ -46,7 +46,7 @@ public class ConsumptionsModelHelper {
             Item item = (Item) itemMap.get(targetCount.getTarget().ref());
             if (item != null) {
                 SimpleModel episodeModel = new SimpleModel();
-                episodeModel.put("count", targetCount.getCount());
+                episodeModel.putAsString("count", targetCount.getCount());
                 episodeModel.put("target", itemModelBuilder.build(item));
                 episodesModel.add(episodeModel);
             }
@@ -62,7 +62,7 @@ public class ConsumptionsModelHelper {
             Maybe<Description> desc = contentStore.resolve(brandCount.getTarget());
             if (desc.hasValue()) {
                 SimpleModel brandModel = new SimpleModel();
-                brandModel.put("count", brandCount.getCount());
+                brandModel.putAsString("count", brandCount.getCount());
                 brandModel.put("target", playlistModelBuilder.build((Playlist) desc.requireValue()));
                 brandsModel.add(brandModel);
             }
@@ -79,7 +79,7 @@ public class ConsumptionsModelHelper {
         
         for (Count<UserRef> userCount : usersByConsumes) {
             SimpleModel consumerModel = new SimpleModel();
-            consumerModel.put("count", userCount.getCount());
+            consumerModel.putAsString("count", userCount.getCount());
             consumerModel.put("user", userHelper.userDetailsModel((TwitterUserDetails) userHelper.getUserDetails(userCount.getTarget()).requireValue()));
             consumersModel.add(consumerModel);
         }
