@@ -209,6 +209,6 @@
 
     <properties>
         <common.version>${project.version}</common.version>
-        <atlas.version>0.0.1-SNAPSHOT</atlas.version>
+        <atlas.version>3.0-SNAPSHOT</atlas.version>
     </properties>
 </project>
