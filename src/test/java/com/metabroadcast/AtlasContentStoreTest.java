@@ -8,13 +8,16 @@ import org.atlasapi.client.CachingJaxbAtlasClient;
 import org.atlasapi.media.entity.simple.Item;
 import org.junit.Test;
 
+import com.metabroadcast.common.properties.Configurer;
 import com.metabroadcast.content.AtlasContentStore;
 import com.metabroadcast.content.ContentStore;
 
 
 public class AtlasContentStoreTest {
 
-    private ContentStore store = new AtlasContentStore(new CachingJaxbAtlasClient());
+    { Configurer.load(); }
+    
+    private ContentStore store = new AtlasContentStore(new CachingJaxbAtlasClient().withApiKey(Configurer.get("atlas.apikey").get()));
     
     @Test
     public void shouldRetrieveItemsOnNow() {

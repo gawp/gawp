@@ -45,7 +45,7 @@ public class BookmarkletController {
 		
 		if (content instanceof Playlist) {
 			Playlist playlist = (Playlist) content;
-			model.put("items", itemsModelBuilder.build(playlist.getItems()));
+			model.put("items", itemsModelBuilder.build(ImmutableList.copyOf(Iterables.filter(playlist.getContent(), Item.class))));
 			return "bookmarklet/brand";
 		}
 		
@@ -61,7 +61,7 @@ public class BookmarkletController {
 			model.put("frameHeight", 330);
 		} else if (content instanceof Playlist) {
 			Playlist playlist = (Playlist) content;
-			model.put("frameHeight", 210 + playlist.getItems().size() * 53);
+			model.put("frameHeight", 210 +ImmutableList.copyOf(Iterables.filter(playlist.getContent(), Item.class)).size() * 53);
 		} else {
 			model.put("frameHeight", 330);
 		}

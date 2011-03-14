@@ -11,6 +11,8 @@ import org.atlasapi.media.entity.simple.Item;
 import org.atlasapi.media.entity.simple.Playlist;
 import org.joda.time.DateTime;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.metabroadcast.common.base.Maybe;
 import com.metabroadcast.common.social.model.TargetRef;
@@ -50,7 +52,7 @@ public class Converters {
         if (description != null) {
             if (description instanceof Playlist) {
                 Playlist playlist = (Playlist) description;
-                List<Item> items = playlist.getItems();
+                List<Item> items = ImmutableList.copyOf(Iterables.filter(playlist.getContent(), Item.class));
 
                 if (!items.isEmpty()) {
                     Collections.sort(items, new SeriesOrder());
