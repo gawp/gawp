@@ -43,7 +43,7 @@ public class MongoConsumptionStore implements ConsumptionStore, Users {
     private final Log log = LogFactory.getLog(getClass());
     private final ConsumptionTranslator translator = new ConsumptionTranslator();
     private final UserRefTranslator userRefTranslator = new UserRefTranslator();
-    private final MapMaker mapMaker = new MapMaker().expiration(5, TimeUnit.MINUTES);
+    private final MapMaker mapMaker = new MapMaker().expireAfterWrite(5, TimeUnit.MINUTES);
     private Map<String, Count<String>> topBrands = mapMaker.makeMap();
     private final BackgroundComputingValue<List<UserRef>> users;
 

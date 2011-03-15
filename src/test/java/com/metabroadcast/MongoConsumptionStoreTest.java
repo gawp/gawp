@@ -19,9 +19,11 @@ import com.metabroadcast.common.social.model.UserRef.UserNamespace;
 import com.metabroadcast.common.time.DateTimeZones;
 import com.metabroadcast.consumption.Consumption;
 import com.metabroadcast.consumption.MongoConsumptionStore;
+import com.mongodb.Mongo;
 
 
 public class MongoConsumptionStoreTest {
+    private DatabasedMongo db;
     private UserRef alice = new UserRef("102", UserNamespace.TWITTER, null, null);
     private TargetRef target1 = new TargetRef("id1", "domain");
     private TargetRef target2 = new TargetRef("id2", "domain");
@@ -35,7 +37,8 @@ public class MongoConsumptionStoreTest {
     
     @Before
     public void setUp() {
-         store = new MongoConsumptionStore(new DatabasedMongo(MongoTestHelper.anEmptyMongo(), "testing"));
+         db = new DatabasedMongo(MongoTestHelper.anEmptyMongo(), "testing");
+         store = new MongoConsumptionStore(db);
     }
     
     @Test
@@ -69,6 +72,7 @@ public class MongoConsumptionStoreTest {
     public void shouldRetrieveDistinctUsers() {
         store.store(consumption1);
         store.store(consumption2);
+        store = new MongoConsumptionStore(db);
         
         List<Consumption> consumptions = store.find(alice, 10);
         assertFalse(consumptions.isEmpty());
